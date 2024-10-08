@@ -117,9 +117,10 @@ body {
 }
 
 a {
-  color: var(--accent-color);
-  text-decoration: none;
+  color: var(--accent-color) !important;
+  text-decoration: none !important;
   transition: 0.3s;
+  cursor: pointer;
 }
 
 a:hover {
@@ -164,33 +165,48 @@ h6 {
 }
 
 .sidebar {
-  height: 100vh; /* Full height sidebar */
-  background-color: #f8f9fa; /* Light background */
-  position: fixed; /* Fixed position */
-  top: 0; /* Start from the top */
-  left: 0; /* Align to the left */
-  transition: left 0.3s; /* Smooth transition for visibility */
-  padding-top: 20px; /* Padding from the top */
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); /* Add box shadow */
-  width: 250px; /* Fixed width when expanded */
-  z-index: 1000; /* Ensure it appears on top */
+  height: 100vh;
+  /* Full height sidebar */
+  background-color: #f8f9fa;
+  /* Light background */
+  position: fixed;
+  /* Fixed position */
+  top: 0;
+  /* Start from the top */
+  left: 0;
+  /* Align to the left */
+  transition: left 0.3s;
+  /* Smooth transition for visibility */
+  padding-top: 20px;
+  /* Padding from the top */
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  /* Add box shadow */
+  width: 250px;
+  /* Fixed width when expanded */
+  z-index: 1000;
+  /* Ensure it appears on top */
 }
 
 /* Main content styles */
 .bodyActive {
-  margin-left: 250px; /* Margin for main content when sidebar is open */
-  transition: margin-left 0.3s; /* Smooth transition for margin change */
-  padding: 20px; /* Padding for main content */
+  margin-left: 250px;
+  /* Margin for main content when sidebar is open */
+  transition: margin-left 0.3s;
+  /* Smooth transition for margin change */
+  padding: 20px;
+  /* Padding for main content */
 }
 
 /* Collapsed sidebar state */
 .sidebar.active {
-  width: 60px; /* Collapsed width */
+  width: 60px;
+  /* Collapsed width */
 }
 
 /* Main content styles when sidebar is collapsed */
 .bodyActive.collapsed {
-  margin-left: 60px; /* Adjust margin when sidebar is collapsed */
+  margin-left: 60px;
+  /* Adjust margin when sidebar is collapsed */
 }
 
 /* Navigation link styles */
@@ -203,12 +219,14 @@ h6 {
 
 /* Icon styles */
 .sidebar .nav-link .iconify {
-  margin-right: 10px; /* Spacing between icon and text */
+  margin-right: 10px;
+  /* Spacing between icon and text */
 }
 
 /* Collapsed header styles */
 .header.collapsed {
-  margin-left: 60px; /* Adjust margin when header is collapsed */
+  margin-left: 60px;
+  /* Adjust margin when header is collapsed */
 }
 
 
@@ -1953,4 +1971,12 @@ button .focus-change:focus {
     width: 450px;
     transform: translateX(25%);
   }
+}
+
+.comingSoon {
+  height: 70vh;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
 }

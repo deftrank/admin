@@ -7,11 +7,11 @@ export const config = [
   {
     title: "Student",
     icon: "ph:student",
-    path: "/car-owner/mybooking",
+    path: "/student",
   },
   {
     title: "Compnany",
     icon: "gg:organisation",
-    path: "/car-owner/mycars",
+    path: "/compnany",
   },
 ];

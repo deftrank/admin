@@ -6,8 +6,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 // import { loginData } from '../../components/constant';
 import { Overlay } from "react-bootstrap";
-// import { useResponsive } from '../../themes/useResponsive';
 // import ChangePassword from '../../components/dialog/changePassword';
+import LogoutModel from '../../component/modal/logoutModel/logout';
+// import { useResponsive } from '../../themes/useResponsive';
+// import LogoutModel from '../../components/dialog/changePassword';
 // import UpdateProfile from '../../components/dialog/updateProfile';
 // import Autocomplete from '../../components/autocomplete';
 // import notificationLogo from 'assets/img/owner-icons/Notification.png';
@@ -28,6 +30,7 @@ export default function OwnerHeader(props) {
   const dispatch = useDispatch();
   const { screenType } = useResponsive();
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+  const [otpModal, setOtpModal] = useState(false);
   const [show, setShow] = useState(false);
   const target = useRef();
   const [isOpenSideBar, setIsOpenSideBar] = useState(false);
@@ -48,7 +51,7 @@ export default function OwnerHeader(props) {
     // }
   }, []);
   const handleLogout = () => {
-    setShowLogoutDialog(true);
+    setOtpModal(true);
   };
   const handleNavigation = (e) => {
     const window = e.currentTarget;
@@ -234,6 +237,18 @@ export default function OwnerHeader(props) {
           </nav>
         </div>
       </div>
+
+      {otpModal && (
+        <LogoutModel
+          open={otpModal}
+          // handleClose={handleCloseModal}
+          // number={loginData}
+          // otp={otp}
+          // handleGenerateOtp={handleGenerateOtp}
+          // HandleOtp={HandleOtp}
+          // handleSubmit={handleVerifyOtp}
+        />
+      )}
     </>
   );
 }

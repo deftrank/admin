@@ -38,19 +38,12 @@ export default function StudentDetails() {
               </div>
             </div>
           </div>
-          <div
-            className="col-lg-4 col-sm-3"
-            style={{ display: `${screenType === "MOBILE" ? "none" : "block"}` }}
-          >
-            <img
-              src={bg_card}
-              className={"img-fluid"}
-              style={{ marginBottom: "-14px" }}
-            />
-          </div>
         </div>
       </div>
-      <div className="row mt-3">
+      <div className="comingSoon">
+        <h2>Coming Soon</h2>
+      </div>
+      {/* <div className="row mt-3">
         {dashBoardData?.map((item) => {
           return (
             <>
@@ -68,9 +61,9 @@ export default function StudentDetails() {
             </>
           );
         })}
-      </div>
+      </div> */}
       {/* *************************************skill & rank ******************************** */}
-      <div className="row mt-3">
+      {/* <div className="row mt-3">
         <div className="col-lg-8 col-sm-12 mb-3">
           <div className="border rounded-4 p-3 px-5">
             <div className="d-flex justify-content-between">
@@ -161,8 +154,8 @@ export default function StudentDetails() {
             <h6 className="font-size-18" style={{ fontWeight: 600 }}>
               All India Rank
             </h6>
-            <div className="p-3 d-flex justify-content-center">
-              {/* <CircularProgressbar
+            <div className="p-3 d-flex justify-content-center"> */}
+      {/* <CircularProgressbar
                 value={percentage}
                 text={`${percentage}%`}
                 background
@@ -176,12 +169,12 @@ export default function StudentDetails() {
                   trailColor: "transparent",
                 })}
               /> */}
-            </div>
+      {/* </div>
           </div>
         </div>
-      </div>
+      </div> */}
       {/* *************************************my test card******************************** */}
-      <div className="d-flex justify-content-between mt-3">
+      {/* <div className="d-flex justify-content-between mt-3">
         <h6 className="font-size-20 " style={{ fontWeight: 600 }}>
           My Tests
         </h6>
@@ -195,7 +188,6 @@ export default function StudentDetails() {
                 className={`${screenType === "MOBILE" ? "col-12" : "col-4"}`}
               >
                 <div className="card  rounded-3  m-1 py-2">
-                  {/* <h6 className="font-size-14 ms-1 " style={{color:color.green,fontWeight:500}}>Sponsered</h6> */}
                   <div className="d-flex  flex-column align-items-center mt-2">
                     <img
                       src={brand}
@@ -274,9 +266,9 @@ export default function StudentDetails() {
             </>
           );
         })}
-      </div>
+      </div> */}
       {/* *************************************My Internships card******************************** */}
-      <div className="d-flex justify-content-between mt-3">
+      {/* <div className="d-flex justify-content-between mt-3">
         <h6 className="font-size-20 " style={{ fontWeight: 600 }}>
           My Internships
         </h6>
@@ -290,7 +282,6 @@ export default function StudentDetails() {
                 className={`${screenType === "MOBILE" ? "col-12" : "col-4"}`}
               >
                 <div className="card w-100 rounded-3 px-2 m-1 py-2">
-                  {/* <h6 className="font-size-14 ms-1 " style={{color:color.green,fontWeight:500}}>Sponsered</h6> */}
                   <div className="d-flex  j flex-row  mt-2">
                     <div className="row">
                       <div className="col-2">
@@ -363,9 +354,9 @@ export default function StudentDetails() {
             </>
           );
         })}
-      </div>
+      </div> */}
       {/* *************************************My JOb card******************************** */}
-      <div className="d-flex justify-content-between mt-3">
+      {/* <div className="d-flex justify-content-between mt-3">
         <h6 className="font-size-20 " style={{ fontWeight: 600 }}>
           My Job
         </h6>
@@ -379,7 +370,6 @@ export default function StudentDetails() {
                 className={`${screenType === "MOBILE" ? "col-12" : "col-4"}`}
               >
                 <div className="card w-100 rounded-3 px-2 m-1 py-2">
-                  {/* <h6 className="font-size-14 ms-1 " style={{color:color.green,fontWeight:500}}>Sponsered</h6> */}
                   <div className="d-flex  j flex-row  mt-2">
                     <div className="row">
                       <div className="col-2">
@@ -452,9 +442,9 @@ export default function StudentDetails() {
             </>
           );
         })}
-      </div>
+      </div> */}
       {/* *************************************my comp test card******************************** */}
-      <div className="d-flex justify-content-between mt-3">
+      {/* <div className="d-flex justify-content-between mt-3">
         <h6 className="font-size-20 " style={{ fontWeight: 600 }}>
           My Comp Tests
         </h6>
@@ -468,7 +458,6 @@ export default function StudentDetails() {
                 className={`${screenType === "MOBILE" ? "col-12" : "col-4"}`}
               >
                 <div className="card  rounded-3  m-1 py-2">
-                  {/* <h6 className="font-size-14 ms-1 " style={{color:color.green,fontWeight:500}}>Sponsered</h6> */}
                   <div className="d-flex  flex-column align-items-center mt-2">
                     <img
                       src={brand}
@@ -547,7 +536,7 @@ export default function StudentDetails() {
             </>
           );
         })}
-      </div>
+      </div> */}
     </>
   );
 }

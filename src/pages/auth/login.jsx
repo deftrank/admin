@@ -1,46 +1,20 @@
 // @ts-nocheck
 import { useNavigate } from "react-router-dom";
-import OtpModel from "../../component/modal/otpModal/otpModel";
-import LoginForm from "./login/loginForm";
 import { useState } from "react";
-import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { generateOtp, login, otpVerify } from "../../store/slice/authSlice";
-import { useResponsive } from "../../hooks/useResponsive";
 import { color } from "../../themes/color/color";
 import DeftInput from "../../component/deftInput/deftInput";
 import DeftButton from "../../component/deftButton/deftButton";
 import { isEmailValid } from "../../utils/appValidation";
+import { useResponsive } from "../../hooks/useResponsive";
 
 export default function Login() {
   const { screenType } = useResponsive();
   const navigate = useNavigate();
-  const [otp, setOtp] = useState("");
-  const [selectedUserType, setSelectedUserType] = useState("Student");
   // const [otpModal, setOtpModal] = useState(false);
-  const [loginType, setLoginType] = useState("Mobile");
   const [loginData, setLoginData] = useState({});
   const dispatch = useDispatch();
-  const validEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-  const handleChange = (key, value) => {
-    // setSelectedUserType(user);
-    setLoginData((loginData) => ({
-      ...loginData,
-      [key]: value,
-    }));
-  };
-
-  const handleLoginChange = (login) => {
-    setLoginType(login);
-  };
-
-  // const handleCloseModal = () => {
-  //   setOtpModal(false);
-  // };
-  // const handleOpenModal = () => {
-  //   setOtpModal(true);
-  // };
+  
   const handleSubmit = () => {
     if (!loginData?.email) {
       setLoginData((loginData) => ({
@@ -135,6 +109,11 @@ export default function Login() {
             />
           </div>
 
+          <div className="text-end">
+            <a style={{ fontWeight: 700 }} onClick={()=>navigate('/forget-password')}>
+              Forget password
+            </a>
+          </div>
           <DeftButton
             btnName="Sign In"
             btnClass="w-100 h-75 my-3 rounded-2"

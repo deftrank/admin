@@ -2,9 +2,13 @@
 import React, { useEffect, useState } from "react"; // Import useEffect
 import { Navigate, useRoutes } from "react-router-dom";
 import Home from "../pages/dashboard";
+import Student from "../pages/student";
+import StudentProfile from "../pages/student/studentProfile";
+import Compnany from "../pages/compnany";
 import CarOwnerLayout from "../layout/carOwner/index.js";
 import AuthLayout from "../layout/authLayout";
 import Login from "../pages/auth/login";
+import Forgetpassword from "../pages/auth/forgetpassword/forgetpassword";
 import NotFoundPage from "../pages/error_page";
 import BasicDetails from "../pages/onBoarding/basicDetails";
 import OnBoardingLayout from "../pages/onBoarding"; // Make sure this is the correct import
@@ -24,16 +28,22 @@ export default function AppRoutes() {
   return useRoutes([
     {
       path: "/",
-      element: loginData ? <CarOwnerLayout /> : <Navigate to="/auth/login" />,
+      element: loginData ? <CarOwnerLayout /> : <Navigate to="/login" />,
       children: [
         { element: <Navigate to="/dashboard" />, index: true },
         { path: "dashboard", element: <Home /> },
+        { path: "student", element: <Student /> },
+        { path: "student-profile", element: <StudentProfile /> },
+        { path: "compnany", element: <Compnany /> },
       ],
     },
     {
-      path: "/auth",
+      path: "/",
       element: !loginData ? <AuthLayout /> : <Navigate to="/" />,
-      children: [{ path: "/auth/login", element: <Login /> }],
+      children: [
+        { path: "/login", element: <Login /> },
+        { path: "/forget-password", element: <Forgetpassword /> },
+      ],
     },
     // {
     //   path: "/register",
