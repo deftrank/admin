@@ -6,6 +6,8 @@ export const DEFT_RANK_API = {
     generateOTp: "/users/generateOTP",
     register: "users/register",
     setIdentifier: "users/setIdentifier",
+    getListOfUserByAdmin: "admin/getListOfUserByAdmin",
+    getListOfCompanyByAdmin: "admin/getListOfCompanyByAdmin",
   },
   //  listing
   list: {

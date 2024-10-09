@@ -1,3 +1,4 @@
+import { Icon } from "@iconify/react/dist/iconify.js";
 import React from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
@@ -21,8 +22,18 @@ export default function index(props) {
         backdrop="static"
         className="otp-radius "
       >
-        <Modal.Header className={"border-0"}></Modal.Header>
-        <Modal.Body className={"container"}>
+        <Icon
+          icon="iconamoon:close-light"
+          className="position-absolute"
+          style={{
+            right: "22px",
+            top: "18px",
+          }}
+          height={30}
+          onClick={handleClose}
+        />
+        {/* <Modal.Header className={"border-0"}></Modal.Header> */}
+        <Modal.Body className={"container pt-4"}>
           <h6
             className="text-center font-size-20 "
             style={{ lineHeight: "29px" }}
@@ -31,7 +42,7 @@ export default function index(props) {
           </h6>
         </Modal.Body>
         <Modal.Footer className={"border-0"}>
-          <Button variant="primary w-100" onClick={handleLogout}>
+          <Button variant="primary w-50 mx-auto" onClick={handleLogout}>
             Logout
           </Button>
         </Modal.Footer>

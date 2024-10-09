@@ -1,70 +1,66 @@
-// @ts-nocheck
-import axios from "axios";
-import { useEffect } from "react";
-import secureLocalStorage from "react-secure-storage";
-import { useNavigate } from "react-router-dom"; // Ensure you're importing from 'react-router-dom'
+import axios from 'axios';
+import { useEffect } from 'react';
+import secureLocalStorage from 'react-secure-storage';
+import { useNavigate } from 'react-router';
 
-// Create axios instance
+const token = secureLocalStorage.getItem(import.meta.env.VITE_TOKEN_STORAGE_KEY);
+
+// axios instance
 const instance = axios.create({
   baseURL: import.meta.env.VITE_APP_API_URL,
   withCredentials: false,
   validateStatus: (status) => {
     if (status === 401) {
       secureLocalStorage.clear();
-      window.location.href = "/"; // Redirect to login on unauthorized
-      return false; // Reject this response
+      window.location.href = '/';
+      return false;
+    } else {
+      return true;
     }
-    return true; // Accept other statuses
   },
   headers: {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-    "Content-Type": "application/json",
-    "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
-  },
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+    'Content-Type': 'application/json',
+    'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate',
+    Authorization: `Bearer ${token}`
+  }
 });
 
-// Axios interceptor component
 const AxiosInterceptor = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
     const reqInterceptor = (request) => {
-      const token = secureLocalStorage.getItem(
-        import.meta.env.VITE_TOKEN_STORAGE_KEY
-      );
+      const token = secureLocalStorage.getItem(import.meta.env.VITE_TOKEN_STORAGE_KEY);
       if (token) {
-        request.headers.Authorization = `Bearer ${token}`; // Attach token if available
+        request.headers.Authorization = `Bearer ${token}`;
       }
       return request;
     };
 
+    const resInterceptor = (response) => {
+      return response;
+    };
+
     const errInterceptor = (error) => {
-      if (error.response && error.response.status === 401) {
+      if (error.response.status === 401) {
         secureLocalStorage.clear();
-        navigate("/"); // Redirect to home or login on unauthorized
+        navigate('/');
       }
-      return Promise.reject(error); // Reject the error
+      return Promise.reject(error);
     };
 
-    const requestInterceptor = instance.interceptors.request.use(
-      reqInterceptor,
-      errInterceptor
-    );
-    const responseInterceptor = instance.interceptors.response.use(
-      (response) => response,
-      errInterceptor
-    );
-
-    // Cleanup on component unmount
+    const requestInterceptor = instance.interceptors.request.use(reqInterceptor, errInterceptor);
+    const interceptor = instance.interceptors.response.use(resInterceptor, errInterceptor);
     return () => {
+      instance.interceptors.response.eject(interceptor);
       instance.interceptors.request.eject(requestInterceptor);
-      instance.interceptors.response.eject(responseInterceptor);
     };
-  }, [navigate]);
+  }, []);
 
-  return children; // Render children components
+  return children;
 };
 
-export default instance; // Export axios instance
-export { AxiosInterceptor }; // Export interceptor component
+export default instance;
+export { AxiosInterceptor };

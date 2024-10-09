@@ -7,12 +7,10 @@ import { useResponsive } from "../../../hooks/useResponsive";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { isEmailValid } from "../../../utils/appValidation";
+import { forgetPassword } from "../../../store/slice/authSlice";
 export default function index(props) {
   const { screenType } = useResponsive();
   const navigate = useNavigate();
-  const [otp, setOtp] = useState("");
-  const [selectedUserType, setSelectedUserType] = useState("Student");
-  // const [otpModal, setOtpModal] = useState(false);
   const [loginType, setLoginType] = useState("Mobile");
   const [loginData, setLoginData] = useState({});
   const dispatch = useDispatch();
@@ -57,7 +55,7 @@ export default function index(props) {
       password: loginData?.password ? loginData?.password : "",
       language: "en",
     };
-    dispatch(login(data, navigate));
+    dispatch(forgetPassword(data, navigate));
 
     // handleOpenModal();
   };

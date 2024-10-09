@@ -55,6 +55,7 @@ const {
   identitySuccess,
   // handlePersonalFormSuccess,
 } = slice.actions;
+
 // login
 export const login = (data, navigate) => async (dispatch) => {
   dispatch(apiFetching());
@@ -77,6 +78,23 @@ export const login = (data, navigate) => async (dispatch) => {
     console.error("Login failed:", error.message);
     // Handle errors, e.g. show a toast message
     // toast.error(error.message);
+  }
+};
+
+export const forgetPassword = (data, navigate) => async (dispatch) => {
+  dispatch(apiFetching());
+
+  try {
+    const response = await api.post(DEFT_RANK_API.auth.login, data);
+    const result = response?.data;
+
+    if (result?.status) {
+      toast.error(error.message);
+    } else {
+      toast.error(error.message);
+    }
+  } catch (error) {
+    console.error("Login failed:", error.message);
   }
 };
 
@@ -179,6 +197,7 @@ export const register = (data, navigate) => async (dispatch) => {
     return toast.error(e.message);
   }
 };
+
 // personal details form
 export const personalDetailsForm = (data) => async (dispatch) => {
   handlePersonalFormSuccess;

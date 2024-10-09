@@ -17,6 +17,8 @@ const slice = createSlice({
     boardList: [],
     userData: {},
     successEducationMessage: "",
+    listOfUserByAdmin: [],
+    listOfCompanyByAdmin: [],
   },
   reducers: {
     onBoardingSuccess: (state, action) => {
@@ -45,6 +47,12 @@ const slice = createSlice({
       state.universityList = action.payload;
       console.log("university", action.payload);
     },
+    listOfUserByAdminSuccess(state, action) {
+      state.listOfUserByAdmin = action.payload.data;
+    },
+    listOfCompanyByAdminSuccess(state, action) {
+      state.listOfCompanyByAdmin = action.payload.data;
+    },
   },
 });
 
@@ -58,6 +66,8 @@ const {
   collageListSuccess,
   getProfileSuccess,
   getBoardListSuccess,
+  listOfUserByAdminSuccess,
+  listOfCompanyByAdminSuccess,
 } = slice.actions;
 
 //  stepper currentIndex
@@ -90,7 +100,7 @@ export const getCollageList = (data) => async (dispatch) => {
     const response = await api.post(DEFT_RANK_API.list.getCollageList, data);
 
     if (response?.status) {
-      console.log(data?.search_type)
+      console.log(data?.search_type);
       if (data?.search_type == 1) {
         const transformedList =
           response?.data?.data?.map((college) => ({
@@ -165,6 +175,44 @@ export const updateProfile = (data) => async (dispatch) => {
     // toast.error(e.message || "An error occurred while updating the profile.");
   }
 };
+
+export const getListOfUserByAdmin = (data, navigate) => async (dispatch) => {
+  // dispatch(apiFetching());
+  try {
+    await api
+      .post(DEFT_RANK_API.auth.getListOfUserByAdmin, data)
+      .then((response) => {
+        let result = response.data;
+        if (result.status) {
+          dispatch(listOfUserByAdminSuccess(result));
+        } else {
+          // toast.error(result.message);
+        }
+      });
+  } catch (e) {
+    // return toast.error(e.message);
+  }
+};
+
+export const getListOfCompanyByAdmin = (data, navigate) => async (dispatch) => {
+  // dispatch(apiFetching());
+  try {
+    await api
+      .post(DEFT_RANK_API.auth.getListOfCompanyByAdmin, data)
+      .then((response) => {
+        let result = response.data;
+        console.log("result -- ", result?.data);
+        if (result.status) {
+          dispatch(listOfCompanyByAdminSuccess(result));
+        } else {
+          // toast.error(result.message);
+        }
+      });
+  } catch (e) {
+    // return toast.error(e.message);
+  }
+};
+
 export const submitEducationData = (data) => async (dispatch) => {
   try {
     const response = await api.post(
@@ -173,8 +221,7 @@ export const submitEducationData = (data) => async (dispatch) => {
     );
 
     if (response?.status) {
-    //  dispatch(s)
-
+      //  dispatch(s)
       // toast.success(response?.message);
     } else {
       // toast.error(response?.message);

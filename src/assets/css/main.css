@@ -1595,7 +1595,7 @@ button .focus-change:focus {
 }
 
 .leader-body tr td {
-  text-align: center;
+  /* text-align: center; */
   vertical-align: middle;
 }
 

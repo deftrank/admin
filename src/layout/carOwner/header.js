@@ -1,23 +1,14 @@
 import { Icon } from "@iconify/react";
 import React, { useRef, useState } from "react";
 import profile from "../../assets/img/default.jpg";
-// import { getUserProfile, handleSideBar } from '../../store/slice/auth';
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-// import { loginData } from '../../components/constant';
 import { Overlay } from "react-bootstrap";
-// import ChangePassword from '../../components/dialog/changePassword';
-import LogoutModel from '../../component/modal/logoutModel/logout';
-// import { useResponsive } from '../../themes/useResponsive';
-// import LogoutModel from '../../components/dialog/changePassword';
-// import UpdateProfile from '../../components/dialog/updateProfile';
-// import Autocomplete from '../../components/autocomplete';
-// import notificationLogo from 'assets/img/owner-icons/Notification.png';
+import LogoutModel from "../../component/modal/logoutModel/logout";
+import ChangepasswordModel from "../../component/modal/changepassword/changepasswordModel";
 import { Link } from "react-router-dom";
 import { useResponsive } from "../../hooks/useResponsive";
-// import LogoutDialog from 'components/dialog/logout';
-// import { colors } from 'themes/color';
-// import { getnotificationListing } from 'store/slice/carUser/notification';
+
 export default function OwnerHeader(props) {
   const {
     title,
@@ -29,8 +20,8 @@ export default function OwnerHeader(props) {
   } = props;
   const dispatch = useDispatch();
   const { screenType } = useResponsive();
-  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
-  const [otpModal, setOtpModal] = useState(false);
+  const [logoutModal, setLogoutModal] = useState(false);
+  const [changePasswordModal, setChangePasswordModal] = useState(false);
   const [show, setShow] = useState(false);
   const target = useRef();
   const [isOpenSideBar, setIsOpenSideBar] = useState(false);
@@ -51,7 +42,7 @@ export default function OwnerHeader(props) {
     // }
   }, []);
   const handleLogout = () => {
-    setOtpModal(true);
+    setLogoutModal(true);
   };
   const handleNavigation = (e) => {
     const window = e.currentTarget;
@@ -195,18 +186,21 @@ export default function OwnerHeader(props) {
                   color: "black",
                   borderRadius: 10,
                   width: screenType === "MOBILE" ? 230 : 260,
+                  border: "0.5px solid grey",
+
                   //   ...props.style
                 }}
               >
-                <div
-                  className="w-100 d-flex justify-content-between py-3"
-                  style={{ cursor: "pointer" }}
-                >
+                <div className="w-100 d-flex justify-content-between  align-itmes-center py-2">
                   <div
-                    onClick={() => setShow(!show)}
+                    onClick={() => {
+                      setShow(!show);
+                      setChangePasswordModal(true);
+                    }}
                     type="button"
                     data-toggle="modal"
                     data-target="#exampleModalCenter"
+                    class="d-flex align-items-center"
                     className="text-muted text-primary"
                   >
                     Change Password
@@ -219,7 +213,7 @@ export default function OwnerHeader(props) {
                     />
                   </div>
                 </div>
-                <hr />
+                <hr class={"mt-1"} />
                 <div
                   onClick={handleLogout}
                   className="text-red text-center pb-2"
@@ -238,15 +232,17 @@ export default function OwnerHeader(props) {
         </div>
       </div>
 
-      {otpModal && (
+      {logoutModal && (
         <LogoutModel
-          open={otpModal}
-          // handleClose={handleCloseModal}
-          // number={loginData}
-          // otp={otp}
-          // handleGenerateOtp={handleGenerateOtp}
-          // HandleOtp={HandleOtp}
-          // handleSubmit={handleVerifyOtp}
+          open={logoutModal}
+          handleClose={() => setLogoutModal(false)}
+        />
+      )}
+
+      {changePasswordModal && (
+        <ChangepasswordModel
+          open={changePasswordModal}
+          handleClose={() => setChangePasswordModal(false)}
         />
       )}
     </>

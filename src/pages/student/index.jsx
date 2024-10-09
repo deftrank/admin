@@ -1,18 +1,22 @@
+// @ts-nocheck
 import React, { useEffect, useState } from "react";
 // import Stepper from "@keyvaluesystems/react-stepper";
 import { color } from "../../themes/color/color";
 import Logo from "../../assets/img/black_logo.svg";
 import { useResponsive } from "../../hooks/useResponsive";
 import { Outlet, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Pagination, Table } from "react-bootstrap";
 import { userData } from "../../component/jsonData";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import DeftOutlineButton from "../../component/deftButton/deftOutlineButton";
+import { getListOfUserByAdmin } from "../../store/slice/onBoardingSlice";
 // import { stepsArray } from "./stepperConstant";
 
 export default function index() {
   const { screenType } = useResponsive();
+  const { listOfUserByAdmin } = useSelector((state) => state.onBoarding);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const handlePageChange = (pageNumber) => {
@@ -24,9 +28,22 @@ export default function index() {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentItems = userData.slice(startIndex, startIndex + itemsPerPage);
 
+  useEffect(() => {
+    getStudentList();
+  }, []);
+
   const handleClose = () => {
     console.log("e");
     navigate("/student-profile");
+  };
+
+  const getStudentList = () => {
+    const data = {
+      search: "",
+      page: 1,
+      limit: 10,
+    };
+    dispatch(getListOfUserByAdmin(data));
   };
 
   return (
@@ -38,9 +55,9 @@ export default function index() {
       >
         <thead className="thead">
           <tr>
-            <th className="font-size-14">First Name</th>
-            <th className="font-size-14">Location</th>
-            <th className="font-size-14">Internship Feedback Availability</th>
+            <th className="font-size-14">Name</th>
+            <th className="font-size-14">Email</th>
+            <th className="font-size-14">Phone Number</th>
             <th className="font-size-14">Skill Rank</th>
             <th className="font-size-14">All India Rank</th>
             <th className="font-size-14">Total Comp Test Passed</th>
@@ -49,20 +66,15 @@ export default function index() {
           </tr>
         </thead>
         <tbody className="bg-white leader-body">
-          {userData.map((item) => (
+          {listOfUserByAdmin?.map((item) => (
             <tr key={item?.id}>
-              <td className="font-size-14"> {item?.First_Name}</td>
-              <td className="font-size-14">{item.Location}</td>
               <td className="font-size-14">
-                {item?.Feedback
-                  ? Array.from({ length: item.Feedback }).map((_, i) => (
-                      <Icon
-                        key={i}
-                        icon="ic:round-star"
-                        className="text-warning"
-                      />
-                    ))
-                  : "No Feedback"}
+                {" "}
+                {item?.first_name + " " + item?.last_name}
+              </td>
+              <td className="font-size-14">{item?.auth_id?.email}</td>
+              <td className="font-size-14">
+                {item?.auth_id?.country_code + item?.auth_id?.phone}
               </td>
 
               <td style={{ fontSize: 14 }}>
@@ -85,27 +97,38 @@ export default function index() {
         </tbody>
       </Table>
 
-      <div className="d-flex justify-content-end">
-        <Pagination>
-          <Pagination.Prev
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-          />
-          {[...Array(totalPages).keys()].map((page) => (
-            <Pagination.Item
-              key={page + 1}
-              active={page + 1 === currentPage}
-              onClick={() => handlePageChange(page + 1)}
-            >
-              {page + 1}
-            </Pagination.Item>
-          ))}
-          <Pagination.Next
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          />
-        </Pagination>
-      </div>
+      {listOfUserByAdmin?.length == 0 ? (
+        <div className="comingSoon h2">No result found</div>
+      ) : (
+        ""
+      )}
+      {listOfUserByAdmin?.length > 0 ? (
+        <>
+          <div className="d-flex justify-content-end">
+            <Pagination>
+              <Pagination.Prev
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              />
+              {[...Array(totalPages).keys()].map((page) => (
+                <Pagination.Item
+                  key={page + 1}
+                  active={page + 1 === currentPage}
+                  onClick={() => handlePageChange(page + 1)}
+                >
+                  {page + 1}
+                </Pagination.Item>
+              ))}
+              <Pagination.Next
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              />
+            </Pagination>
+          </div>
+        </>
+      ) : (
+        ""
+      )}
     </div>
   );
 }

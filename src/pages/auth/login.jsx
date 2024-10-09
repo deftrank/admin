@@ -7,6 +7,7 @@ import DeftInput from "../../component/deftInput/deftInput";
 import DeftButton from "../../component/deftButton/deftButton";
 import { isEmailValid } from "../../utils/appValidation";
 import { useResponsive } from "../../hooks/useResponsive";
+import { login } from "../../store/slice/authSlice";
 
 export default function Login() {
   const { screenType } = useResponsive();
@@ -14,7 +15,7 @@ export default function Login() {
   // const [otpModal, setOtpModal] = useState(false);
   const [loginData, setLoginData] = useState({});
   const dispatch = useDispatch();
-  
+
   const handleSubmit = () => {
     if (!loginData?.email) {
       setLoginData((loginData) => ({
@@ -96,7 +97,7 @@ export default function Login() {
           <div className="my-3 ">
             <DeftInput
               placeholder="Enter password"
-              type="text"
+              type="password"
               value={loginData.password}
               onchange={(value) => {
                 setLoginData((loginData) => ({
@@ -110,7 +111,10 @@ export default function Login() {
           </div>
 
           <div className="text-end">
-            <a style={{ fontWeight: 700 }} onClick={()=>navigate('/forget-password')}>
+            <a
+              style={{ fontWeight: 700 }}
+              onClick={() => navigate("/forget-password")}
+            >
               Forget password
             </a>
           </div>
