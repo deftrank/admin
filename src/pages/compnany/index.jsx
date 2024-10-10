@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 // import Stepper from "@keyvaluesystems/react-stepper";
 import { color } from "../../themes/color/color";
 import Logo from "../../assets/img/companyDefaul.png";
@@ -17,12 +17,14 @@ import {
 } from "../../store/slice/onBoardingSlice";
 import DeftInput from "../../component/deftInput/deftInput";
 import DeftOutlineButton from "../../component/deftButton/deftOutlineButton";
+import LoadingBar from "react-top-loading-bar";
 // import { stepsArray } from "./stepperConstant";
 
 export default function index() {
   const { listOfCompanyByAdmin, compnanyTotalCount } = useSelector(
     (state) => state.onBoarding
   );
+  const loadingBarRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchData, setSearchData] = useState("");
@@ -52,7 +54,7 @@ export default function index() {
       page: currentPage,
       limit: itemsPerPage,
     };
-    dispatch(getListOfCompanyByAdmin(data));
+    dispatch(getListOfCompanyByAdmin(data, loadingBarRef));
   };
 
   const deleteAccount = () => {
@@ -295,6 +297,7 @@ export default function index() {
           }
         />
       )}
+      <LoadingBar color={"#f11946"} ref={loadingBarRef} />
     </div>
   );
 }

@@ -5,6 +5,7 @@ import api from "../../service/index";
 // import secureLocalStorage from "react-secure-storage";
 // import { act } from "preact/test-utils";
 import { stepsArray } from "../../pages/onBoarding/stepperConstant";
+
 const slice = createSlice({
   name: "onBoarding",
   initialState: {
@@ -202,27 +203,30 @@ export const updateProfile = (data) => async (dispatch) => {
   }
 };
 
-export const getListOfUserByAdmin = (data, navigate) => async (dispatch) => {
-  // dispatch(apiFetching());
-  try {
-    await api
-      .post(DEFT_RANK_API.auth.getListOfUserByAdmin, data)
-      .then((response) => {
-        let result = response.data;
-        if (result.status) {
-          dispatch(listOfUserByAdminSuccess(result));
-        } else {
-          // toast.error(result.message);
-        }
-      });
-  } catch (e) {
-    // return toast.error(e.message);
-  }
-};
+export const getListOfUserByAdmin =
+  (data, loadingBarRef) => async (dispatch) => {
+    loadingBarRef.current.continuousStart();
+    try {
+      await api
+        .post(DEFT_RANK_API.auth.getListOfUserByAdmin, data)
+        .then((response) => {
+          let result = response.data;
+          if (result.status) {
+            dispatch(listOfUserByAdminSuccess(result));
+          } else {
+            // toast.error(result.message);
+          }
+        });
+      loadingBarRef.current.complete();
+    } catch (e) {
+      // return toast.error(e.message);
+      loadingBarRef.current.complete();
+    }
+  };
 
 export const deleteUser =
-  (data, setChangePasswordModal) => async (dispatch) => {
-    // dispatch(apiFetching());
+  (data, setChangePasswordModal) => async (dispatch, loadingBarRef) => {
+    loadingBarRef.current.continuousStart();
     try {
       await api.post(DEFT_RANK_API.auth.deleteUser, data).then((response) => {
         let result = response.data;
@@ -235,9 +239,11 @@ export const deleteUser =
         } else {
           // toast.error(result.message);
         }
+        loadingBarRef.current.complete();
       });
     } catch (e) {
       // return toast.error(e.message);
+      loadingBarRef.current.complete();
     }
   };
 

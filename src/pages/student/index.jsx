@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Dropdown, Pagination, Table } from "react-bootstrap";
@@ -12,6 +12,7 @@ import DeftInput from "../../component/deftInput/deftInput";
 import Confirmation from "../../component/modal/confirmationModel/confirmation";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import DeftOutlineButton from "../../component/deftButton/deftOutlineButton";
+import LoadingBar from "react-top-loading-bar";
 
 export default function index() {
   const { listOfUserByAdmin, userTotalCount } = useSelector(
@@ -22,6 +23,7 @@ export default function index() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchData, setSearchData] = useState("");
   const [changePasswordModal, setChangePasswordModal] = useState({});
+  const loadingBarRef = useRef(null);
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -50,7 +52,7 @@ export default function index() {
       page: currentPage,
       limit: itemsPerPage,
     };
-    dispatch(getListOfUserByAdmin(data));
+    dispatch(getListOfUserByAdmin(data,loadingBarRef));
   };
 
   const deleteAccount = () => {
@@ -259,6 +261,8 @@ export default function index() {
           }
         />
       )}
+
+      <LoadingBar color={"#f11946"} ref={loadingBarRef} />
     </div>
   );
 }
