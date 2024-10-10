@@ -210,8 +210,9 @@ export default function index() {
           <tr>
             <td colSpan="4"></td>
             <td>
-              Items per page: {itemsPerPage} &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; 1 – 5 of{" "}
-              {userTotalCount}
+              Items per page: {itemsPerPage} &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+              &nbsp; {currentPage * itemsPerPage - (itemsPerPage - 1)} –{" "}
+              {currentPage * itemsPerPage} of {userTotalCount}
             </td>
             <td colSpan="3">
               <div className="d-flex justify-content-end">
