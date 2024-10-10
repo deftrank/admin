@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 import secureLocalStorage from "react-secure-storage";
 import DeftInput from "../../deftInput/deftInput";
 import { useDispatch } from "react-redux";
-// import OtpInput from "react-otp-input";
+import { changePassword } from "../../../store/slice/authSlice";
+
 export default function index(props) {
   const { open, handleClose } = props;
   const navigate = useNavigate();
@@ -64,19 +65,14 @@ export default function index(props) {
     }
 
     const data = {
-      email: loginData?.email ? loginData?.email : "",
-      password: loginData?.password ? loginData?.password : "",
+      oldPassword: loginData?.oldPassword,
+      newPassword: loginData?.newPassword,
       language: "en",
     };
-    console.log("data -- ", data);
-    // dispatch(login(data, navigate));
+
+    dispatch(changePassword(data, handleClose));
 
     // handleOpenModal();
-  };
-
-  const handleLogout = () => {
-    secureLocalStorage.clear();
-    navigate("/");
   };
 
   return (
@@ -88,7 +84,7 @@ export default function index(props) {
         backdrop="static"
         className="otp-radius "
       >
-        <Modal.Header className={"border-0"} closeButton >
+        <Modal.Header className={"border-0"} closeButton>
           <Modal.Title>Change password</Modal.Title>
         </Modal.Header>
         <Modal.Body className={"container"}>

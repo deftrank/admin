@@ -8,6 +8,7 @@ export const DEFT_RANK_API = {
     setIdentifier: "users/setIdentifier",
     getListOfUserByAdmin: "admin/getListOfUserByAdmin",
     getListOfCompanyByAdmin: "admin/getListOfCompanyByAdmin",
+    changePassword:'admin/changePassword'
   },
   //  listing
   list: {

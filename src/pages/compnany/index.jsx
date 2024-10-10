@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 // import Stepper from "@keyvaluesystems/react-stepper";
 import { color } from "../../themes/color/color";
-import Logo from "../../assets/img/black_logo.svg";
+import Logo from "../../assets/img/companyDefaul.png";
 import { useResponsive } from "../../hooks/useResponsive";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,40 +10,58 @@ import { Pagination, Table } from "react-bootstrap";
 import { userData } from "../../component/jsonData";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { getListOfCompanyByAdmin } from "../../store/slice/onBoardingSlice";
+import DeftInput from "../../component/deftInput/deftInput";
 // import { stepsArray } from "./stepperConstant";
 
 export default function index() {
-  const { screenType } = useResponsive();
-  const { listOfCompanyByAdmin } = useSelector((state) => state.onBoarding);
+  const { listOfCompanyByAdmin, compnanyTotalCount } = useSelector(
+    (state) => state.onBoarding
+  );
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [searchData, setSearchData] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
   const itemsPerPage = 10;
-  const totalPages = Math.ceil(userData.length / itemsPerPage);
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = userData.slice(startIndex, startIndex + itemsPerPage);
+  const totalPages = Math.ceil(compnanyTotalCount / itemsPerPage);
 
   useEffect(() => {
     getCompnanyList();
   }, []);
 
+  useEffect(() => {
+    getCompnanyList();
+  }, [currentPage]);
+
+  useEffect(() => {
+    getCompnanyList();
+  }, [searchData]);
+
   const getCompnanyList = () => {
     const data = {
-      search: "",
-      page: 1,
-      limit: 10,
+      search: searchData,
+      page: currentPage,
+      limit: itemsPerPage,
     };
     dispatch(getListOfCompanyByAdmin(data));
   };
 
-  console.log("listOfCompanyByAdmin == ", listOfCompanyByAdmin);
-
   return (
     <div className="container-fliud">
+      <div className="my-3 col-6">
+        <DeftInput
+          placeholder="Search be name"
+          type="text"
+          value={searchData}
+          onKeyUp={(value) => {
+            setCurrentPage(1);
+            setSearchData(value);
+          }}
+          inputGroupText={<Icon icon="line-md:search" height={30} />}
+        />
+      </div>
       <Table
         responsive="sm"
         className="thead"
@@ -53,40 +71,35 @@ export default function index() {
       >
         <thead className="thead">
           <tr>
-            <th className="font-size-14">First Name</th>
-            <th className="font-size-14">Location</th>
-            <th className="font-size-14">Internship Feedback Availability</th>
-            <th className="font-size-14">Skill Rank</th>
-            <th className="font-size-14">All India Rank</th>
-            <th className="font-size-14">Total Comp Test Passed</th>
-            <th className="font-size-14">Total Test Passed</th>
+            <th className="font-size-14"></th>
+            <th className="font-size-14">Name</th>
+            <th className="font-size-14">Category</th>
+            <th className="font-size-14">Website</th>
+            <th className="font-size-14">Most hired skills</th>
+            <th className="font-size-14">Address</th>
           </tr>
         </thead>
         <tbody className="bg-white leader-body">
           {listOfCompanyByAdmin?.map((item) => (
             <tr key={item?.id}>
-              <td className="font-size-14"> {item?.First_Name}</td>
-              <td className="font-size-14">{item.Location}</td>
               <td className="font-size-14">
-                {item?.Feedback
-                  ? Array.from({ length: item.Feedback }).map((_, i) => (
-                      <Icon
-                        key={i}
-                        icon="ic:round-star"
-                        className="text-warning"
-                      />
-                    ))
-                  : "No Feedback"}
+                {/* <img
+                  src={item.company_logo ? item.company_logo : Logo}
+                  style={{ width: 40, height: 40 }}
+                /> */}
+                <img src={Logo} style={{ width: 50, height: 50 }} />
               </td>
-
-              <td style={{ fontSize: 14 }}>
-                <p className="mb-0">Java- {item?.rank?.java}</p>
-                <p className="mb-0">Php- {item?.rank?.php}</p>
-                <p className="mb-0">.Net- {item?.rank?.dotnet}</p>
+              <td className="font-size-14">{item.registered_name}</td>
+              <td className="font-size-14">{item.category}</td>
+              <td className="font-size-14">{item.company_website}</td>
+              <td className="font-size-14">
+                <div style={{ width: "150px" }}>
+                  {item?.most_hired_skills && item.most_hired_skills.length > 0
+                    ? item.most_hired_skills.join(", ")
+                    : "No Feedback"}
+                </div>
               </td>
-              <td className="font-size-14">{item?.Air}</td>
-              <td className="font-size-14">{item.TCPT}</td>
-              <td className="font-size-14">{item.TTP}</td>
+              <td className="font-size-14">{item?.company_address}</td>
             </tr>
           ))}
         </tbody>
@@ -96,7 +109,7 @@ export default function index() {
       ) : (
         ""
       )}
-      {listOfCompanyByAdmin?.length > 0 ? (
+      {compnanyTotalCount > itemsPerPage ? (
         <>
           <div className="d-flex justify-content-end">
             <Pagination>

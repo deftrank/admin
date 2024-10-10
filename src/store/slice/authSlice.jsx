@@ -5,6 +5,7 @@ import { DEFT_RANK_API } from "../../service/apiConstant";
 import api from "../../service/index";
 import secureLocalStorage from "react-secure-storage";
 import { toast } from "react-toastify";
+
 const slice = createSlice({
   name: "auth",
   initialState: {
@@ -72,7 +73,7 @@ export const login = (data, navigate) => async (dispatch) => {
       navigate("/");
     } else {
       // Handle unsuccessful login, like showing an error message
-      // toast.error(result?.message);
+      toast.error(result?.message);
     }
   } catch (error) {
     console.error("Login failed:", error.message);
@@ -89,9 +90,28 @@ export const forgetPassword = (data, navigate) => async (dispatch) => {
     const result = response?.data;
 
     if (result?.status) {
-      toast.error(error.message);
+      toast.success(result.message);
+      navigate("/");
     } else {
-      toast.error(error.message);
+      toast.error(result.message);
+    }
+  } catch (error) {
+    console.error("Login failed:", error.message);
+  }
+};
+
+export const changePassword = (data, handleClose) => async (dispatch) => {
+  dispatch(apiFetching());
+
+  try {
+    const response = await api.post(DEFT_RANK_API.auth.changePassword, data);
+    const result = response?.data;
+    console.log("result == ", result.message);
+    if (result?.status) {
+      toast.success(result.message);
+      handleClose();
+    } else {
+      toast.error(result.message);
     }
   } catch (error) {
     console.error("Login failed:", error.message);

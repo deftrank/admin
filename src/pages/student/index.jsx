@@ -55,6 +55,7 @@ export default function index() {
           type="text"
           value={searchData}
           onKeyUp={(value) => {
+            setCurrentPage(1);
             setSearchData(value);
           }}
           inputGroupText={<Icon icon="line-md:search" height={30} />}
@@ -91,7 +92,9 @@ export default function index() {
               <td style={{ fontSize: 14 }}>
                 <p className="mb-0">{item?.current_course}</p>
               </td>
-              <td className="font-size-14">{item?.college_name}</td>
+              <td className="font-size-14">
+                <div style={{ width: "200px" }}>{item?.college_name}</div>
+              </td>
               <td className="font-size-14">{item.location}</td>
               {/* <td className="font-size-14">
                 <DeftOutlineButton

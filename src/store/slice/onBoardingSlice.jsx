@@ -20,6 +20,7 @@ const slice = createSlice({
     listOfUserByAdmin: [],
     listOfCompanyByAdmin: [],
     userTotalCount: 0,
+    compnanyTotalCount: 0,
   },
   reducers: {
     onBoardingSuccess: (state, action) => {
@@ -53,6 +54,7 @@ const slice = createSlice({
       state.listOfUserByAdmin = action.payload.data;
     },
     listOfCompanyByAdminSuccess(state, action) {
+      state.compnanyTotalCount = action.payload.total_count;
       state.listOfCompanyByAdmin = action.payload.data;
     },
   },
@@ -203,7 +205,6 @@ export const getListOfCompanyByAdmin = (data, navigate) => async (dispatch) => {
       .post(DEFT_RANK_API.auth.getListOfCompanyByAdmin, data)
       .then((response) => {
         let result = response.data;
-        console.log("result -- ", result?.data);
         if (result.status) {
           dispatch(listOfCompanyByAdminSuccess(result));
         } else {
