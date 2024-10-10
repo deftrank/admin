@@ -1,36 +1,37 @@
 // @ts-nocheck
-import React, { useEffect, useState } from "react";
-// import Stepper from "@keyvaluesystems/react-stepper";
-import { color } from "../../themes/color/color";
-import Logo from "../../assets/img/black_logo.svg";
-import { useResponsive } from "../../hooks/useResponsive";
-import { Outlet, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Pagination, Table } from "react-bootstrap";
-import { userData } from "../../component/jsonData";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import DeftOutlineButton from "../../component/deftButton/deftOutlineButton";
 import { getListOfUserByAdmin } from "../../store/slice/onBoardingSlice";
-// import { stepsArray } from "./stepperConstant";
+import DeftInput from "../../component/deftInput/deftInput";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 export default function index() {
-  const { screenType } = useResponsive();
-  const { listOfUserByAdmin } = useSelector((state) => state.onBoarding);
+  const { listOfUserByAdmin, userTotalCount } = useSelector(
+    (state) => state.onBoarding
+  );
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchData, setSearchData] = useState("");
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
   const itemsPerPage = 10;
-  const totalPages = Math.ceil(userData.length / itemsPerPage);
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = userData.slice(startIndex, startIndex + itemsPerPage);
+  const totalPages = Math.ceil(userTotalCount / itemsPerPage);
 
   useEffect(() => {
     getStudentList();
   }, []);
+
+  useEffect(() => {
+    getStudentList();
+  }, [currentPage]);
+
+  useEffect(() => {
+    getStudentList();
+  }, [searchData]);
 
   const handleClose = () => {
     console.log("e");
@@ -39,15 +40,26 @@ export default function index() {
 
   const getStudentList = () => {
     const data = {
-      search: "",
-      page: 1,
-      limit: 10,
+      search: searchData,
+      page: currentPage,
+      limit: itemsPerPage,
     };
     dispatch(getListOfUserByAdmin(data));
   };
 
   return (
     <div className="container-fliud">
+      <div className="my-3 col-6">
+        <DeftInput
+          placeholder="Search be name"
+          type="text"
+          value={searchData}
+          onKeyUp={(value) => {
+            setSearchData(value);
+          }}
+          inputGroupText={<Icon icon="line-md:search" height={30} />}
+        />
+      </div>
       <Table
         responsive="sm"
         className="thead"
@@ -58,11 +70,10 @@ export default function index() {
             <th className="font-size-14">Name</th>
             <th className="font-size-14">Email</th>
             <th className="font-size-14">Phone Number</th>
-            <th className="font-size-14">Skill Rank</th>
-            <th className="font-size-14">All India Rank</th>
-            <th className="font-size-14">Total Comp Test Passed</th>
-            <th className="font-size-14">Total Test Passed</th>
-            <th className="font-size-14">View Details</th>
+            <th className="font-size-14">Course</th>
+            <th className="font-size-14">College</th>
+            <th className="font-size-14">Location</th>
+            {/* <th className="font-size-14">View Details</th> */}
           </tr>
         </thead>
         <tbody className="bg-white leader-body">
@@ -78,20 +89,17 @@ export default function index() {
               </td>
 
               <td style={{ fontSize: 14 }}>
-                <p className="mb-0">Java- {item?.rank?.java}</p>
-                <p className="mb-0">Php- {item?.rank?.php}</p>
-                <p className="mb-0">.Net- {item?.rank?.dotnet}</p>
+                <p className="mb-0">{item?.current_course}</p>
               </td>
-              <td className="font-size-14">{item?.Air}</td>
-              <td className="font-size-14">{item.TCPT}</td>
-              <td className="font-size-14">{item.TTP}</td>
-              <td className="font-size-14">
+              <td className="font-size-14">{item?.college_name}</td>
+              <td className="font-size-14">{item.location}</td>
+              {/* <td className="font-size-14">
                 <DeftOutlineButton
                   btnName="View"
                   btnClass="rounded-pill px-4 text-success"
                   onClick={handleClose}
                 />
-              </td>
+              </td> */}
             </tr>
           ))}
         </tbody>
@@ -102,7 +110,7 @@ export default function index() {
       ) : (
         ""
       )}
-      {listOfUserByAdmin?.length > 0 ? (
+      {userTotalCount > itemsPerPage ? (
         <>
           <div className="d-flex justify-content-end">
             <Pagination>

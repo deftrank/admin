@@ -1585,8 +1585,6 @@ button .focus-change:focus {
 
   height: 61px;
 
-
-
 }
 
 .thead tr th {
@@ -1979,4 +1977,17 @@ button .focus-change:focus {
   align-items: center;
   text-align: center;
   justify-content: center;
+}
+
+.form-control {
+  border: 1px solid var(--Stroke-Grey-Input-text-Field, #C4C4C4)   !important;
+}
+
+.input-group {
+  border: 1px solid var(--Stroke-Grey-Input-text-Field, #C4C4C4) !important;
+}
+
+.input-group-text {
+  background-color: #fff !important;
+  border: none !important;
 }

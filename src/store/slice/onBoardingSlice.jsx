@@ -19,6 +19,7 @@ const slice = createSlice({
     successEducationMessage: "",
     listOfUserByAdmin: [],
     listOfCompanyByAdmin: [],
+    userTotalCount: 0,
   },
   reducers: {
     onBoardingSuccess: (state, action) => {
@@ -48,6 +49,7 @@ const slice = createSlice({
       console.log("university", action.payload);
     },
     listOfUserByAdminSuccess(state, action) {
+      state.userTotalCount = action.payload.total_count;
       state.listOfUserByAdmin = action.payload.data;
     },
     listOfCompanyByAdminSuccess(state, action) {
