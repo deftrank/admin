@@ -21,6 +21,7 @@ const slice = createSlice({
     listOfCompanyByAdmin: [],
     userTotalCount: 0,
     compnanyTotalCount: 0,
+    studentDetail: null,
   },
   reducers: {
     onBoardingSuccess: (state, action) => {
@@ -57,6 +58,15 @@ const slice = createSlice({
       state.compnanyTotalCount = action.payload.total_count;
       state.listOfCompanyByAdmin = action.payload.data;
     },
+    getStudentDetailByIdSuccess(state, action) {
+      state.studentDetail = action.payload;
+    },
+    deleteUserSuccess(state, action) {
+      let reqData = action.payload.reqData;
+      state.listOfUserByAdmin = state.listOfUserByAdmin.filter(
+        (item) => item.auth_id._id !== reqData
+      );
+    },
   },
 });
 
@@ -72,6 +82,8 @@ const {
   getBoardListSuccess,
   listOfUserByAdminSuccess,
   listOfCompanyByAdminSuccess,
+  getStudentDetailByIdSuccess,
+  deleteUserSuccess,
 } = slice.actions;
 
 //  stepper currentIndex
@@ -198,6 +210,24 @@ export const getListOfUserByAdmin = (data, navigate) => async (dispatch) => {
   }
 };
 
+export const deleteUser =
+  (data, setChangePasswordModal) => async (dispatch) => {
+    // dispatch(apiFetching());
+    try {
+      await api.post(DEFT_RANK_API.auth.deleteUser, data).then((response) => {
+        let result = response.data;
+        if (result.status) {
+          setChangePasswordModal(false);
+          dispatch(deleteUserSuccess({ reqData: data.auth_id }));
+        } else {
+          // toast.error(result.message);
+        }
+      });
+    } catch (e) {
+      // return toast.error(e.message);
+    }
+  };
+
 export const getListOfCompanyByAdmin = (data, navigate) => async (dispatch) => {
   // dispatch(apiFetching());
   try {
@@ -207,6 +237,24 @@ export const getListOfCompanyByAdmin = (data, navigate) => async (dispatch) => {
         let result = response.data;
         if (result.status) {
           dispatch(listOfCompanyByAdminSuccess(result));
+        } else {
+          // toast.error(result.message);
+        }
+      });
+  } catch (e) {
+    // return toast.error(e.message);
+  }
+};
+
+export const getStudentDetailById = (data) => async (dispatch) => {
+  // dispatch(apiFetching());
+  try {
+    await api
+      .post(DEFT_RANK_API.auth.getStudentDetailById, data)
+      .then((response) => {
+        let result = response.data;
+        if (result.status) {
+          dispatch(getStudentDetailByIdSuccess(result));
         } else {
           // toast.error(result.message);
         }

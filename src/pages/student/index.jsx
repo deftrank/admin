@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Pagination, Table } from "react-bootstrap";
-import { getListOfUserByAdmin } from "../../store/slice/onBoardingSlice";
+import { deleteUser, getListOfUserByAdmin } from "../../store/slice/onBoardingSlice";
 import DeftInput from "../../component/deftInput/deftInput";
+import Confirmation from "../../component/modal/confirmationModel/confirmation";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import DeftOutlineButton from "../../component/deftButton/deftOutlineButton";
 
 export default function index() {
   const { listOfUserByAdmin, userTotalCount } = useSelector(
@@ -15,6 +17,8 @@ export default function index() {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchData, setSearchData] = useState("");
+  const [authId, setAuthId] = useState(null);
+  const [changePasswordModal, setChangePasswordModal] = useState(false);
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -33,9 +37,8 @@ export default function index() {
     getStudentList();
   }, [searchData]);
 
-  const handleClose = () => {
-    console.log("e");
-    navigate("/student-profile");
+  const handleClose = (id) => {
+    navigate(`/student-profile/${id}`);
   };
 
   const getStudentList = () => {
@@ -45,6 +48,14 @@ export default function index() {
       limit: itemsPerPage,
     };
     dispatch(getListOfUserByAdmin(data));
+  };
+
+  const deleteAccount = () => {
+    const data = {
+      auth_id: authId,
+      language: "en",
+    };
+    dispatch(deleteUser(data,setChangePasswordModal));
   };
 
   return (
@@ -74,7 +85,8 @@ export default function index() {
             <th className="font-size-14">Course</th>
             <th className="font-size-14">College</th>
             <th className="font-size-14">Location</th>
-            {/* <th className="font-size-14">View Details</th> */}
+            <th className="font-size-14">View Details</th>
+            <th className="font-size-14">Action</th>
           </tr>
         </thead>
         <tbody className="bg-white leader-body">
@@ -96,13 +108,24 @@ export default function index() {
                 <div style={{ width: "200px" }}>{item?.college_name}</div>
               </td>
               <td className="font-size-14">{item.location}</td>
-              {/* <td className="font-size-14">
+              <td className="font-size-14">
                 <DeftOutlineButton
                   btnName="View"
                   btnClass="rounded-pill px-4 text-success"
-                  onClick={handleClose}
+                  onClick={() => handleClose(item.auth_id._id)}
                 />
-              </td> */}
+              </td>
+              <td>
+                <Icon
+                  icon="ic:baseline-delete"
+                  height={30}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    setChangePasswordModal(true);
+                    setAuthId(item.auth_id._id);
+                  }}
+                />
+              </td>
             </tr>
           ))}
         </tbody>
@@ -139,6 +162,19 @@ export default function index() {
         </>
       ) : (
         ""
+      )}
+
+      {changePasswordModal && (
+        <Confirmation
+          dialogData={{
+            title: "Delete Account",
+            message: "Are you sure you want to delete this account",
+            buttonData: "Delete",
+          }}
+          open={changePasswordModal}
+          handleClose={() => setChangePasswordModal(false)}
+          handleSubmit={deleteAccount}
+        />
       )}
     </div>
   );

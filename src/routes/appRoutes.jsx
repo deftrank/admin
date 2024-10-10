@@ -33,7 +33,7 @@ export default function AppRoutes() {
         { element: <Navigate to="/dashboard" />, index: true },
         { path: "dashboard", element: <Home /> },
         { path: "student", element: <Student /> },
-        { path: "student-profile", element: <StudentProfile /> },
+        { path: "student-profile/:id", element: <StudentProfile /> },
         { path: "compnany", element: <Compnany /> },
       ],
     },

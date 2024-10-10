@@ -1,13 +1,22 @@
+// @ts-nocheck
 import { Icon } from "@iconify/react/dist/iconify.js";
-import React from "react";
+import React, { useEffect } from "react";
 import { color } from "../../../themes/color/color";
+import profile from "../../../assets/img/default.jpg";
 import c_badge from "../../../assets/img/icons/badge.png";
 import problem from "../../../assets/img/icons/badge2.png";
 import { useResponsive } from "../../../hooks/useResponsive";
+import profileBg from "../../../assets/img/bg/profileBg.png";
 import SlickSlider from "./swiper";
 import { companies } from "../../../component/jsonData";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getStudentDetailById } from "../../../store/slice/onBoardingSlice";
 
 export default function index() {
+  const { id } = useParams();
+  const { studentDetail } = useSelector((state) => state.onBoarding);
+  const dispatch = useDispatch();
   const { screenType } = useResponsive();
   const skillData = [
     { id: 1, skill: "java", level: "Beginner", rank: "200/300" },
@@ -49,20 +58,35 @@ export default function index() {
       src: problem,
     },
   ];
+
+  useEffect(() => {
+    getStudentDetail();
+  }, []);
+
+  const getStudentDetail = () => {
+    const data = {
+      auth_id: id,
+      language: "en",
+    };
+    dispatch(getStudentDetailById(data));
+  };
+
+  // console.log("studentDetail == ", studentDetail?.accountData?.first_name);
+
   return (
-    <section className="py-4 mt-5 container">
+    <section className="py-4 container-fluid">
       <div className=" py-3 ">
         <div className="shadow-lg position-relative rounded-4">
           <div
             style={{
-              // backgroundImage: `url(${profileBg})`,
+              backgroundImage: `url(${profileBg})`,
               height: 140,
               backgroundSize: "cover",
             }}
             className=" rounded-top-4"
           ></div>
           <img
-            // src={studentProfile}
+            src={profile}
             alt=""
             className="img-fluid position-absolute rounded-circle top-25"
             style={{
@@ -75,7 +99,7 @@ export default function index() {
             <div className="container ms-2">
               <div className="row">
                 <div className="col-6">
-                  <h6 className="font-size-20 ">Ritesh</h6>
+                  <h6 className="font-size-20 ">{`${studentDetail?.accountData?.first_name} ${studentDetail?.accountData?.last_name}`}</h6>
                   <div className="row align-items-center">
                     <div className="col-1">
                       <Icon
@@ -89,7 +113,8 @@ export default function index() {
                         style={{ color: color.secondaryGray }}
                         className="mb-0"
                       >
-                        B.Tech •7th Semester
+                        {studentDetail?.accountData?.current_course} •
+                        {studentDetail?.accountData?.semester} Semester
                       </h6>
                     </div>
                   </div>{" "}
@@ -106,7 +131,7 @@ export default function index() {
                         style={{ color: color.secondaryGray }}
                         className="mb-0"
                       >
-                        Noida, Uttar Pradesh
+                        {studentDetail?.accountData?.current_location}
                       </h6>
                     </div>
                   </div>
@@ -117,7 +142,7 @@ export default function index() {
         </div>
       </div>
       {/* here is user details  */}
-      <div className="row mt-5">
+      {/* <div className="row mt-5">
         <div className="col-lg-6 col-md-12  ">
           <div className="border rounded-4 p-3 px-5">
             <h6 className="font-size-18" style={{ fontWeight: 500 }}>
@@ -186,7 +211,6 @@ export default function index() {
             </div>
           </div>
         </div>
-        {/* here is skill rank */}
         <div
           className={
             screenType === "MOBILE"
@@ -281,7 +305,6 @@ export default function index() {
           </div>
         </div>
       </div>
-      {/* here is badges and test result row  */}
       <div className="row mt-4">
         <div
           className={`col-lg-3 col-md-4 ${
@@ -316,7 +339,6 @@ export default function index() {
           </div>
         </div>
       </div>
-      {/* here is notable comp test */}
       <div className="row mt-4">
         <div
           className={`col-lg-3   col-sm-12 col-md-4 ${
@@ -348,7 +370,7 @@ export default function index() {
                             key={i}
                             icon="ic:round-star"
                             className="text-warning"
-                            style={{ fontSize: "14px" }} // Adjust size as needed
+                            style={{ fontSize: "14px" }} 
                           />
                         ))}
                       </span>
@@ -383,7 +405,6 @@ export default function index() {
                         Sponsered By
                       </h6>
                     </div>
-                    {/* skill and rating section  */}
                     {item?.rank?.map((rating, key) => {
                       return (
                         <>
@@ -419,7 +440,7 @@ export default function index() {
                                     key={i}
                                     icon="ic:round-star"
                                     className="text-warning"
-                                    style={{ fontSize: "14px" }} // Adjust size as needed
+                                    style={{ fontSize: "14px" }} 
                                   />
                                 )
                               )}
@@ -445,7 +466,7 @@ export default function index() {
             <SlickSlider Sponsered="Sponsered By" />
           </div>
         </div>
-      </div>
+      </div> */}
     </section>
   );
 }
