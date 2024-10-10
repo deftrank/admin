@@ -5,7 +5,7 @@ import Home from "../pages/dashboard";
 import Student from "../pages/student";
 import StudentProfile from "../pages/student/studentProfile";
 import Compnany from "../pages/compnany";
-import CarOwnerLayout from "../layout/carOwner/index.js";
+import CarOwnerLayout from "../layout/carOwner/index";
 import AuthLayout from "../layout/authLayout";
 import Login from "../pages/auth/login";
 import Forgetpassword from "../pages/auth/forgetpassword/forgetpassword";
