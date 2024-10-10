@@ -11,6 +11,7 @@ export default function DeftInput(props) {
     readOnly,
     onKeyUp,
     inputGroupText,
+    inputGroupTextClick,
   } = props;
   return (
     <>
@@ -32,7 +33,7 @@ export default function DeftInput(props) {
               }}
               readOnly={readOnly}
             />
-            <InputGroup.Text id="basic-addon2">
+            <InputGroup.Text id="basic-addon2" onClick={inputGroupTextClick}>
               {inputGroupText}
             </InputGroup.Text>
           </InputGroup>

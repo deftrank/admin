@@ -6,12 +6,16 @@ import secureLocalStorage from "react-secure-storage";
 import DeftInput from "../../deftInput/deftInput";
 import { useDispatch } from "react-redux";
 import { changePassword } from "../../../store/slice/authSlice";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 export default function index(props) {
   const { open, handleClose } = props;
   const navigate = useNavigate();
   const [loginData, setLoginData] = useState({});
   const dispatch = useDispatch();
+  const [isShownewPassword, setIsShownewPassword] = useState(false);
+  const [isShowOldPassword, setIsShowOldPassword] = useState(false);
+  const [isShowConPassword, setIsShowConPassword] = useState(false);
 
   const handleSubmit = () => {
     if (!loginData?.oldPassword) {
@@ -91,7 +95,7 @@ export default function index(props) {
           <div className="my-3 ">
             <DeftInput
               placeholder="Enter old password"
-              type="password"
+              type={isShownewPassword ? "text" : "password"}
               value={loginData.oldPassword}
               onchange={(value) => {
                 setLoginData((loginData) => ({
@@ -101,12 +105,23 @@ export default function index(props) {
                 }));
               }}
               error={loginData.oldPasswordErr}
+              inputGroupText={
+                <Icon
+                  icon={
+                    isShownewPassword ? "ri:eye-line" : "mdi:eye-off-outline"
+                  }
+                  height={30}
+                />
+              }
+              inputGroupTextClick={() =>
+                setIsShownewPassword(!isShownewPassword)
+              }
             />
           </div>
           <div className="my-3 ">
             <DeftInput
               placeholder="Enter new password"
-              type="password"
+              type={isShowOldPassword ? "text" : "password"}
               value={loginData.newPassword}
               onchange={(value) => {
                 setLoginData((loginData) => ({
@@ -116,13 +131,23 @@ export default function index(props) {
                 }));
               }}
               error={loginData.newPasswordErr}
+              inputGroupText={
+                <Icon
+                  icon={
+                    isShowOldPassword ? "ri:eye-line" : "mdi:eye-off-outline"
+                  }
+                  height={30}
+                />
+              }
+              inputGroupTextClick={() =>
+                setIsShowOldPassword(!isShowOldPassword)
+              }
             />
           </div>
           <div className="my-3 ">
             <DeftInput
               placeholder="Enter confirm password"
-              type="password"
-              value={loginData.confirmPassword}
+              type={isShowConPassword ? "text" : "password"}
               onchange={(value) => {
                 setLoginData((loginData) => ({
                   ...loginData,
@@ -131,6 +156,17 @@ export default function index(props) {
                 }));
               }}
               error={loginData.confirmPasswordErr}
+              inputGroupText={
+                <Icon
+                  icon={
+                    isShowConPassword ? "ri:eye-line" : "mdi:eye-off-outline"
+                  }
+                  height={30}
+                />
+              }
+              inputGroupTextClick={() =>
+                setIsShowConPassword(!isShowConPassword)
+              }
             />
           </div>
         </Modal.Body>

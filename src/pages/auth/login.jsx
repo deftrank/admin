@@ -8,12 +8,14 @@ import DeftButton from "../../component/deftButton/deftButton";
 import { isEmailValid } from "../../utils/appValidation";
 import { useResponsive } from "../../hooks/useResponsive";
 import { login } from "../../store/slice/authSlice";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 export default function Login() {
   const { screenType } = useResponsive();
   const navigate = useNavigate();
   // const [otpModal, setOtpModal] = useState(false);
   const [loginData, setLoginData] = useState({});
+  const [isShowPassword, setIsShowPassword] = useState(false);
   const dispatch = useDispatch();
 
   const handleSubmit = () => {
@@ -97,7 +99,7 @@ export default function Login() {
           <div className="my-3 ">
             <DeftInput
               placeholder="Enter password"
-              type="password"
+              type={isShowPassword ? "text" : "password"}
               value={loginData.password}
               onchange={(value) => {
                 setLoginData((loginData) => ({
@@ -107,6 +109,13 @@ export default function Login() {
                 }));
               }}
               error={loginData.passwordErr}
+              inputGroupText={
+                <Icon
+                  icon={isShowPassword ? "ri:eye-line" : "mdi:eye-off-outline"}
+                  height={30}
+                />
+              }
+              inputGroupTextClick={() => setIsShowPassword(!isShowPassword)}
             />
           </div>
 
