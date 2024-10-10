@@ -36,9 +36,14 @@ export default function index(props) {
           </h6>
         </Modal.Body>
         <Modal.Footer className={"border-0"}>
-          <Button variant="primary w-50 mx-auto" onClick={handleSubmit}>
-            {dialogData?.buttonData}
-          </Button>
+          <div className={"mx-auto"}>
+            <Button variant="primary" className={"mx-1"} onClick={handleSubmit}>
+              Yes
+            </Button>
+            <Button variant="primary" className={"mx-1"} onClick={handleClose}>
+              No
+            </Button>
+          </div>
         </Modal.Footer>
       </Modal>
     </>

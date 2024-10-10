@@ -11,6 +11,7 @@ export const DEFT_RANK_API = {
     changePassword: "admin/changePassword",
     getStudentDetailById: "admin/accountDetails",
     deleteUser: "admin/deleteUser",
+    suspendUser: "admin/suspendUser",
   },
   //  listing
   list: {

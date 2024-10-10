@@ -32,9 +32,9 @@ export default function AppRoutes() {
       children: [
         { element: <Navigate to="/dashboard" />, index: true },
         { path: "dashboard", element: <Home /> },
-        { path: "student", element: <Student /> },
+        { path: "students", element: <Student /> },
         { path: "student-profile/:id", element: <StudentProfile /> },
-        { path: "compnany", element: <Compnany /> },
+        { path: "company", element: <Compnany /> },
       ],
     },
     {

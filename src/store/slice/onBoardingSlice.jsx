@@ -67,6 +67,15 @@ const slice = createSlice({
         (item) => item.auth_id._id !== reqData
       );
     },
+    suspendUserSuccess(state, action) {
+      const newObjId = action.payload.auth_id;
+      const suspendIndex = state.listOfUserByAdmin?.findIndex(
+        (item) => item.auth_id._id === newObjId
+      );
+      // let currentUser = action.payload;
+      state.listOfUserByAdmin[suspendIndex].auth_id.suspend_status =
+        action.payload.status;
+    },
   },
 });
 
@@ -84,6 +93,7 @@ const {
   listOfCompanyByAdminSuccess,
   getStudentDetailByIdSuccess,
   deleteUserSuccess,
+  suspendUserSuccess,
 } = slice.actions;
 
 //  stepper currentIndex
@@ -217,8 +227,33 @@ export const deleteUser =
       await api.post(DEFT_RANK_API.auth.deleteUser, data).then((response) => {
         let result = response.data;
         if (result.status) {
-          setChangePasswordModal(false);
+          setChangePasswordModal((changePasswordModal) => ({
+            ...changePasswordModal,
+            show: false,
+          }));
           dispatch(deleteUserSuccess({ reqData: data.auth_id }));
+        } else {
+          // toast.error(result.message);
+        }
+      });
+    } catch (e) {
+      // return toast.error(e.message);
+    }
+  };
+
+export const suspendUser =
+  (data, setChangePasswordModal) => async (dispatch) => {
+    // dispatch(apiFetching());
+    try {
+      await api.post(DEFT_RANK_API.auth.suspendUser, data).then((response) => {
+        let result = response.data;
+        console.log("response == ", response);
+        if (result.status) {
+          setChangePasswordModal((changePasswordModal) => ({
+            ...changePasswordModal,
+            show: false,
+          }));
+          dispatch(suspendUserSuccess(data));
         } else {
           // toast.error(result.message);
         }

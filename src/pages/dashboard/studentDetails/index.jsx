@@ -33,7 +33,7 @@ export default function StudentDetails() {
                   className="font-size-14"
                   style={{ color: color.secondaryGray, fontWeight: 500 }}
                 >
-                  You are awesome. Keep it up and get a lot of points reward !
+                  Your Dashboard: Tailored for Success
                 </h6>
               </div>
             </div>
@@ -41,7 +41,7 @@ export default function StudentDetails() {
         </div>
       </div>
       <div className="comingSoon">
-        <h2>Coming Soon</h2>
+        <h3>Launching soon! Stay tuned for more information</h3>
       </div>
       {/* <div className="row mt-3">
         {dashBoardData?.map((item) => {

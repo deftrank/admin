@@ -73,7 +73,7 @@ export default function index(props) {
         }}
       >
         <div className="r">
-          <h1 className="font-size-32">Forget Password</h1>
+          <h1 className="font-size-32">Forgot Password</h1>
           <div
             className="font-size-14 my-3"
             style={{ color: color.secondaryGray }}

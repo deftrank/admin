@@ -73,7 +73,7 @@ export default function Login() {
           }}
         >
           <div className="r">
-            <h1 className="font-size-32">Signin</h1>
+            <h1 className="font-size-32">Sign In</h1>
             <div
               className="font-size-14 my-3"
               style={{ color: color.secondaryGray }}
@@ -124,7 +124,7 @@ export default function Login() {
               style={{ fontWeight: 700 }}
               onClick={() => navigate("/forget-password")}
             >
-              Forget password
+              Forgot Password
             </a>
           </div>
           <DeftButton

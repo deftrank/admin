@@ -5,13 +5,13 @@ export const config = [
     path: "/dashboard",
   },
   {
-    title: "Student",
+    title: "Students",
     icon: "ph:student",
-    path: "/student",
+    path: "/students",
   },
   {
-    title: "Compnany",
+    title: "Company",
     icon: "gg:organisation",
-    path: "/compnany",
+    path: "/company",
   },
 ];
