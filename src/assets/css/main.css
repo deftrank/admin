@@ -1999,3 +1999,12 @@ button .focus-change:focus {
 .dropdown-menu a {
   color: rgb(90, 90, 90) !important;
 }
+
+.nav-link {
+  color: var(--accent-color) !important;
+}
+
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show .nav-link {
+  color: #21213d !important;
+}
