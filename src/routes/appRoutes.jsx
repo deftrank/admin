@@ -9,14 +9,12 @@ import CarOwnerLayout from "../layout/carOwner/index";
 import AuthLayout from "../layout/authLayout";
 import Login from "../pages/auth/login";
 import Forgetpassword from "../pages/auth/forgetpassword/forgetpassword";
+import EditStudentDetail from "../pages/student/EditStudentDetail/index";
 import NotFoundPage from "../pages/error_page";
-import BasicDetails from "../pages/onBoarding/basicDetails";
-import OnBoardingLayout from "../pages/onBoarding"; // Make sure this is the correct import
-import PersonalDetails from "../pages/onBoarding/personalDetails";
-import EmployabilityDetails from "../pages/onBoarding/employabilityDetails";
-import CareerPath from "../pages/onBoarding/careerPath";
-import EducationDetails from "../pages/onBoarding/educationDetails";
 import secureLocalStorage from "react-secure-storage";
+import OnBoardingLayout from "../pages/student/onBoarding/index";
+import PersonalDetails from "../pages/student/onBoarding/personalDetails/index";
+import BasicDetail from "../pages/student/onBoarding/basicDetails/index";
 
 export default function AppRoutes() {
   const loginData = secureLocalStorage.getItem(
@@ -33,6 +31,19 @@ export default function AppRoutes() {
         { element: <Navigate to="/dashboard" />, index: true },
         { path: "dashboard", element: <Home /> },
         { path: "students", element: <Student /> },
+        {
+          path: "student",
+          element: <OnBoardingLayout />,
+          children: [
+            { path: "basic-detail/:id", element: <BasicDetail /> },
+            { path: "personal-detail/:id", element: <PersonalDetails /> },
+            // { path: "educational-detail", element: <EducationDetails /> },
+            // { path: "employability-detail", element: <EmployabilityDetails /> },
+            // { path: "career-path", element: <CareerPath /> },
+            // { path: "choose-skill", element: <ComingSoon /> },
+            // { path: "internship-job", element: <ComingSoon /> },
+          ],
+        },
         { path: "student-profile/:id", element: <StudentProfile /> },
         { path: "company", element: <Compnany /> },
       ],
@@ -45,21 +56,6 @@ export default function AppRoutes() {
         { path: "/forget-password", element: <Forgetpassword /> },
       ],
     },
-    // {
-    //   path: "/register",
-    //   element: <BasicDetails />,
-    // },
-    // {
-    //   path: "/student-onboarding",
-    //   element: <OnBoardingLayout />,
-    //   children: [
-    //     { path: "personal-detail", element: <PersonalDetails /> },
-    //     { path: "educational-detail", element: <EducationDetails /> },
-    //     { path: "employability-detail", element: <EmployabilityDetails /> },
-    //     { path: "career-path", element: <CareerPath /> },
-    //   ],
-    // },
-    // 404 page
     { path: "*", element: <NotFoundPage /> },
   ]);
 }

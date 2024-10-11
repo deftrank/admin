@@ -7,11 +7,11 @@ import {
   deleteUser,
   getListOfUserByAdmin,
   suspendUser,
-} from "../../store/slice/onBoardingSlice";
-import DeftInput from "../../component/deftInput/deftInput";
-import Confirmation from "../../component/modal/confirmationModel/confirmation";
+} from "../../../store/slice/onBoardingSlice";
+import DeftInput from "../../../component/deftInput/deftInput";
+import Confirmation from "../../../component/modal/confirmationModel/confirmation";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import DeftOutlineButton from "../../component/deftButton/deftOutlineButton";
+import DeftOutlineButton from "../../../component/deftButton/deftOutlineButton";
 import LoadingBar from "react-top-loading-bar";
 
 export default function index() {
@@ -42,12 +42,8 @@ export default function index() {
     getStudentList();
   }, [searchData]);
 
-  const handleClose = (id, flag) => {
-    if (flag == "edit") {
-      navigate(`/student/basic-detail/${id}`);
-    } else {
-      navigate(`/student-profile/${id}`);
-    }
+  const handleClose = (id) => {
+    navigate(`/student-profile/${id}`);
   };
 
   const getStudentList = () => {
@@ -114,28 +110,15 @@ export default function index() {
         <tbody className="bg-white leader-body">
           {listOfUserByAdmin?.map((item) => (
             <tr key={item?.id}>
-              <td>
-                {" "}
-                {item?.first_name
-                  ? item?.first_name + " " + item?.last_name
-                  : "-"}
-              </td>
-              <td>{item?.auth_id?.email ? item?.auth_id?.email : "-"}</td>
-              <td>
-                {item?.auth_id?.phone
-                  ? item?.auth_id?.country_code + item?.auth_id?.phone
-                  : "-"}
-              </td>
+              <td> {item?.first_name + " " + item?.last_name}</td>
+              <td>{item?.auth_id?.email}</td>
+              <td>{item?.auth_id?.country_code + item?.auth_id?.phone}</td>
 
               <td>
-                <p className="mb-0">
-                  {item?.current_course ? item?.current_course : "-"}
-                </p>
+                <p className="mb-0">{item?.current_course}</p>
               </td>
               <td>
-                <div style={{ width: "200px" }}>
-                  {item?.college_name ? item?.college_name : "-"}
-                </div>
+                <div style={{ width: "200px" }}>{item?.college_name}</div>
               </td>
               <td>
                 <DeftOutlineButton
@@ -167,7 +150,7 @@ export default function index() {
 
                   <Dropdown.Menu>
                     <Dropdown.Item
-                      onClick={() => handleClose(item.auth_id._id, "edit")}
+                      onClick={() => handleClose(item.auth_id._id)}
                     >
                       <Icon
                         icon="iconamoon:edit-thin"
@@ -178,7 +161,7 @@ export default function index() {
                       Edit Account
                     </Dropdown.Item>
                     <Dropdown.Item
-                      onClick={() => handleClose(item.auth_id._id, "detail")}
+                      onClick={() => handleClose(item.auth_id._id)}
                     >
                       <Icon
                         icon="lsicon:view-outline"

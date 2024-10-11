@@ -1,5 +1,5 @@
 import React from "react";
-// import Select from "react-dropdown-select";
+import Select from "react-dropdown-select";
 
 const DeftSelect = ({
   options,
@@ -33,10 +33,10 @@ const DeftSelect = ({
 
   return (
     <div className="">
-      {/* <label htmlFor="Location" className="form-label font-size-18">
+      <label htmlFor="Location" className="form-label font-size-18">
         {label}
-      </label> */}
-      {/* <Select
+      </label>
+      <Select
         className={`rounded shadow-none py-1 ${className}`}
         options={updatedOptions}
         values={value ? value : []}
@@ -46,7 +46,7 @@ const DeftSelect = ({
         keepSelectedInList={true}
         dropdownHeight={dropdownHeight}
         {...props}
-      /> */}
+      />
          {error && <div className="text-danger font-size-14" style={{fontWeight:400}}>{error}</div>}
     </div>
   );
