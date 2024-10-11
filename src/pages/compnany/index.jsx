@@ -62,7 +62,9 @@ export default function index() {
       auth_id: changePasswordModal?.id,
       language: "en",
     };
-    dispatch(deleteUser(data, setChangePasswordModal));
+    dispatch(
+      deleteUser(data, setChangePasswordModal, "company", loadingBarRef)
+    );
   };
 
   const suspentAccount = () => {
@@ -74,7 +76,7 @@ export default function index() {
           : "active",
       language: "en",
     };
-    dispatch(suspendUser(data, setChangePasswordModal));
+    dispatch(suspendUser(data, setChangePasswordModal, "company"));
   };
 
   return (
@@ -131,7 +133,7 @@ export default function index() {
                 </div>
               </td>
               <td>{item?.company_address}</td>
-              {/* <td>
+              <td>
                 <DeftOutlineButton
                   btnName={
                     item?.auth_id?.suspend_status == "active"
@@ -217,7 +219,7 @@ export default function index() {
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
-              </td> */}
+              </td>
             </tr>
           ))}
           <tr>

@@ -52,7 +52,7 @@ export default function index() {
       page: currentPage,
       limit: itemsPerPage,
     };
-    dispatch(getListOfUserByAdmin(data,loadingBarRef));
+    dispatch(getListOfUserByAdmin(data, loadingBarRef));
   };
 
   const deleteAccount = () => {
@@ -60,7 +60,9 @@ export default function index() {
       auth_id: changePasswordModal?.id,
       language: "en",
     };
-    dispatch(deleteUser(data, setChangePasswordModal));
+    dispatch(
+      deleteUser(data, setChangePasswordModal, "student", loadingBarRef)
+    );
   };
 
   const suspentAccount = () => {

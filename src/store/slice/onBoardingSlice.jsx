@@ -64,18 +64,32 @@ const slice = createSlice({
     },
     deleteUserSuccess(state, action) {
       let reqData = action.payload.reqData;
-      state.listOfUserByAdmin = state.listOfUserByAdmin.filter(
-        (item) => item.auth_id._id !== reqData
-      );
+      if (action.payload.suspendType == "company") {
+        state.listOfCompanyByAdmin = state.listOfCompanyByAdmin.filter(
+          (item) => item.auth_id._id !== reqData
+        );
+      } else {
+        state.listOfUserByAdmin = state.listOfUserByAdmin.filter(
+          (item) => item.auth_id._id !== reqData
+        );
+      }
     },
     suspendUserSuccess(state, action) {
-      const newObjId = action.payload.auth_id;
-      const suspendIndex = state.listOfUserByAdmin?.findIndex(
-        (item) => item.auth_id._id === newObjId
-      );
-      // let currentUser = action.payload;
-      state.listOfUserByAdmin[suspendIndex].auth_id.suspend_status =
-        action.payload.status;
+      const newObjId = action.payload.data.auth_id;
+
+      if (action.payload.suspendType == "company") {
+        const suspendIndex = state.listOfCompanyByAdmin?.findIndex(
+          (item) => item.auth_id._id === newObjId
+        );
+        state.listOfCompanyByAdmin[suspendIndex].auth_id.suspend_status =
+          action.payload.data.status;
+      } else {
+        const suspendIndex = state.listOfUserByAdmin?.findIndex(
+          (item) => item.auth_id._id === newObjId
+        );
+        state.listOfUserByAdmin[suspendIndex].auth_id.suspend_status =
+          action.payload.data.status;
+      }
     },
   },
 });
@@ -225,7 +239,8 @@ export const getListOfUserByAdmin =
   };
 
 export const deleteUser =
-  (data, setChangePasswordModal) => async (dispatch, loadingBarRef) => {
+  (data, setChangePasswordModal, suspendType, loadingBarRef) =>
+  async (dispatch) => {
     loadingBarRef.current.continuousStart();
     try {
       await api.post(DEFT_RANK_API.auth.deleteUser, data).then((response) => {
@@ -235,7 +250,12 @@ export const deleteUser =
             ...changePasswordModal,
             show: false,
           }));
-          dispatch(deleteUserSuccess({ reqData: data.auth_id }));
+          dispatch(
+            deleteUserSuccess({
+              reqData: data.auth_id,
+              suspendType: suspendType,
+            })
+          );
         } else {
           // toast.error(result.message);
         }
@@ -248,7 +268,7 @@ export const deleteUser =
   };
 
 export const suspendUser =
-  (data, setChangePasswordModal) => async (dispatch) => {
+  (data, setChangePasswordModal, suspendType) => async (dispatch) => {
     // dispatch(apiFetching());
     try {
       await api.post(DEFT_RANK_API.auth.suspendUser, data).then((response) => {
@@ -259,7 +279,9 @@ export const suspendUser =
             ...changePasswordModal,
             show: false,
           }));
-          dispatch(suspendUserSuccess(data));
+          dispatch(
+            suspendUserSuccess({ data: data, suspendType: suspendType })
+          );
         } else {
           // toast.error(result.message);
         }
@@ -269,23 +291,26 @@ export const suspendUser =
     }
   };
 
-export const getListOfCompanyByAdmin = (data, navigate) => async (dispatch) => {
-  // dispatch(apiFetching());
-  try {
-    await api
-      .post(DEFT_RANK_API.auth.getListOfCompanyByAdmin, data)
-      .then((response) => {
-        let result = response.data;
-        if (result.status) {
-          dispatch(listOfCompanyByAdminSuccess(result));
-        } else {
-          // toast.error(result.message);
-        }
-      });
-  } catch (e) {
-    // return toast.error(e.message);
-  }
-};
+export const getListOfCompanyByAdmin =
+  (data, loadingBarRef) => async (dispatch) => {
+    loadingBarRef.current.continuousStart();
+    try {
+      await api
+        .post(DEFT_RANK_API.auth.getListOfCompanyByAdmin, data)
+        .then((response) => {
+          let result = response.data;
+          if (result.status) {
+            dispatch(listOfCompanyByAdminSuccess(result));
+          } else {
+            // toast.error(result.message);
+          }
+          loadingBarRef.current.complete();
+        });
+    } catch (e) {
+      // return toast.error(e.message);
+      loadingBarRef.current.complete();
+    }
+  };
 
 export const getStudentDetailById = (data) => async (dispatch) => {
   // dispatch(apiFetching());
