@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +11,7 @@ import { Pagination } from "react-bootstrap";
 import DeftInput from "../../components/deftInput/deftInput";
 import { Icon } from "@iconify/react";
 import Confirmation from "../../components/confirmationModel/confirmation";
+import moment from "moment/moment";
 
 export default function index() {
   const dispatch = useDispatch();
@@ -100,6 +102,7 @@ export default function index() {
                 <th>Phone Number</th>
                 <th>Course</th>
                 <th>College</th>
+                <th>Joined On</th>
                 <th>Status</th>
                 <th>Action</th>
               </tr>
@@ -134,6 +137,13 @@ export default function index() {
                     >
                       {item?.college_name ? item?.college_name : "-"}
                     </div>
+                  </td>
+                  <td>
+                    <p className="mb-0">
+                      {item?.createdAt
+                        ? moment(item?.createdAt).format("DD MMM YYYY")
+                        : "-"}
+                    </p>
                   </td>
                   <td>
                     <span

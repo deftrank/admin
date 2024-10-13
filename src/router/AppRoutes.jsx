@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Navigate, Route, Routes, useRoutes } from "react-router-dom";
 // Layout
 import { WithoutMenuPage } from "../pages/layouts/WithoutMenuPage";
