@@ -1,0 +1,181 @@
+// @ts-nocheck
+import React, { useState } from "react";
+import { Button, Modal } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import secureLocalStorage from "react-secure-storage";
+import DeftInput from "../../deftInput/deftInput";
+import { useDispatch } from "react-redux";
+import { changePassword } from "../../../store/slice/authSlice";
+import { Icon } from "@iconify/react/dist/iconify.js";
+
+export default function index(props) {
+  const { open, handleClose } = props;
+  const navigate = useNavigate();
+  const [loginData, setLoginData] = useState({});
+  const dispatch = useDispatch();
+  const [isShownewPassword, setIsShownewPassword] = useState(false);
+  const [isShowOldPassword, setIsShowOldPassword] = useState(false);
+  const [isShowConPassword, setIsShowConPassword] = useState(false);
+
+  const handleSubmit = () => {
+    if (!loginData?.oldPassword) {
+      setLoginData((loginData) => ({
+        ...loginData,
+        oldPasswordErr: "Please enter old password",
+      }));
+      return;
+    }
+    if (loginData?.oldPassword?.length < 8) {
+      setLoginData((loginData) => ({
+        ...loginData,
+        oldPasswordErr: "Password must be at least 8 characters long",
+      }));
+      return;
+    }
+    if (!loginData?.newPassword) {
+      setLoginData((loginData) => ({
+        ...loginData,
+        newPasswordErr: "Please enter new password",
+      }));
+      return;
+    }
+    if (loginData?.newPassword?.length < 8) {
+      setLoginData((loginData) => ({
+        ...loginData,
+        newPasswordErr: "Password must be at least 8 characters long",
+      }));
+      return;
+    }
+    if (!loginData?.confirmPassword) {
+      setLoginData((loginData) => ({
+        ...loginData,
+        confirmPasswordErr: "Please enter confirm password",
+      }));
+      return;
+    }
+    if (loginData?.confirmPassword?.length < 8) {
+      setLoginData((loginData) => ({
+        ...loginData,
+        confirmPasswordErr: "Password must be at least 8 characters long",
+      }));
+      return;
+    }
+    if (loginData?.newPassword != loginData?.confirmPassword) {
+      setLoginData((loginData) => ({
+        ...loginData,
+        confirmPasswordErr: "confirm password do not match with new pass",
+      }));
+      return;
+    }
+
+    const data = {
+      oldPassword: loginData?.oldPassword,
+      newPassword: loginData?.newPassword,
+      language: "en",
+    };
+
+    dispatch(changePassword(data, handleClose));
+
+    // handleOpenModal();
+  };
+
+  return (
+    <>
+      <Modal
+        show={open}
+        onHide={handleClose}
+        centered
+        backdrop="static"
+        className="otp-radius "
+      >
+        <Modal.Header className={"border-0"} closeButton>
+          <Modal.Title>Change password</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className={"container"}>
+          <div className="my-3 ">
+            <DeftInput
+              placeholder="Enter old password"
+              type={isShownewPassword ? "text" : "password"}
+              value={loginData.oldPassword}
+              onchange={(value) => {
+                setLoginData((loginData) => ({
+                  ...loginData,
+                  oldPassword: value,
+                  oldPasswordErr: "",
+                }));
+              }}
+              error={loginData.oldPasswordErr}
+              inputGroupText={
+                <Icon
+                  icon={
+                    isShownewPassword ? "ri:eye-line" : "mdi:eye-off-outline"
+                  }
+                  height={30}
+                />
+              }
+              inputGroupTextClick={() =>
+                setIsShownewPassword(!isShownewPassword)
+              }
+            />
+          </div>
+          <div className="my-3 ">
+            <DeftInput
+              placeholder="Enter new password"
+              type={isShowOldPassword ? "text" : "password"}
+              value={loginData.newPassword}
+              onchange={(value) => {
+                setLoginData((loginData) => ({
+                  ...loginData,
+                  newPassword: value,
+                  newPasswordErr: "",
+                }));
+              }}
+              error={loginData.newPasswordErr}
+              inputGroupText={
+                <Icon
+                  icon={
+                    isShowOldPassword ? "ri:eye-line" : "mdi:eye-off-outline"
+                  }
+                  height={30}
+                />
+              }
+              inputGroupTextClick={() =>
+                setIsShowOldPassword(!isShowOldPassword)
+              }
+            />
+          </div>
+          <div className="my-3 ">
+            <DeftInput
+              placeholder="Enter confirm password"
+              type={isShowConPassword ? "text" : "password"}
+              onchange={(value) => {
+                setLoginData((loginData) => ({
+                  ...loginData,
+                  confirmPassword: value,
+                  confirmPasswordErr: "",
+                }));
+              }}
+              error={loginData.confirmPasswordErr}
+              inputGroupText={
+                <Icon
+                  icon={
+                    isShowConPassword ? "ri:eye-line" : "mdi:eye-off-outline"
+                  }
+                  height={30}
+                />
+              }
+              inputGroupTextClick={() =>
+                setIsShowConPassword(!isShowConPassword)
+              }
+            />
+          </div>
+        </Modal.Body>
+        <Modal.Footer className={"border-0"}>
+          <Button variant="primary w-100" onClick={handleSubmit}>
+            Submit
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
+}

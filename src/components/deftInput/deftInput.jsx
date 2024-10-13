@@ -1,3 +1,4 @@
+// @ts-nocheck
 // // @ts-nocheck
 // import { Form, InputGroup } from "react-bootstrap";
 
@@ -45,7 +46,11 @@ export default function DeftInput(props) {
               //   onKeyUp(e.target.value);
               // }}
             />
-            <span className="input-group-text" id="basic-addon13">
+            <span
+              className="input-group-text"
+              id="basic-addon13"
+              onClick={inputGroupTextClick}
+            >
               {inputGroupText}
             </span>
           </div>

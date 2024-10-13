@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import menuData from "../data/menuData.json";
@@ -6,47 +7,49 @@ import { Icon } from "@iconify/react";
 
 const Sidebar = () => {
   return (
-    <aside
-      id="layout-menu"
-      className="layout-menu menu-vertical menu bg-menu-theme"
-    >
-      <div className="app-brand demo">
-        <Link
-          aria-label="Navigate to sneat homepage"
-          to="/"
-          className="app-brand-link"
-        >
-          <span className="app-brand-logo demo">
-            <img src={logo} alt="sneat-logo" aria-label="Sneat logo image" />
-          </span>
-          <span className="app-brand-text demo menu-text fw-bold ms-2">
-            Deft Rank
-          </span>
-        </Link>
+    <>
+      <aside
+        id="layout-menu"
+        className="layout-menu menu-vertical menu bg-menu-theme"
+      >
+        <div className="app-brand demo">
+          <Link
+            aria-label="Navigate to sneat homepage"
+            to="/"
+            className="app-brand-link"
+          >
+            <span className="app-brand-logo demo">
+              <img src={logo} alt="sneat-logo" aria-label="Sneat logo image" />
+            </span>
+            <span className="app-brand-text demo menu-text fw-bold ms-2">
+              Deft Rank
+            </span>
+          </Link>
 
-        <a
-          href="#"
-          className="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none"
-        >
-          <i className="bx bx-chevron-left bx-sm align-middle"></i>
-        </a>
-      </div>
+          <a
+            href="#"
+            className="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none"
+          >
+            <i className="bx bx-chevron-left bx-sm align-middle"></i>
+          </a>
+        </div>
 
-      <div className="menu-inner-shadow"></div>
+        <div className="menu-inner-shadow"></div>
 
-      <ul className="menu-inner py-1">
-        {menuData.map((section) => (
-          <React.Fragment key={section.header}>
-            {section.header && (
-              <li className="menu-header small text-uppercase">
-                <span className="menu-header-text">{section.header}</span>
-              </li>
-            )}
-            {section.items.map(MenuItem)}
-          </React.Fragment>
-        ))}
-      </ul>
-    </aside>
+        <ul className="menu-inner py-1">
+          {menuData.map((section) => (
+            <React.Fragment key={section.header}>
+              {section.header && (
+                <li className="menu-header small text-uppercase">
+                  <span className="menu-header-text">{section.header}</span>
+                </li>
+              )}
+              {section.items.map(MenuItem)}
+            </React.Fragment>
+          ))}
+        </ul>
+      </aside>
+    </>
   );
 };
 
