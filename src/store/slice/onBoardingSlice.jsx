@@ -4,14 +4,14 @@ import { DEFT_RANK_API } from "../../service/apiConstant";
 import api from "../../service/index";
 // import secureLocalStorage from "react-secure-storage";
 // import { act } from "preact/test-utils";
-import { stepsArray } from "../../pages/onBoarding/stepperConstant";
+// import { stepsArray } from "../../pages/onBoarding/stepperConstant";
 
 const slice = createSlice({
   name: "onBoarding",
   initialState: {
     currentStep: 0,
     sucessMessage: "",
-    completedStep: Array(stepsArray.length).fill(false),
+    // completedStep: Array(stepsArray.length).fill(false),
     courseList: [],
     collageList: [],
     universityList: [],
@@ -68,10 +68,12 @@ const slice = createSlice({
         state.listOfCompanyByAdmin = state.listOfCompanyByAdmin.filter(
           (item) => item.auth_id._id !== reqData
         );
+        state.compnanyTotalCount = state.compnanyTotalCount - 1;
       } else {
         state.listOfUserByAdmin = state.listOfUserByAdmin.filter(
           (item) => item.auth_id._id !== reqData
         );
+        state.userTotalCount = state.userTotalCount - 1;
       }
     },
     suspendUserSuccess(state, action) {
@@ -219,7 +221,7 @@ export const updateProfile = (data) => async (dispatch) => {
 
 export const getListOfUserByAdmin =
   (data, loadingBarRef) => async (dispatch) => {
-    loadingBarRef.current.continuousStart();
+    // loadingBarRef.current.continuousStart();
     try {
       await api
         .post(DEFT_RANK_API.auth.getListOfUserByAdmin, data)
@@ -231,17 +233,16 @@ export const getListOfUserByAdmin =
             // toast.error(result.message);
           }
         });
-      loadingBarRef.current.complete();
+      // loadingBarRef.current.complete();
     } catch (e) {
       // return toast.error(e.message);
-      loadingBarRef.current.complete();
+      // loadingBarRef.current.complete();
     }
   };
 
 export const deleteUser =
-  (data, setChangePasswordModal, suspendType, loadingBarRef) =>
-  async (dispatch) => {
-    loadingBarRef.current.continuousStart();
+  (data, setChangePasswordModal, suspendType) => async (dispatch) => {
+    // loadingBarRef.current.continuousStart();
     try {
       await api.post(DEFT_RANK_API.auth.deleteUser, data).then((response) => {
         let result = response.data;
@@ -259,11 +260,11 @@ export const deleteUser =
         } else {
           // toast.error(result.message);
         }
-        loadingBarRef.current.complete();
+        // loadingBarRef.current.complete();
       });
     } catch (e) {
       // return toast.error(e.message);
-      loadingBarRef.current.complete();
+      // loadingBarRef.current.complete();
     }
   };
 
@@ -291,26 +292,25 @@ export const suspendUser =
     }
   };
 
-export const getListOfCompanyByAdmin =
-  (data, loadingBarRef) => async (dispatch) => {
-    loadingBarRef.current.continuousStart();
-    try {
-      await api
-        .post(DEFT_RANK_API.auth.getListOfCompanyByAdmin, data)
-        .then((response) => {
-          let result = response.data;
-          if (result.status) {
-            dispatch(listOfCompanyByAdminSuccess(result));
-          } else {
-            // toast.error(result.message);
-          }
-          loadingBarRef.current.complete();
-        });
-    } catch (e) {
-      // return toast.error(e.message);
-      loadingBarRef.current.complete();
-    }
-  };
+export const getListOfCompanyByAdmin = (data) => async (dispatch) => {
+  // loadingBarRef.current.continuousStart();
+  try {
+    await api
+      .post(DEFT_RANK_API.auth.getListOfCompanyByAdmin, data)
+      .then((response) => {
+        let result = response.data;
+        if (result.status) {
+          dispatch(listOfCompanyByAdminSuccess(result));
+        } else {
+          // toast.error(result.message);
+        }
+        // loadingBarRef.current.complete();
+      });
+  } catch (e) {
+    // return toast.error(e.message);
+    // loadingBarRef.current.complete();
+  }
+};
 
 export const getStudentDetailById = (data) => async (dispatch) => {
   // dispatch(apiFetching());

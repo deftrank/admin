@@ -1,0 +1,25 @@
+[
+    {
+        "header": "",
+        "items": [
+            {
+                "text": "Dashboard",
+                "icon": "material-symbols-light:home-outline",
+                "available": true,
+                "link": "/dashboard"
+            },
+            {
+                "text": "Students",
+                "icon": "ph:student",
+                "available": true,
+                "link": "/students"
+            },
+            {
+                "text": "Company",
+                "icon": "gg:organisation",
+                "available": true,
+                "link": "/company"
+            }
+        ]
+    }
+]

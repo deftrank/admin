@@ -1,24 +1,17 @@
 // @ts-nocheck
 import React, { useEffect, useRef, useState } from "react";
-// import Stepper from "@keyvaluesystems/react-stepper";
-import { color } from "../../themes/color/color";
-import Logo from "../../assets/img/companyDefaul.png";
-import { useResponsive } from "../../hooks/useResponsive";
-import { Outlet, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Dropdown, Pagination, Table } from "react-bootstrap";
-import Confirmation from "../../component/modal/confirmationModel/confirmation";
-import { userData } from "../../component/jsonData";
+import { Pagination } from "react-bootstrap";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import {
   deleteUser,
   getListOfCompanyByAdmin,
   suspendUser,
 } from "../../store/slice/onBoardingSlice";
-import DeftInput from "../../component/deftInput/deftInput";
-import DeftOutlineButton from "../../component/deftButton/deftOutlineButton";
-import LoadingBar from "react-top-loading-bar";
-// import { stepsArray } from "./stepperConstant";
+import DeftInput from "../../components/deftInput/deftInput";
+import CompanyDefault from "../../assets/img/companyDefaul.png";
+import Confirmation from "../../components/confirmationModel/confirmation";
 
 export default function index() {
   const { listOfCompanyByAdmin, compnanyTotalCount } = useSelector(
@@ -54,7 +47,15 @@ export default function index() {
       page: currentPage,
       limit: itemsPerPage,
     };
-    dispatch(getListOfCompanyByAdmin(data, loadingBarRef));
+    dispatch(getListOfCompanyByAdmin(data));
+  };
+
+  const handleClose = (id, flag) => {
+    if (flag == "edit") {
+      navigate(`/company-edit/${id}`);
+    } else {
+      navigate(`/company-details/${id}`);
+    }
   };
 
   const deleteAccount = () => {
@@ -62,9 +63,7 @@ export default function index() {
       auth_id: changePasswordModal?.id,
       language: "en",
     };
-    dispatch(
-      deleteUser(data, setChangePasswordModal, "company", loadingBarRef)
-    );
+    dispatch(deleteUser(data, setChangePasswordModal, "company"));
   };
 
   const suspentAccount = () => {
@@ -80,186 +79,242 @@ export default function index() {
   };
 
   return (
-    <div className="container-fliud">
-      <div className="my-3 col-6">
-        <DeftInput
-          placeholder="Search be name"
-          type="text"
-          value={searchData}
-          onKeyUp={(value) => {
-            setCurrentPage(1);
-            setSearchData(value);
-          }}
-          inputGroupText={<Icon icon="line-md:search" height={30} />}
-        />
-      </div>
-      <Table
-        responsive="sm"
-        className="thead"
-        style={{
-          background: "var(--Chip-Purple, rgba(65, 105, 224, 0.12))",
-        }}
-      >
-        <thead className="thead">
-          <tr>
-            <th className="font-size-14"></th>
-            <th className="font-size-14">Name</th>
-            <th className="font-size-14">Category</th>
-            <th className="font-size-14">Website</th>
-            <th className="font-size-14">Most hired skills</th>
-            <th className="font-size-14">Address</th>
-            {/* <th className="font-size-14">Status</th>
-            <th className="font-size-14">Action</th> */}
-          </tr>
-        </thead>
-        <tbody className="bg-white leader-body">
-          {listOfCompanyByAdmin?.map((item) => (
-            <tr key={item?.id}>
-              <td>
-                {/* <img
+    <>
+      <div className="card">
+        <div className="my-3 col-6 card-header">
+          <DeftInput
+            placeholder="Search be name"
+            type="text"
+            value={searchData}
+            onchange={(value) => {
+              setCurrentPage(1);
+              setSearchData(value);
+            }}
+            inputGroupText={<Icon icon="line-md:search" height={30} />}
+          />
+        </div>
+        <div className="table-responsive text-nowrap">
+          <table className="table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Website</th>
+                <th>Most hired skills</th>
+                <th>Address</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody className="table-border-bottom-0">
+              {listOfCompanyByAdmin?.map((item) => (
+                <tr key={item?.id}>
+                  <td>
+                    {/* <img
                   src={item.company_logo ? item.company_logo : Logo}
                   style={{ width: 40, height: 40 }}
                 /> */}
-                <img src={Logo} style={{ width: 50, height: 50 }} />
-              </td>
-              <td>{item.registered_name}</td>
-              <td>{item.category}</td>
-              <td>{item.company_website}</td>
-              <td>
-                <div style={{ width: "150px" }}>
-                  {item?.most_hired_skills && item.most_hired_skills.length > 0
-                    ? item.most_hired_skills.join(", ")
-                    : "No Feedback"}
-                </div>
-              </td>
-              <td>{item?.company_address}</td>
-              <td>
-                <DeftOutlineButton
-                  btnName={
-                    item?.auth_id?.suspend_status == "active"
-                      ? "Enabled"
-                      : "Disabled"
-                  }
-                  btnClass={
-                    item?.auth_id?.suspend_status == "active"
-                      ? "rounded-pill text-success"
-                      : "rounded-pill text-danger"
-                  }
-                  onClick={() => handleClose(item.auth_id._id)}
-                />
-              </td>
-              <td>
-                <Dropdown>
-                  <Dropdown.Toggle
-                    as="div"
-                    style={{
-                      cursor: "pointer",
-                      background: "transparent",
-                      border: "none",
-                    }}
-                  >
-                    <Icon icon="nimbus:ellipsis" height={30} />
-                  </Dropdown.Toggle>
+                    <img
+                      src={CompanyDefault}
+                      style={{ width: 50, height: 50 }}
+                    />
+                  </td>
+                  <td>
+                    <div
+                      style={{
+                        width: "10vw",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {item.registered_name ? item.registered_name : "-"}
+                    </div>
+                  </td>
+                  <td>{item.category}</td>
+                  <td>{item.company_website}</td>
+                  <td>
+                    <div
+                      style={{
+                        width: "10vw",
+                        whiteSpace: "normal",
+                        wordWrap: "break-word",
+                      }}
+                    >
+                      {item.most_hired_skills?.map((skill, index) => (
+                        <span key={index}>
+                          {skill?.label}
+                          {index < item.most_hired_skills.length - 1 &&
+                          skill?.label
+                            ? ", "
+                            : ""}
+                        </span>
+                      ))}
+                    </div>
+                  </td>
 
-                  <Dropdown.Menu>
-                    <Dropdown.Item
-                      onClick={() => handleClose(item.auth_id._id)}
-                    >
-                      <Icon
-                        icon="lsicon:view-outline"
-                        height={30}
-                        className={"p-1"}
-                        style={{ cursor: "pointer" }}
-                      />
-                      View Account
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      onClick={() => {
-                        setChangePasswordModal((changePasswordModal) => ({
-                          ...changePasswordModal,
-                          show: true,
-                          id: item.auth_id._id,
-                          title: "Disable Account",
-                          data: item,
-                          message:
-                            "Are you sure you want to disable this account",
-                          type: "Disable",
-                        }));
+                  <td>
+                    <div
+                      style={{
+                        width: "10vw",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
                       }}
                     >
-                      <Icon
-                        icon="lsicon:disable-outline"
-                        height={25}
-                        className={"p-1"}
-                        style={{ cursor: "pointer" }}
-                      />
-                      Disable Account
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      onClick={() => {
-                        setChangePasswordModal((changePasswordModal) => ({
-                          ...changePasswordModal,
-                          show: true,
-                          id: item.auth_id._id,
-                          title: "Delete Account",
-                          data: item,
-                          message:
-                            "Are you sure you want to delete this account",
-                          type: "Delete",
-                        }));
-                      }}
+                      {item?.company_address ? item?.company_address : "-"}
+                    </div>
+                  </td>
+                  <td>
+                    <span
+                      className={`badge ${
+                        item?.auth_id?.suspend_status == "active"
+                          ? "bg-label-success"
+                          : "bg-label-danger"
+                      } me-1`}
                     >
-                      <Icon
-                        icon="mdi-light:delete"
-                        height={30}
-                        className={"p-1"}
-                        style={{ cursor: "pointer" }}
+                      {item?.auth_id?.suspend_status == "active"
+                        ? "Active"
+                        : "Suspended"}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="dropdown">
+                      <button
+                        aria-label="Click me"
+                        type="button"
+                        className="btn p-0 dropdown-toggle hide-arrow"
+                        data-bs-toggle="dropdown"
+                      >
+                        <i className="bx bx-dots-vertical-rounded"></i>
+                      </button>
+                      <div className="dropdown-menu">
+                        <a
+                          aria-label="dropdown action option"
+                          className="dropdown-item"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => handleClose(item.auth_id._id, "edit")}
+                        >
+                          <Icon
+                            icon="iconamoon:edit-thin"
+                            height={20}
+                            className={"me-1"}
+                          />{" "}
+                          Edit Company
+                        </a>
+                        <a
+                          aria-label="dropdown action option"
+                          className="dropdown-item"
+                          style={{ cursor: "pointer" }}
+                          onClick={() =>
+                            handleClose(item.auth_id._id, "detail")
+                          }
+                        >
+                          <Icon
+                            icon="lsicon:view-outline"
+                            height={20}
+                            className={"me-1"}
+                          />{" "}
+                          View Company
+                        </a>
+                        <a
+                          aria-label="dropdown action option"
+                          className="dropdown-item"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => {
+                            setChangePasswordModal((changePasswordModal) => ({
+                              ...changePasswordModal,
+                              show: true,
+                              id: item.auth_id._id,
+                              title: "Disable Company",
+                              data: item,
+                              message:
+                                "Are you sure you want to disable this company",
+                              type: "Disable",
+                            }));
+                          }}
+                        >
+                          <Icon
+                            icon="lsicon:disable-outline"
+                            height={20}
+                            className={"me-1"}
+                          />{" "}
+                          Disable Company
+                        </a>
+                        <a
+                          aria-label="dropdown action option"
+                          className="dropdown-item"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => {
+                            setChangePasswordModal((changePasswordModal) => ({
+                              ...changePasswordModal,
+                              show: true,
+                              id: item.auth_id._id,
+                              title: "Delete Company",
+                              data: item,
+                              message:
+                                "Are you sure you want to delete this Company",
+                              type: "Delete",
+                            }));
+                          }}
+                        >
+                          <Icon
+                            icon="mdi-light:delete"
+                            height={20}
+                            className={"me-1"}
+                          />{" "}
+                          Delete Company
+                        </a>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              <tr>
+                {listOfCompanyByAdmin?.length == 0 ? (
+                  <td colSpan="12" className="text-center">
+                    No result found
+                  </td>
+                ) : (
+                  ""
+                )}
+              </tr>
+              <tr>
+                <td colSpan="4"></td>
+                <td>
+                  Items per page: {itemsPerPage} &nbsp; &nbsp;&nbsp; &nbsp;
+                  &nbsp; &nbsp;{" "}
+                  {currentPage * itemsPerPage - (itemsPerPage - 1)} –{" "}
+                  {currentPage * itemsPerPage} of {compnanyTotalCount}
+                </td>
+                <td colSpan="3">
+                  <div className="d-flex justify-content-end">
+                    <Pagination>
+                      <Pagination.Prev
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
                       />
-                      Delete Account
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </td>
-            </tr>
-          ))}
-          <tr>
-            <td colSpan="4"></td>
-            <td>
-              Items per page: {itemsPerPage} &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
-              &nbsp; {currentPage * itemsPerPage - (itemsPerPage - 1)} –{" "}
-              {currentPage * itemsPerPage} of {compnanyTotalCount}
-            </td>
-            <td colSpan="3">
-              <div className="d-flex justify-content-end">
-                <Pagination>
-                  <Pagination.Prev
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                  />
-                  {[...Array(totalPages).keys()].map((page) => (
-                    <Pagination.Item
-                      key={page + 1}
-                      active={page + 1 === currentPage}
-                      onClick={() => handlePageChange(page + 1)}
-                    >
-                      {page + 1}
-                    </Pagination.Item>
-                  ))}
-                  <Pagination.Next
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                  />
-                </Pagination>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </Table>
-      {listOfCompanyByAdmin?.length == 0 ? (
-        <div className="comingSoon h2">No result found</div>
-      ) : (
-        ""
-      )}
+                      {[...Array(totalPages).keys()].map((page) => (
+                        <Pagination.Item
+                          key={page + 1}
+                          active={page + 1 === currentPage}
+                          onClick={() => handlePageChange(page + 1)}
+                        >
+                          {page + 1}
+                        </Pagination.Item>
+                      ))}
+                      <Pagination.Next
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                      />
+                    </Pagination>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       {changePasswordModal && (
         <Confirmation
           dialogData={changePasswordModal}
@@ -272,7 +327,6 @@ export default function index() {
           }
         />
       )}
-      <LoadingBar color={"#f11946"} ref={loadingBarRef} />
-    </div>
+    </>
   );
 }
