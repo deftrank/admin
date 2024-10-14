@@ -10,9 +10,10 @@ export default function DeftInput(props) {
     placeholder,
     type,
     readOnly,
-    // onKeyUp,
-    inputGroupText,
-    inputGroupTextClick,
+    leftIcon,
+    leftIconClick,
+    rightIcon,
+    rightIconClick,
     name,
     autoFocus,
     id,
@@ -20,80 +21,48 @@ export default function DeftInput(props) {
   } = props;
   return (
     <>
-      {inputGroupText ? (
-        <>
-          {label ? (
-            <label htmlFor="email" className="form-label">
-              {label}
-            </label>
-          ) : (
-            ""
-          )}
-          <div className="input-group">
-            <input
-              type={type}
-              className="form-control"
-              id={id}
-              value={value}
-              onChange={(e) => {
-                onchange(e.target.value);
-              }}
-              name={name}
-              placeholder={placeholder}
-              autoFocus={autoFocus}
-              readOnly={readOnly}
-              // onKeyUp={(e) => {
-              //   onKeyUp(e.target.value);
-              // }}
-            />
-            <span
-              className="input-group-text"
-              id="basic-addon13"
-              onClick={inputGroupTextClick}
-            >
-              {inputGroupText}
-            </span>
-          </div>
-          {error && (
-            <div
-              className="text-danger font-size-14"
-              style={{ fontWeight: 400 }}
-            >
-              {error}
-            </div>
-          )}
-        </>
-      ) : (
-        <>
-          <label htmlFor="email" className="form-label">
-            {label}
-          </label>
-          <input
-            type={type}
-            className="form-control"
-            id={id}
-            value={value}
-            onChange={(e) => {
-              onchange(e.target.value);
-            }}
-            name={name}
-            placeholder={placeholder}
-            autoFocus={autoFocus}
-            readOnly={readOnly}
-            // onKeyUp={(e) => {
-            //   onKeyUp(e.target.value);
-            // }}
-          />
-          {error && (
-            <div
-              className="text-danger font-size-14"
-              style={{ fontWeight: 400 }}
-            >
-              {error}
-            </div>
-          )}
-        </>
+      {label && (
+        <label htmlFor="email" className="form-label">
+          {label}
+        </label>
       )}
+      <div className="input-group">
+        {leftIcon && <span
+          className="input-group-text"
+          onClick={leftIconClick}
+        >
+          {leftIcon}
+        </span>}
+        <input
+          type={type}
+          className="form-control"
+          id={id}
+          value={value}
+          onChange={(e) => {
+            onchange(e.target.value);
+          }}
+          name={name}
+          placeholder={placeholder}
+          autoFocus={autoFocus}
+          readOnly={readOnly}
+        />
+        {rightIcon &&   <span
+          className="input-group-text"
+          onClick={rightIconClick}
+        >
+          {rightIcon}
+        </span>}
+      
+      </div>
+      {error && (
+        <div
+          className="text-danger font-size-14"
+          style={{ fontWeight: 400 }}
+        >
+          {error}
+        </div>
+      )}
+
     </>
   );
 }

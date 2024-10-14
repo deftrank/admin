@@ -4,22 +4,60 @@
         "items": [
             {
                 "text": "Dashboard",
-                "icon": "material-symbols-light:home-outline",
+                "icon": "bx bx-home",
                 "available": true,
                 "link": "/dashboard"
-            },
+            }
+        ]
+    },
+    {
+        "header": "STUDENTS",
+        "items": [
             {
-                "text": "Students",
-                "icon": "ph:student",
+                "text": "Lists",
+                "icon": "bx bx-envelope",
                 "available": true,
                 "link": "/students"
-            },
+            }
+           
+        ]
+    },
+    {
+        "header": "Companies",
+        "items": [
             {
-                "text": "Company",
-                "icon": "gg:organisation",
+                "text": "Lists",
+                "icon": "bx bx-box",
                 "available": true,
                 "link": "/company"
+               
+            },
+        
+            {
+                "text": "Jobs",
+                "icon": "bx bx-table",
+                "available": true,
+                "link": "/"
+            },
+            {
+                "text": "Internships",
+                "icon": "bx bx-table",
+                "available": true,
+                "link": "/"
+            }
+        ]
+    },
+    {
+        "header": "SUBSCRIPTIONS",
+        "items": [
+            {
+                "text": "Transactions",
+                "icon": "bx bx-box",
+                "available": true,
+                "link": ""
+               
             }
         ]
     }
+    
 ]

@@ -14,7 +14,7 @@ const getGreetingMessage = (name) => {
         greeting = 'Good Evening 🌙';
     }
 
-    return `👋 Welcome back! Your Dashboard: Tailored for Success`;
+    return `👋 Hello ${name}, ${greeting}!`;
 };
 
 export default getGreetingMessage;

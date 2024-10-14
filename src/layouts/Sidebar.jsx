@@ -37,17 +37,17 @@ const Sidebar = () => {
         <div className="menu-inner-shadow"></div>
 
         <ul className="menu-inner py-1">
-          {menuData.map((section) => (
-            <React.Fragment key={section.header}>
-              {section.header && (
-                <li className="menu-header small text-uppercase">
-                  <span className="menu-header-text">{section.header}</span>
-                </li>
-              )}
-              {section.items.map(MenuItem)}
-            </React.Fragment>
-          ))}
-        </ul>
+                {menuData.map((section) => (
+                    <React.Fragment key={section.header}>
+                        {section.header && (
+                            <li className="menu-header small text-uppercase">
+                                <span className="menu-header-text">{section.header}</span>
+                            </li>
+                        )}
+                        {section.items.map(MenuItem)}
+                    </React.Fragment>
+                ))}
+            </ul>
       </aside>
     </>
   );
@@ -78,7 +78,7 @@ const MenuItem = (item) => {
         aria-label={`Navigate to ${item.text} ${!item.available ? "Pro" : ""}`}
         to={item.link}
         className={`menu-link ${item.submenu ? "menu-toggle" : ""}`}
-        target={item.link.includes("http") ? "_blank" : undefined}
+        
       >
         {/* <i className={`menu-icon tf-icons ${item.icon}`}></i> */}
         <Icon

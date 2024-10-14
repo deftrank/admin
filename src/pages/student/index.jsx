@@ -81,21 +81,42 @@ export default function index() {
   return (
     <>
       <div className="card">
-        <div className="my-3 col-6 card-header">
-          <DeftInput
-            placeholder="Search be name"
-            type="text"
-            value={searchData}
-            onchange={(value) => {
-              setCurrentPage(1);
-              setSearchData(value);
-            }}
-            inputGroupText={<Icon icon="line-md:search" height={30} />}
-          />
+        <div class="container">
+          <div class="row card-header justify-content-start">
+            <div class="col-5 input-group-merge">
+              <DeftInput
+                placeholder="Search by name"
+                type="text"
+                value={searchData}
+                onchange={(value) => {
+                  setCurrentPage(1);
+                  setSearchData(value);
+                }}
+                leftIcon={<i className="bx bx-search"></i>}
+              />
+            </div>
+            <div class="col-4">
+              <div className="btn-group">
+                <button aria-label='Click me'
+                  type="button"
+                  className="btn btn-outline-primary dropdown-toggle"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                   Status
+                </button>
+                <ul className="dropdown-menu">
+                  <li><a aria-label="dropdown action link" className="dropdown-item" href="#">Active</a></li>
+                  <li><a aria-label="dropdown action link" className="dropdown-item" href="#">Suspend</a></li>
+                 
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
+
         <div className="table-responsive text-nowrap">
-          <table className="table">
-            <thead>
+          <table className="table table-hover">
+            <thead className="table-dark">
               <tr>
                 <th>Name</th>
                 <th>Email</th>
@@ -147,11 +168,10 @@ export default function index() {
                   </td>
                   <td>
                     <span
-                      className={`badge ${
-                        item?.auth_id?.suspend_status == "active"
-                          ? "bg-label-success"
-                          : "bg-label-danger"
-                      } me-1`}
+                      className={`badge ${item?.auth_id?.suspend_status == "active"
+                        ? "bg-label-success"
+                        : "bg-label-danger"
+                        } me-1`}
                     >
                       {item?.auth_id?.suspend_status == "active"
                         ? "Active"
@@ -253,47 +273,67 @@ export default function index() {
               <tr>
                 {listOfUserByAdmin?.length == 0 ? (
                   <td colSpan="12" className="text-center">
-                    No result found
+                   No Students listed yet!
                   </td>
                 ) : (
                   ""
                 )}
               </tr>
-              <tr>
-                <td colSpan="4"></td>
-                <td>
-                  Items per page: {itemsPerPage} &nbsp; &nbsp;&nbsp; &nbsp;
-                  &nbsp; &nbsp;{" "}
-                  {currentPage * itemsPerPage - (itemsPerPage - 1)} –{" "}
-                  {currentPage * itemsPerPage} of {userTotalCount}
-                </td>
-                <td colSpan="3">
-                  <div className="d-flex justify-content-end">
-                    <Pagination>
-                      <Pagination.Prev
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 1}
-                      />
-                      {[...Array(totalPages).keys()].map((page) => (
-                        <Pagination.Item
-                          key={page + 1}
-                          active={page + 1 === currentPage}
-                          onClick={() => handlePageChange(page + 1)}
-                        >
-                          {page + 1}
-                        </Pagination.Item>
-                      ))}
-                      <Pagination.Next
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                      />
-                    </Pagination>
-                  </div>
-                </td>
-              </tr>
+         
             </tbody>
           </table>
         </div>
+
+        <div class="container mt-4">
+          <div class="row justify-content-center">
+            <div class="col">
+
+              <span className="p-2">Show</span>
+              <div className="btn-group">
+
+                <select className="btn btn-outline-primary dropdown-toggle">
+                  <option value="5" selected>5</option>
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+
+                </select>
+
+              </div>
+              <span className="p-2">entries</span>
+            </div>
+
+            <div class="col p-1">    Showing  <b>{currentPage * itemsPerPage - (itemsPerPage - 1)}</b> to <b>{currentPage * itemsPerPage}</b> of <b>{userTotalCount}</b> entries</div>
+
+
+      
+            <div class="col">
+              <div className="d-flex justify-content-end">
+                <Pagination>
+                  <Pagination.Prev
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  />
+                  {[...Array(totalPages).keys()].map((page) => (
+                    <Pagination.Item
+                      key={page + 1}
+                      active={page + 1 === currentPage}
+                      onClick={() => handlePageChange(page + 1)}
+                    >
+                      {page + 1}
+                    </Pagination.Item>
+                  ))}
+                  <Pagination.Next
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  />
+                </Pagination>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       {changePasswordModal && (

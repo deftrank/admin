@@ -16,6 +16,7 @@ const Navbar = () => {
     navigate("/");
   };
 
+  console.log("👋 == ", getGreetingMessage())
   return (
     <>
       <nav
@@ -36,7 +37,7 @@ const Navbar = () => {
           className="navbar-nav-right d-flex align-items-center"
           id="navbar-collapse"
         >
-          {getGreetingMessage()}
+          {getGreetingMessage('Admin')}
           <ul className="navbar-nav flex-row align-items-center ms-auto">
             <li className="nav-item navbar-dropdown dropdown-user dropdown">
               <a

@@ -8019,10 +8019,11 @@ a.invert-bg-dark:focus {
   text-transform: uppercase;
   font-size: 0.75rem;
   letter-spacing: 1px;
+  font-weight: bold;
 }
 
 .table:not(.table-dark) th {
-  color: #566a7f;
+  color: #eff1f4;
 }
 
 .table-border-bottom-0 tr:last-child td,
