@@ -21,7 +21,7 @@ export default function index() {
   );
   const [currentPage, setCurrentPage] = useState(1);
   const [searchData, setSearchData] = useState("");
-  const itemsPerPage = 10;
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const totalPages = Math.ceil(userTotalCount / itemsPerPage);
   const [changePasswordModal, setChangePasswordModal] = useState({});
 
@@ -40,6 +40,10 @@ export default function index() {
   useEffect(() => {
     getStudentList();
   }, [searchData]);
+
+  useEffect(() => {
+    getStudentList();
+  }, [itemsPerPage]);
 
   const getStudentList = () => {
     const data = {
@@ -102,12 +106,12 @@ export default function index() {
                   className="btn btn-outline-primary dropdown-toggle"
                   data-bs-toggle="dropdown"
                   aria-expanded="false">
-                   Status
+                  Status
                 </button>
                 <ul className="dropdown-menu">
                   <li><a aria-label="dropdown action link" className="dropdown-item" href="#">Active</a></li>
                   <li><a aria-label="dropdown action link" className="dropdown-item" href="#">Suspend</a></li>
-                 
+
                 </ul>
               </div>
             </div>
@@ -273,13 +277,13 @@ export default function index() {
               <tr>
                 {listOfUserByAdmin?.length == 0 ? (
                   <td colSpan="12" className="text-center">
-                   No Students listed yet!
+                    No Students listed yet!
                   </td>
                 ) : (
                   ""
                 )}
               </tr>
-         
+
             </tbody>
           </table>
         </div>
@@ -291,9 +295,10 @@ export default function index() {
               <span className="p-2">Show</span>
               <div className="btn-group">
 
-                <select className="btn btn-outline-primary dropdown-toggle">
-                  <option value="5" selected>5</option>
-                  <option value="10">10</option>
+                <select className="btn btn-outline-primary dropdown-toggle"
+                  onChange={(e) => setItemsPerPage(e.target.value)}>
+                  <option value="5" >5</option>
+                  <option value="10" selected>10</option>
                   <option value="25">25</option>
                   <option value="50">50</option>
                   <option value="100">100</option>
@@ -307,7 +312,7 @@ export default function index() {
             <div class="col p-1">    Showing  <b>{currentPage * itemsPerPage - (itemsPerPage - 1)}</b> to <b>{currentPage * itemsPerPage}</b> of <b>{userTotalCount}</b> entries</div>
 
 
-      
+
             <div class="col">
               <div className="d-flex justify-content-end">
                 <Pagination>
