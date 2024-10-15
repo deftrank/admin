@@ -2,17 +2,32 @@
 import { useEffect, useState } from "react";
 import DeftInput from "../../../components/deftInput/deftInput";
 import PhoneInputField from "../../../components/phoneInput/phoneInput";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import DeftSelect from "../../../components/dropdown";
 import { sem } from "../../../components/jsonData";
+import {
+  getCityList,
+  getCompanyCategoryList,
+  getCountryList,
+  getSkillList,
+} from "../../../store/slice/onBoardingSlice";
+import { isEmailValid } from "../../../utils/appValidation";
+import { Form } from "react-bootstrap";
 
 // @ts-nocheck
 export default function index() {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({});
   const [formDataError, setFormDataError] = useState({});
   const { loginUserData } = useSelector((state) => state.auth);
-  const { collageList, courseList } = useSelector((state) => state.onBoarding);
+  const {
+    companyCategoryList,
+    skillListData,
+    countryListData,
+    stateListData,
+    cityListData,
+  } = useSelector((state) => state.onBoarding);
 
   const search = useLocation().search;
   const phone = new URLSearchParams(search).get("phone");
@@ -23,68 +38,185 @@ export default function index() {
     phone: phone ?? loginUserData?.phone,
   };
 
+  useEffect(() => {
+    handleCompanyCategoriesList();
+    fetchSkillData();
+    fetchCountryData();
+    fetchCityData();
+  }, []);
+
+  const handleCompanyCategoriesList = () => {
+    const data = {
+      page: 1,
+      limit: 100,
+      search: "",
+    };
+    dispatch(getCompanyCategoryList(data));
+  };
+
+  const fetchSkillData = () => {
+    let request = {
+      page: 0,
+      limit: 0,
+      search: "",
+    };
+    dispatch(getSkillList(request));
+  };
+
+  const fetchCountryData = (search) => {
+    let request = {
+      page: 0,
+      limit: 0,
+      search: search,
+    };
+    dispatch(getCountryList(request));
+  };
+  const fetchCityData = (id, search) => {
+    let request = {
+      state_id: id ? id : formData?.state_id,
+      page: 0,
+      limit: 0,
+      search: search,
+    };
+    dispatch(getCityList(request));
+  };
+
   const handleSubmit = () => {
     if (!formData?.company_name) {
       setFormDataError((formDataError) => ({
         ...formDataError,
-        company_name: "Please enter your company name.",
+        company_name: "Please enter your company  name.",
+      }));
+      return;
+    }
+    // if (!formData?.Company_categories) {
+    //   setFormDataError((formDataError) => ({
+    //     ...formDataError,
+    //     Company_categories: "Please enter your course name.",
+    //   }));
+    //   return;
+    // }
+    if (!formData?.company_person_name) {
+      setFormDataError((formDataError) => ({
+        ...formDataError,
+        company_person_name: "Please enter company person name .",
+      }));
+      return;
+    }
+    if (!formData?.email) {
+      setFormDataError((formDataError) => ({
+        ...formDataError,
+        email: "Please enter company official mail id",
+      }));
+      return;
+    }
+    if (!isEmailValid(formData?.email)) {
+      setFormDataError((formDataError) => ({
+        ...formDataError,
+        email: "Please enter a valid email address",
       }));
       return;
     }
 
-    if (!formData?.last_name) {
-      setFormDataError((formDataError) => ({
-        ...formDataError,
-        last_name: "Please enter your last name.",
+    if (!formData?.phone) {
+      setFormDataError((prevError) => ({
+        ...prevError,
+        phone: "Please enter your contact number",
       }));
       return;
     }
 
-    if (!checkIsEmpty(formData.email)) {
-      setFormDataError((formDataError) => ({
-        ...formDataError,
-        email: "Please enter your email address",
+    if (!formData?.company_website) {
+      setFormDataError((prevError) => ({
+        ...prevError,
+        company_website: "Please enter your company website url",
       }));
       return;
     }
-    if (!formData?.phone || formData.phone.length < 10) {
-      setFormDataError((formDataError) => ({
-        ...formDataError,
-        phone: "Please enter your phone number.",
+    if (!formData?.linkedin_url) {
+      setFormDataError((prevError) => ({
+        ...prevError,
+        linkedin_url: "Please enter your Linkedin url",
       }));
       return;
     }
-    if (!formData?.courseName) {
-      setFormDataError((formDataError) => ({
-        ...formDataError,
-        courseName: "please select your course name",
+    if (!formData?.skills || formData?.skills?.length < 0) {
+      setFormDataError((prevError) => ({
+        ...prevError,
+        skills: "Please  select most hired skills",
       }));
       return;
     }
-    if (!formData?.semester) {
-      setFormDataError((formDataError) => ({
-        ...formDataError,
-        semester: "please select your semester",
+    if (!formData?.company_address) {
+      setFormDataError((prevError) => ({
+        ...prevError,
+        company_address: "Please enter your company address",
       }));
       return;
     }
-    if (!formData?.collage) {
-      setFormDataError((formDataError) => ({
-        ...formDataError,
-        collage: "please select your college",
+    if (!formData?.country) {
+      setFormDataError((prevError) => ({
+        ...prevError,
+        country: "Please select your country",
       }));
       return;
     }
+    if (!formData?.state) {
+      setFormDataError((prevError) => ({
+        ...prevError,
+        state: "Please select your state",
+      }));
+      return;
+    }
+    if (!formData?.city) {
+      setFormDataError((prevError) => ({
+        ...prevError,
+        city: "Please select your city",
+      }));
+      return;
+    }
+    if (!formData?.pin_code) {
+      setFormDataError((prevError) => ({
+        ...prevError,
+        pin_code: "Please enter your area pin code ",
+      }));
+      return;
+    }
+
+    if (!formData?.about) {
+      setFormDataError((prevError) => ({
+        ...prevError,
+        about: "Please enter about your company. ",
+      }));
+      return;
+    }
+
     const data = {
-      auth_id: loginUserData?.id,
-      first_name: formData?.first_name,
-      last_name: formData?.last_name,
-      course_name: formData?.courseName[0]?.label,
-      semester: formData?.semester[0]?.label,
-      college_name: formData?.collage[0]?.label,
+      auth_id: formData?.auth_id || loginUserData?.id || companyData?.id,
+      registered_name: formData?.company_name,
+      category: formData?.Company_categories[0]?.label,
+      contact_person_name: formData?.company_person_name,
+      contact_person_number: formData?.phone,
+      company_website: formData?.company_website,
+      linkedin_url: formData?.linkedin_url,
+      most_hired_skills: formData?.skills, // Corrected this line
+      company_address: formData?.company_address,
+      city: formData?.city,
+      state: formData?.state,
+      country: formData?.country,
+      countryCode: formData?.countryCode,
+      pin_code: formData?.pin_code,
+      about_company: formData?.about,
+      country_id: formData?.country_id,
+      state_id: formData?.state_id,
+      city_id: formData?.city_id,
+      company_logo: "https://examplecompany.com/logo.png",
+      language: "en",
     };
 
-    dispatch(register(data, navigate));
+    console.log("data == ", data);
+
+    // dispatch(register(data, navigate));
   };
 
   return (
@@ -145,7 +277,7 @@ export default function index() {
                 onchange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    company_name: val.target.value,
+                    company_name: val,
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
@@ -157,20 +289,26 @@ export default function index() {
             <div className="mb-3 col-md-6">
               <DeftSelect
                 label="Category"
-                error={formDataError?.category}
-                options={courseList}
-                value={formData?.category}
+                error={formDataError?.Company_categories}
+                options={
+                  companyCategoryList &&
+                  companyCategoryList?.map((item) => ({
+                    label: `${item.full_name}`,
+                    id: item._id,
+                  }))
+                }
+                value={formData?.Company_categories}
                 onChange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    category: val,
+                    Company_categories: val,
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
-                    category: "",
+                    Company_categories: "",
                   }));
                 }}
-                placeholder="Current Course Name *"
+                placeholder="Select Category *"
                 dropdownHeight="200px"
                 multi={false}
               />
@@ -179,17 +317,17 @@ export default function index() {
               <DeftInput
                 label="Contact Person Name"
                 placeholder="Enter Contact Person Name"
-                error={formDataError?.contactPersonName}
-                value={formData?.contactPersonName}
+                error={formDataError?.company_person_name}
+                value={formData?.company_person_name}
                 type="text"
                 onchange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    contactPersonName: val.target.value,
+                    company_person_name: val,
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
-                    last_contactPersonNamename: "",
+                    company_person_name: "",
                   }));
                 }}
               />
@@ -204,7 +342,7 @@ export default function index() {
                 onchange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    email: val.target.value,
+                    email: val,
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
@@ -218,7 +356,16 @@ export default function index() {
                 label="Contact Number"
                 error={formDataError?.phone}
                 PhoneData={phoneData || formData}
-                setPhoneData={setFormData}
+                setPhoneData={(val) => {
+                  setFormData((formData) => ({
+                    ...formData,
+                    ...val,
+                  }));
+                  setFormDataError((formDataError) => ({
+                    ...formDataError,
+                    phone: "",
+                  }));
+                }}
                 setFormDataError={setFormDataError}
               />
             </div>
@@ -226,17 +373,17 @@ export default function index() {
               <DeftInput
                 label="Company Website"
                 placeholder="Enter Company Website"
-                error={formDataError?.companyWebsite}
-                value={formData?.companyWebsite}
+                error={formDataError?.company_website}
+                value={formData?.company_website}
                 type="text"
                 onchange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    companyWebsite: val.target.value,
+                    company_website: val.trimStart(),
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
-                    companyWebsite: "",
+                    company_website: "",
                   }));
                 }}
               />
@@ -245,17 +392,17 @@ export default function index() {
               <DeftInput
                 label="Linkedin URL"
                 placeholder="Enter Linkedin URL"
-                error={formDataError?.linkedinURL}
-                value={formData?.linkedinURL}
+                error={formDataError?.linkedin_url}
+                value={formData?.linkedin_url}
                 type="text"
                 onchange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    linkedinURL: val.target.value,
+                    linkedin_url: val,
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
-                    linkedinURL: "",
+                    linkedin_url: "",
                   }));
                 }}
               />
@@ -263,17 +410,20 @@ export default function index() {
             <div className="mb-3 col-md-6">
               <DeftSelect
                 label="Most Hired Skills"
-                error={formDataError?.mostHiredSkills}
-                options={courseList}
-                value={formData?.mostHiredSkills}
+                error={formDataError?.skills}
+                options={skillListData?.map((item) => ({
+                  label: item?.name,
+                  value: item?._id,
+                }))}
+                value={formData?.skills}
                 onChange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    mostHiredSkills: val,
+                    skills: val,
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
-                    mostHiredSkills: "",
+                    skills: "",
                   }));
                 }}
                 placeholder="Current Course Name *"
@@ -285,35 +435,56 @@ export default function index() {
               <DeftInput
                 label="Company Address"
                 placeholder="Enter Company Address"
-                error={formDataError?.companyAddress}
-                value={formData?.companyAddress}
+                error={formDataError?.company_address}
+                value={formData?.company_address}
                 type="text"
                 onchange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    companyAddress: val.target.value,
+                    company_address: val,
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
-                    companyAddress: "",
+                    company_address: "",
                   }));
                 }}
               />
             </div>
             <div className="mb-3 col-md-6">
               <DeftSelect
-                label="City"
-                error={formDataError?.City}
-                options={sem}
-                value={formData?.City}
+                label="Country"
+                error={formDataError?.country}
+                options={countryListData}
+                value={formData?.country}
                 onChange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    City: val,
+                    country: val,
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
-                    City: "",
+                    country: "",
+                  }));
+                }}
+                placeholder="Country"
+                dropdownHeight="200px"
+                multi={false}
+              />
+            </div>
+            <div className="mb-3 col-md-6">
+              <DeftSelect
+                label="City"
+                error={formDataError?.city}
+                options={cityListData}
+                value={formData?.city}
+                onChange={(val) => {
+                  setFormData((formData) => ({
+                    ...formData,
+                    city: val,
+                  }));
+                  setFormDataError((formDataError) => ({
+                    ...formDataError,
+                    city: "",
                   }));
                 }}
                 dropdownHeight="200px"
@@ -323,40 +494,19 @@ export default function index() {
             <div className="mb-3 col-md-6">
               <DeftSelect
                 label="State"
-                error={formDataError?.State}
-                options={sem}
-                value={formData?.State}
+                error={formDataError?.state}
+                options={stateListData}
+                value={formData?.state}
                 onChange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    State: val,
+                    state: val,
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
-                    State: "",
+                    state: "",
                   }));
                 }}
-                dropdownHeight="200px"
-                multi={false}
-              />
-            </div>
-            <div className="mb-3 col-md-6">
-              <DeftSelect
-                label="Country"
-                error={formDataError?.Country}
-                options={collageList}
-                value={formData?.Country}
-                onChange={(val) => {
-                  setFormData((formData) => ({
-                    ...formData,
-                    Country: val,
-                  }));
-                  setFormDataError((formDataError) => ({
-                    ...formDataError,
-                    Country: "",
-                  }));
-                }}
-                placeholder="Country"
                 dropdownHeight="200px"
                 multi={false}
               />
@@ -365,27 +515,40 @@ export default function index() {
               <DeftInput
                 label="Pin Code"
                 placeholder="Enter Pin Code"
-                error={formDataError?.pinCode}
-                value={formData?.pinCode}
+                error={formDataError?.pin_code}
+                value={formData?.pin_code}
                 type="text"
                 onchange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    pinCode: val.target.value,
+                    pin_code: val,
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
-                    pinCode: "",
+                    pin_code: "",
                   }));
                 }}
               />
             </div>
-            <div className="mb-3 col-md-6">
-              <label htmlFor="email" className="form-label">
-                About Company
-              </label>
-              <br />
-              <textarea name="" id="" cols="178" rows="8"></textarea>
+            <div className="mb-3 col-12">
+              <Form.Control
+                as="textarea"
+                className="rounded-2"
+                maxLength={500}
+                value={formData?.about}
+                placeholder="About Company * (Do not exceed more than 500 characters)"
+                style={{ height: "100px" }}
+                onChange={(e) => {
+                  setFormData({
+                    ...formData,
+                    about: e.target.value?.trimStart(),
+                  });
+                  setFormDataError((prev) => ({ ...prev, about: "" }));
+                }}
+              />
+              {formDataError.about && (
+                <div className="text-danger">{formDataError.about}</div>
+              )}
             </div>
           </div>
           <div className="mt-2">

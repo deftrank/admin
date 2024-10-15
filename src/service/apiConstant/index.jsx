@@ -25,6 +25,9 @@ export const DEFT_RANK_API = {
     getProfile: "users/getProfile",
     updateProfile: "users/updateProfile",
     setEducation: "users/upsertEducationalDetails",
+    mostHiredSkill: "constant/getCompanySkillsList",
+    getCountryList: "constant/getCountriesList",
+    getCityList: "constant/getCitiesList",
   },
 };
 

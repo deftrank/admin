@@ -25,6 +25,10 @@ const slice = createSlice({
     compnanyTotalCount: 0,
     studentDetail: null,
     userAccountDetails: null,
+    companyCategoryList: [],
+    skillListData: [],
+    countryListData: [],
+    cityListData: [],
   },
   reducers: {
     onBoardingSuccess: (state, action) => {
@@ -98,6 +102,19 @@ const slice = createSlice({
     accountDetailsSuccess(state, action) {
       state.userAccountDetails = action.payload;
     },
+    companyCategoryListSuccess(state, action) {
+      state.companyCategoryList = action.payload;
+    },
+    getSkillListSuccess: (state, action) => {
+      state.skillListData = action.payload;
+    },
+    getCountryListSuccess: (state, action) => {
+      state.countryListData = action.payload;
+    },
+
+    getCityListSuccess: (state, action) => {
+      state.cityListData = action.payload;
+    },
   },
 });
 
@@ -117,6 +134,10 @@ const {
   deleteUserSuccess,
   suspendUserSuccess,
   accountDetailsSuccess,
+  companyCategoryListSuccess,
+  getSkillListSuccess,
+  getCountryListSuccess,
+  getCityListSuccess,
 } = slice.actions;
 
 //  stepper currentIndex
@@ -166,6 +187,68 @@ export const getCollageList = (data) => async (dispatch) => {
     // toast.error("An error occurred while fetching the college list."); // Optional error message
   }
 };
+
+export const getCompanyCategoryList = (data) => async (dispatch) => {
+  try {
+    const response = await api.post(DEFT_RANK_API.list.getCollageList, data);
+
+    if (response?.status) {
+      dispatch(companyCategoryListSuccess(response?.data?.data));
+    } else {
+      // toast.error(response?.message);
+    }
+  } catch (e) {
+    console.error(e.message);
+    // toast.error("An error occurred while fetching the college list."); // Optional error message
+  }
+};
+
+export const getCountryList = (data) => async (dispatch) => {
+  try {
+    const response = await api.post(
+      `${DEFT_RANK_API.onboarding.getCountryList}`,
+      data
+    );
+    if (response?.status == 200) {
+      dispatch(getCountryListSuccess(response?.data?.data));
+    }
+  } catch (e) {
+    console.error(e);
+    toast.error(e.message || "An error occurred while updating the profile.");
+  }
+};
+
+//  get city list
+export const getCityList = (data) => async (dispatch) => {
+  try {
+    const response = await api.post(
+      `${DEFT_RANK_API.onboarding.getCityList}`,
+      data
+    );
+    if (response?.status == 200) {
+      dispatch(getCityListSuccess(response?.data?.data));
+    }
+  } catch (e) {
+    console.error(e);
+    toast.error(e.message || "An error occurred while updating the profile.");
+  }
+};
+
+export const getSkillList = (data) => async (dispatch) => {
+  try {
+    const response = await api.post(
+      `${DEFT_RANK_API.onboarding.mostHiredSkill}`,
+      data
+    );
+    if (response?.status == 200) {
+      dispatch(getSkillListSuccess(response?.data?.data));
+    }
+  } catch (e) {
+    console.error(e);
+    toast.error(e.message || "An error occurred while updating the profile.");
+  }
+};
+
 export const getBoardList = (data) => async (dispatch) => {
   try {
     const response = await api.post(DEFT_RANK_API.list.boardlist, data);
