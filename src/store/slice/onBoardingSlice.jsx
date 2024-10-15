@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createSlice, current } from "@reduxjs/toolkit";
 import { DEFT_RANK_API } from "../../service/apiConstant";
 // import toast from "react-hot-toast";
@@ -23,6 +24,7 @@ const slice = createSlice({
     userTotalCount: 0,
     compnanyTotalCount: 0,
     studentDetail: null,
+    userAccountDetails: null,
   },
   reducers: {
     onBoardingSuccess: (state, action) => {
@@ -93,6 +95,9 @@ const slice = createSlice({
           action.payload.data.status;
       }
     },
+    accountDetailsSuccess(state, action) {
+      state.userAccountDetails = action.payload;
+    },
   },
 });
 
@@ -111,6 +116,7 @@ const {
   getStudentDetailByIdSuccess,
   deleteUserSuccess,
   suspendUserSuccess,
+  accountDetailsSuccess,
 } = slice.actions;
 
 //  stepper currentIndex
@@ -123,13 +129,21 @@ export const getCourseList = (data) => async (dispatch) => {
   try {
     const response = await api.post(DEFT_RANK_API.list.getCourseList, data);
     if (response?.status) {
-      const transformedList =
-        response?.data?.data?.map((course) => ({
-          label: `${course?.full_name} (${course?.name})`,
-          value: course?._id,
-        })) || []; // Default to an empty array if there's no data
+      dispatch(courseListSuccess(response?.data?.data)); // Only pass the relevant data
+    } else {
+      // toast.error(response?.message);
+    }
+  } catch (e) {
+    console.error(e.message);
+  }
+};
 
-      dispatch(courseListSuccess(transformedList)); // Only pass the relevant data
+export const accountDetails = (data) => async (dispatch) => {
+  try {
+    const response = await api.post(DEFT_RANK_API.list.accountDetails, data);
+    if (response?.status) {
+      console.log("response == ", response?.data);
+      dispatch(accountDetailsSuccess(response?.data)); // Only pass the relevant data
     } else {
       // toast.error(response?.message);
     }
@@ -143,22 +157,7 @@ export const getCollageList = (data) => async (dispatch) => {
     const response = await api.post(DEFT_RANK_API.list.getCollageList, data);
 
     if (response?.status) {
-      console.log(data?.search_type);
-      if (data?.search_type == 1) {
-        const transformedList =
-          response?.data?.data?.map((college) => ({
-            label: college.college_name,
-            value: college._id,
-          })) || [];
-        dispatch(collageListSuccess(transformedList));
-      } else {
-        const transformedList =
-          response?.data?.data?.map((college) => ({
-            label: college.university_name,
-            value: college._id,
-          })) || [];
-        dispatch(universityListSuccess(transformedList));
-      }
+      dispatch(collageListSuccess(response?.data?.data));
     } else {
       // toast.error(response?.message);
     }

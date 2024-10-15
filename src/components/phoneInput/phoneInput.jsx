@@ -27,12 +27,10 @@ export default function PhoneInputField(props) {
         onChange={(val, data) => {
           // Extract the phone number without the country code
           let phoneNumber = val.slice(data?.dialCode?.length).trim();
-          setPhoneData((PhoneData) => ({
-            ...PhoneData,
+          setPhoneData({
             phone: phoneNumber,
             countryCode: `+${data?.dialCode}`,
-            mobileErr: "",
-          }));
+          });
         }}
       />
       {error && (

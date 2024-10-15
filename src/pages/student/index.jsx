@@ -12,6 +12,7 @@ import DeftInput from "../../components/deftInput/deftInput";
 import { Icon } from "@iconify/react";
 import Confirmation from "../../components/confirmationModel/confirmation";
 import moment from "moment/moment";
+import DeftDaterange from "../../components/deftDaterange/index";
 
 export default function index() {
   const dispatch = useDispatch();
@@ -23,7 +24,9 @@ export default function index() {
   const [searchData, setSearchData] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const totalPages = Math.ceil(userTotalCount / itemsPerPage);
-  const [changePasswordModal, setChangePasswordModal] = useState({});
+  const [changePasswordModal, setChangePasswordModal] = useState([]);
+  const [dateRange, setDateRange] = useState({});
+  const [status, setStatus] = useState("");
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -45,8 +48,19 @@ export default function index() {
     getStudentList();
   }, [itemsPerPage]);
 
+  useEffect(() => {
+    getStudentList();
+  }, [dateRange]);
+
+  useEffect(() => {
+    getStudentList();
+  }, [status]);
+
   const getStudentList = () => {
     const data = {
+      startDate: dateRange[0]?.startDate.toLocaleDateString(),
+      endDate: dateRange[0]?.endDate.toLocaleDateString(),
+      accountStatus: status,
       search: searchData,
       page: currentPage,
       limit: itemsPerPage,
@@ -85,9 +99,9 @@ export default function index() {
   return (
     <>
       <div className="card">
-        <div class="container">
+        <div class="container-fluid">
           <div class="row card-header justify-content-start">
-            <div class="col-5 input-group-merge">
+            <div class="col-4 input-group-merge">
               <DeftInput
                 placeholder="Search by name"
                 type="text"
@@ -99,19 +113,56 @@ export default function index() {
                 leftIcon={<i className="bx bx-search"></i>}
               />
             </div>
+            <div class="col-4 input-group-merge">
+              <DeftDaterange
+                placeholder="Search by date range"
+                type="text"
+                value={searchData}
+                onchange={(value) => {
+                  setDateRange(value);
+                }}
+                leftIcon={<i className="bx bx-search"></i>}
+              />
+            </div>
             <div class="col-4">
               <div className="btn-group">
-                <button aria-label='Click me'
+                <button
+                  aria-label="Click me"
                   type="button"
                   className="btn btn-outline-primary dropdown-toggle"
                   data-bs-toggle="dropdown"
-                  aria-expanded="false">
+                  aria-expanded="false"
+                >
                   Status
                 </button>
                 <ul className="dropdown-menu">
-                  <li><a aria-label="dropdown action link" className="dropdown-item" href="#">Active</a></li>
-                  <li><a aria-label="dropdown action link" className="dropdown-item" href="#">Suspend</a></li>
-
+                  <li>
+                    <a
+                      aria-label="dropdown action link"
+                      className="dropdown-item"
+                      onClick={() => setStatus("active")}
+                    >
+                      Active
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      aria-label="dropdown action link"
+                      className="dropdown-item"
+                      onClick={() => setStatus("suspended")}
+                    >
+                      Suspend
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      aria-label="dropdown action link"
+                      className="dropdown-item"
+                      onClick={() => setStatus("")}
+                    >
+                      All
+                    </a>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -172,10 +223,11 @@ export default function index() {
                   </td>
                   <td>
                     <span
-                      className={`badge ${item?.auth_id?.suspend_status == "active"
-                        ? "bg-label-success"
-                        : "bg-label-danger"
-                        } me-1`}
+                      className={`badge ${
+                        item?.auth_id?.suspend_status == "active"
+                          ? "bg-label-success"
+                          : "bg-label-danger"
+                      } me-1`}
                     >
                       {item?.auth_id?.suspend_status == "active"
                         ? "Active"
@@ -283,7 +335,6 @@ export default function index() {
                   ""
                 )}
               </tr>
-
             </tbody>
           </table>
         </div>
@@ -291,27 +342,32 @@ export default function index() {
         <div class="container mt-4">
           <div class="row justify-content-center">
             <div class="col">
-
               <span className="p-2">Show</span>
               <div className="btn-group">
-
-                <select className="btn btn-outline-primary dropdown-toggle"
-                  onChange={(e) => setItemsPerPage(e.target.value)}>
-                  <option value="5" >5</option>
-                  <option value="10" selected>10</option>
+                <select
+                  className="btn btn-outline-primary dropdown-toggle"
+                  onChange={(e) => setItemsPerPage(e.target.value)}
+                >
+                  <option value="5">5</option>
+                  <option value="10" selected>
+                    10
+                  </option>
                   <option value="25">25</option>
                   <option value="50">50</option>
                   <option value="100">100</option>
-
                 </select>
-
               </div>
               <span className="p-2">entries</span>
             </div>
 
-            <div class="col p-1">    Showing  <b>{currentPage * itemsPerPage - (itemsPerPage - 1)}</b> to <b>{currentPage * itemsPerPage}</b> of <b>{userTotalCount}</b> entries</div>
-
-
+            <div class="col p-1">
+              {" "}
+              Showing <b>
+                {currentPage * itemsPerPage - (itemsPerPage - 1)}
+              </b>{" "}
+              to <b>{currentPage * itemsPerPage}</b> of <b>{userTotalCount}</b>{" "}
+              entries
+            </div>
 
             <div class="col">
               <div className="d-flex justify-content-end">
@@ -338,7 +394,6 @@ export default function index() {
             </div>
           </div>
         </div>
-
       </div>
 
       {changePasswordModal && (

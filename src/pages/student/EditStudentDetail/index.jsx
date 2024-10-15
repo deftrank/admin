@@ -2,21 +2,31 @@
 import { useEffect, useState } from "react";
 import DeftInput from "../../../components/deftInput/deftInput";
 import PhoneInputField from "../../../components/phoneInput/phoneInput";
-import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useParams } from "react-router-dom";
 import DeftSelect from "../../../components/dropdown";
 import { sem } from "../../../components/jsonData";
+import {
+  accountDetails,
+  getCollageList,
+  getCourseList,
+} from "../../../store/slice/onBoardingSlice";
+import { isEmailValid } from "../../../utils/appValidation";
 
 // @ts-nocheck
 export default function index() {
   const [formData, setFormData] = useState({});
   const [formDataError, setFormDataError] = useState({});
   const { loginUserData } = useSelector((state) => state.auth);
-  const { collageList, courseList } = useSelector((state) => state.onBoarding);
+  const { collageList, courseList, userAccountDetails } = useSelector(
+    (state) => state.onBoarding
+  );
+  const dispatch = useDispatch();
 
   const search = useLocation().search;
   const phone = new URLSearchParams(search).get("phone");
-  const id = new URLSearchParams(search).get("id");
+  // const id = new URLSearchParams(search).get("id");
+  const { id } = useParams();
 
   let phoneData = {
     countryCode: +91,
@@ -24,21 +34,37 @@ export default function index() {
   };
 
   useEffect(() => {
-    if (loginUserData) {
-      if (loginUserData?.phone != "null") {
-        setFormData((formData) => ({
-          ...formData,
-          phone: loginUserData?.phone * 1,
-        }));
-      }
-      if (loginUserData?.email != "null") {
-        setFormData((formData) => ({
-          ...formData,
-          email: loginUserData?.email,
-        }));
-      }
-    }
-  }, [loginUserData]);
+    handleCourseList();
+    handleCollageList();
+    getAccountDetails();
+  }, []);
+
+  const handleCollageList = () => {
+    const data = {
+      page: 1,
+      limit: 100,
+      search_type: 1,
+      search: "",
+    };
+    dispatch(getCollageList(data));
+  };
+
+  const handleCourseList = () => {
+    const data = {
+      page: 1,
+      limit: 20,
+      search: "",
+    };
+    dispatch(getCourseList(data));
+  };
+
+  const getAccountDetails = () => {
+    const data = {
+      auth_id: id,
+      language: "en",
+    };
+    dispatch(accountDetails(data));
+  };
 
   const handleSubmit = () => {
     console.log("registered");
@@ -50,7 +76,6 @@ export default function index() {
       }));
       return;
     }
-
     if (!formData?.last_name) {
       setFormDataError((formDataError) => ({
         ...formDataError,
@@ -58,11 +83,17 @@ export default function index() {
       }));
       return;
     }
-
-    if (!checkIsEmpty(formData.email)) {
+    if (!formData.email) {
       setFormDataError((formDataError) => ({
         ...formDataError,
         email: "Please enter your email address",
+      }));
+      return;
+    }
+    if (!isEmailValid(formData?.email)) {
+      setFormDataError((formDataError) => ({
+        ...formDataError,
+        email: "Please enter a valid email address",
       }));
       return;
     }
@@ -76,21 +107,21 @@ export default function index() {
     if (!formData?.courseName) {
       setFormDataError((formDataError) => ({
         ...formDataError,
-        courseName: "please select your course name",
+        courseName: "Please select your course name",
       }));
       return;
     }
     if (!formData?.semester) {
       setFormDataError((formDataError) => ({
         ...formDataError,
-        semester: "please select your semester",
+        semester: "Please select your semester",
       }));
       return;
     }
     if (!formData?.collage) {
       setFormDataError((formDataError) => ({
         ...formDataError,
-        collage: "please select your college",
+        collage: "Please select your college",
       }));
       return;
     }
@@ -102,9 +133,11 @@ export default function index() {
       semester: formData?.semester[0]?.label,
       college_name: formData?.collage[0]?.label,
     };
-
-    dispatch(register(data, navigate));
+    console.log("data == ", data);
+    // dispatch(register(data, navigate));
   };
+
+  console.log("accountDetails == ", userAccountDetails);
 
   return (
     <>
@@ -123,7 +156,7 @@ export default function index() {
                 onchange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    first_name: val.target.value,
+                    first_name: val,
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
@@ -142,7 +175,7 @@ export default function index() {
                 onchange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    last_name: val.target.value,
+                    last_name: val,
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
@@ -161,7 +194,7 @@ export default function index() {
                 onchange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    email: val.target.value,
+                    email: val,
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
@@ -175,7 +208,16 @@ export default function index() {
                 label="Phone Number"
                 error={formDataError?.phone}
                 PhoneData={phoneData || formData}
-                setPhoneData={setFormData}
+                setPhoneData={(val) => {
+                  setFormData((formData) => ({
+                    ...formData,
+                    ...val,
+                  }));
+                  setFormDataError((formDataError) => ({
+                    ...formDataError,
+                    phone: "",
+                  }));
+                }}
                 setFormDataError={setFormDataError}
               />
             </div>
@@ -183,7 +225,13 @@ export default function index() {
               <DeftSelect
                 label="Current Course Name"
                 error={formDataError?.courseName}
-                options={courseList}
+                options={
+                  courseList &&
+                  courseList?.map((item) => ({
+                    label: `${item.full_name}`,
+                    id: item._id,
+                  }))
+                }
                 value={formData?.courseName}
                 onChange={(val) => {
                   setFormData((formData) => ({
@@ -224,7 +272,13 @@ export default function index() {
               <DeftSelect
                 label="College Name"
                 error={formDataError?.collage}
-                options={collageList}
+                options={
+                  collageList &&
+                  collageList?.map((item) => ({
+                    label: `${item.university_name}`,
+                    id: item._id,
+                  }))
+                }
                 value={formData?.collage}
                 onChange={(val) => {
                   setFormData((formData) => ({
@@ -247,9 +301,7 @@ export default function index() {
               aria-label="Click me"
               type="submit"
               className="btn btn-primary me-2"
-              onClick={() => {
-                handleSubmit;
-              }}
+              onClick={handleSubmit}
             >
               Save changes
             </button>

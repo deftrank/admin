@@ -19,12 +19,21 @@ const DeftSelect = ({
       <label className="form-label" htmlFor="country">
         {label}
       </label>
-      <select id="country" className="select2 form-select">
+      <select
+        id="country"
+        className="select2 form-select"
+        onChange={(e) => onChange(e.target.value)}
+      >
         <option value="">Select</option>
         {options?.map((item) => (
           <option value={item.value}>{item.label}</option>
         ))}
       </select>
+      {error && (
+        <div className="text-danger font-size-14" style={{ fontWeight: 400 }}>
+          {error}
+        </div>
+      )}
     </>
   );
 };

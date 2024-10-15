@@ -23,30 +23,11 @@ export default function index() {
     phone: phone ?? loginUserData?.phone,
   };
 
-  useEffect(() => {
-    if (loginUserData) {
-      if (loginUserData?.phone != "null") {
-        setFormData((formData) => ({
-          ...formData,
-          phone: loginUserData?.phone * 1,
-        }));
-      }
-      if (loginUserData?.email != "null") {
-        setFormData((formData) => ({
-          ...formData,
-          email: loginUserData?.email,
-        }));
-      }
-    }
-  }, [loginUserData]);
-
   const handleSubmit = () => {
-    console.log("registered");
-    setFormDataError({});
-    if (!formData?.first_name) {
+    if (!formData?.company_name) {
       setFormDataError((formDataError) => ({
         ...formDataError,
-        first_name: "Please enter your first name.",
+        company_name: "Please enter your company name.",
       }));
       return;
     }
@@ -412,9 +393,7 @@ export default function index() {
               aria-label="Click me"
               type="submit"
               className="btn btn-primary me-2"
-              onClick={() => {
-                handleSubmit;
-              }}
+              onClick={handleSubmit}
             >
               Save changes
             </button>

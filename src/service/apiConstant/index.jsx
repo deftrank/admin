@@ -18,6 +18,7 @@ export const DEFT_RANK_API = {
     getCourseList: "constant/courseList",
     getCollageList: "constant/collegeList",
     boardlist: "/constant/boardList",
+    accountDetails: "admin/accountDetails",
   },
   //  onBoarding
   onboarding: {

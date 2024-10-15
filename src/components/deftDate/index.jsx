@@ -2,7 +2,7 @@
 // // @ts-nocheck
 // import { Form, InputGroup } from "react-bootstrap";
 
-export default function DeftInput(props) {
+export default function index(props) {
   const {
     value,
     onchange,
@@ -18,40 +18,29 @@ export default function DeftInput(props) {
     autoFocus,
     id,
     label,
-    onClick,
   } = props;
   return (
     <>
-      {label && (
+      {/* {label && (
         <label htmlFor="email" className="form-label">
           {label}
         </label>
+      )} */}
+      {label && (
+        <label htmlFor="html5-date-input" className="col-md-2 col-form-label">
+          {label}
+        </label>
       )}
-      <div className="input-group">
-        {leftIcon && (
-          <span className="input-group-text" onClick={leftIconClick}>
-            {leftIcon}
-          </span>
-        )}
+      <div className="col-md-10">
         <input
-          type={type}
           className="form-control"
-          id={id}
+          type="date"
           value={value}
-          onChange={(e) => {
-            onchange(e.target.value);
+          id="html5-date-input"
+          onchange={(e) => {
+            console.log("e == ", e);
           }}
-          name={name}
-          placeholder={placeholder}
-          autoFocus={autoFocus}
-          readOnly={readOnly}
-          onClick={onClick}
         />
-        {rightIcon && (
-          <span className="input-group-text" onClick={rightIconClick}>
-            {rightIcon}
-          </span>
-        )}
       </div>
       {error && (
         <div className="text-danger font-size-14" style={{ fontWeight: 400 }}>
