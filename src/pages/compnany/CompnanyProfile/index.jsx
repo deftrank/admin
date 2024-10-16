@@ -60,154 +60,140 @@ export default function index() {
               }}
             />
             <div className="mt-5 pb-4 ">
-              <div className="container-fluid px-4">
-                <div className="row">
-                  <div className="col-6">
-                    <h6 className="font-size-20 mt-3">
-                      {studentDetail?.accountData?.first_name
-                        ? studentDetail?.accountData?.first_name +
-                          studentDetail?.accountData?.last_name
+              <div className="px-5 col-10">
+                <div className="row mb-3">
+                  <div className="col-12">
+                    <h6 className="font-size-20 mt-2 text-capitalize">
+                      {" "}
+                      {/* Reduced margin-top from mt-3 to mt-2 */}
+                      {studentDetail?.accountData?.registered_name
+                        ? studentDetail.accountData.registered_name
                         : "-"}
                     </h6>
+                    <p style={{ marginTop: "-0.5rem" }}>
+                      {" "}
+                      {/* Adjusted margin-top for the paragraph */}
+                      {studentDetail?.accountData?.about_company
+                        ? studentDetail?.accountData?.about_company
+                        : ""}
+                    </p>
                   </div>
                 </div>
                 <div>
                   <div className="row">
+                    {/* Email */}
                     <div className="col-4 pt-2">
-                      <div className="row align-items-center">
-                        <div className="col-1">
-                          <Icon
-                            icon="mdi:email-outline"
-                            className="fs-2"
-                            style={{ color: color.secondaryGray }}
-                          />
-                        </div>
-                        <div className="col-11">
-                          <h6
-                            style={{ color: color.secondaryGray }}
-                            className="mb-0"
-                          >
-                            {studentDetail?.authData?.email
-                              ? studentDetail?.authData?.email
-                              : "-"}
-                          </h6>
-                        </div>
-                      </div>{" "}
-                    </div>
-                    <div className="col-4 pt-2">
-                      <div className="row mt-2 align-items-center">
-                        <div className="col-1">
-                          <Icon
-                            icon="mdi:phone-outline"
-                            className="fs-2"
-                            style={{ color: color.secondaryGray }}
-                          />
-                        </div>
-                        <div className="col-11">
-                          <h6
-                            style={{ color: color.secondaryGray }}
-                            className="mb-0"
-                          >
-                            {studentDetail?.authData?.phone
-                              ? studentDetail?.authData?.country_code +
-                                studentDetail?.authData?.phone
-                              : "-"}
-                          </h6>
-                        </div>
+                      <div className="d-flex align-items-center">
+                        <Icon
+                          icon="mdi:email-outline"
+                          className="fs-2 me-3" // Increased margin for more space
+                          style={{ color: color.secondaryGray }}
+                        />
+                        <h6
+                          style={{ color: color.secondaryGray }}
+                          className="mb-0"
+                        >
+                          {studentDetail?.accountData?.category || "-"}
+                        </h6>
                       </div>
-                    </div>{" "}
-                    <div className="col-4 pt-2">
-                      <div className="row align-items-center">
-                        <div className="col-1">
-                          <Icon
-                            icon="mdi:calendar-outline"
-                            className="fs-2"
-                            style={{ color: color.secondaryGray }}
-                          />
-                        </div>
-                        <div className="col-11">
-                          <h6
-                            style={{ color: color.secondaryGray }}
-                            className="mb-0"
-                          >
-                            {studentDetail?.accountData?.birth_date
-                              ? moment(
-                                  studentDetail?.accountData?.birth_date
-                                ).format("DD MMM YYYY")
-                              : "-"}
-                          </h6>
-                        </div>
-                      </div>{" "}
                     </div>
+
+                    {/* Phone */}
                     <div className="col-4 pt-2">
-                      <div className="row align-items-center">
-                        <div className="col-1">
-                          <Icon
-                            icon="mdi:book-open-outline"
-                            className="fs-2"
-                            style={{ color: color.secondaryGray }}
-                          />
-                        </div>
-                        <div className="col-11">
-                          <h6
-                            style={{ color: color.secondaryGray }}
-                            className="mb-0"
-                          >
-                            {studentDetail?.accountData?.current_course
-                              ? studentDetail?.accountData?.current_course
-                              : "-"}
-                          </h6>
-                        </div>
-                      </div>{" "}
+                      <div className="d-flex align-items-center">
+                        <Icon
+                          icon="mdi:phone-outline"
+                          className="fs-2 me-3" // Increased margin for more space
+                          style={{ color: color.secondaryGray }}
+                        />
+                        <h6
+                          style={{ color: color.secondaryGray }}
+                          className="mb-0"
+                        >
+                          {studentDetail?.accountData?.contact_person_name
+                            ? studentDetail?.accountData?.contact_person_name
+                            : "-"}
+                        </h6>
+                      </div>
                     </div>
+
+                    {/* Birth Date */}
                     <div className="col-4 pt-2">
-                      <div className="row align-items-center">
-                        <div className="col-1">
-                          <Icon
-                            icon="mdi:school-outline"
-                            className="fs-2"
-                            style={{ color: color.secondaryGray }}
-                          />
-                        </div>
-                        <div className="col-11">
-                          <h6
-                            style={{ color: color.secondaryGray }}
-                            className="mb-0"
-                          >
-                            {studentDetail?.accountData?.college_name
-                              ? studentDetail?.accountData?.college_name
-                              : "-"}
-                          </h6>
-                        </div>
-                      </div>{" "}
+                      <div className="d-flex align-items-center">
+                        <Icon
+                          icon="mdi:calendar-outline"
+                          className="fs-2 me-3" // Increased margin for more space
+                          style={{ color: color.secondaryGray }}
+                        />
+                        <h6
+                          style={{ color: color.secondaryGray }}
+                          className="mb-0"
+                        >
+                          {studentDetail?.authData?.email
+                            ? studentDetail.authData.email
+                            : "-"}
+                        </h6>
+                      </div>
                     </div>
+
+                    {/* Current Course */}
                     <div className="col-4 pt-2">
-                      <div className="row align-items-center">
-                        <div className="col-1">
-                          <Icon
-                            icon="mdi:calendar-month-outline"
-                            className="fs-2"
-                            style={{ color: color.secondaryGray }}
-                          />
-                        </div>
-                        <div className="col-11">
-                          <h6
-                            style={{ color: color.secondaryGray }}
-                            className="mb-0"
-                          >
-                            {studentDetail?.accountData?.semester
-                              ? `${intToRoman(
-                                  studentDetail?.accountData?.semester
-                                )} semester`
-                              : "-"}
-                          </h6>
-                        </div>
-                      </div>{" "}
+                      <div className="d-flex align-items-center">
+                        <Icon
+                          icon="mdi:book-open-outline"
+                          className="fs-2 me-3" // Increased margin for more space
+                          style={{ color: color.secondaryGray }}
+                        />
+                        <h6
+                          style={{ color: color.secondaryGray }}
+                          className="mb-0"
+                        >
+                          {studentDetail?.authData?.phone
+                            ? `${studentDetail.authData.country_code}${studentDetail.authData.phone}`
+                            : "-"}
+                        </h6>
+                      </div>
                     </div>
-                    <div className="col-8 d-flex align-items-center pt-2">
+
+                    {/* College Name */}
+                    <div className="col-4 pt-2">
+                      <div className="d-flex align-items-center">
+                        <Icon
+                          icon="mdi:school-outline"
+                          className="fs-2 me-3" // Increased margin for more space
+                          style={{ color: color.secondaryGray }}
+                        />
+                        <h6
+                          style={{ color: color.secondaryGray }}
+                          className="mb-0"
+                        >
+                          {studentDetail?.accountData?.company_website || "-"}
+                        </h6>
+                      </div>
+                    </div>
+
+                    {/* Semester */}
+                    <div className="col-4 pt-2">
+                      <div className="d-flex align-items-center">
+                        <Icon
+                          icon="mdi:calendar-month-outline"
+                          className="fs-2 me-3" // Increased margin for more space
+                          style={{ color: color.secondaryGray }}
+                        />
+                        <h6
+                          style={{ color: color.secondaryGray }}
+                          className="mb-0"
+                        >
+                          {studentDetail?.accountData?.linkedin_url || "-"}
+                        </h6>
+                      </div>
+                    </div>
+
+                    {/* Location */}
+                    <div className="col-8 pt-2 d-flex align-items-center">
                       <Icon
                         icon="mdi:map-marker-outline"
-                        className="fs-2"
+                        className="fs-2 me-3" // Increased margin for more space
                         style={{ color: color.secondaryGray }}
                       />
                       <h6
@@ -215,88 +201,25 @@ export default function index() {
                         className="mb-0"
                       >
                         {studentDetail?.accountData?.current_location ||
-                        studentDetail?.accountData?.current_location ||
+                        studentDetail?.accountData?.state ||
                         studentDetail?.accountData?.country ||
                         studentDetail?.accountData?.pin_code
                           ? `${
                               studentDetail?.accountData?.current_location
-                                ? studentDetail?.accountData?.current_location +
+                                ? studentDetail.accountData.current_location +
                                   ","
                                 : ""
                             } ${
                               studentDetail?.accountData?.state
-                                ? studentDetail?.accountData?.state + ","
+                                ? studentDetail.accountData.state + ","
                                 : ""
                             } ${
                               studentDetail?.accountData?.country
-                                ? studentDetail?.accountData?.country + ","
+                                ? studentDetail.accountData.country + ","
                                 : ""
-                            } ${studentDetail?.accountData?.pin_code}`
+                            } ${studentDetail?.accountData?.pin_code || ""}`
                           : "-"}
                       </h6>
-                    </div>
-                    <div className="col-4 pt-2">
-                      <div className="row align-items-center">
-                        <div className="col-1">
-                          <Icon
-                            icon="mdi:gender-male-female-variant"
-                            className="fs-2"
-                            style={{ color: color.secondaryGray }}
-                          />
-                        </div>
-                        <div className="col-11">
-                          <h6
-                            style={{ color: color.secondaryGray }}
-                            className="mb-0"
-                          >
-                            {studentDetail?.accountData?.gender
-                              ? studentDetail?.accountData?.gender
-                              : "-"}
-                          </h6>
-                        </div>
-                      </div>{" "}
-                    </div>
-                    <div className="col-4 pt-2">
-                      <div className="row mt-2 align-items-center">
-                        <div className="col-1">
-                          <Icon
-                            icon="mdi:github"
-                            className="fs-2"
-                            style={{ color: color.secondaryGray }}
-                          />
-                        </div>
-                        <div className="col-11">
-                          <h6
-                            style={{ color: color.secondaryGray }}
-                            className="mb-0"
-                          >
-                            {studentDetail?.accountData?.github_url
-                              ? studentDetail?.accountData?.github_url
-                              : "-"}
-                          </h6>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-4 pt-2">
-                      <div className="row align-items-center">
-                        <div className="col-1">
-                          <Icon
-                            icon="mdi:linkedin"
-                            className="fs-2"
-                            style={{ color: color.secondaryGray }}
-                          />
-                        </div>
-                        <div className="col-11">
-                          <h6
-                            style={{ color: color.secondaryGray }}
-                            className="mb-0"
-                          >
-                            {studentDetail?.accountData?.linkedin_url
-                              ? studentDetail?.accountData?.linkedin_url
-                              : "-"}
-                          </h6>
-                        </div>
-                      </div>{" "}
                     </div>
                   </div>
                 </div>
