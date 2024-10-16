@@ -13,6 +13,7 @@ import DeftInput from "../../components/deftInput/deftInput";
 import CompanyDefault from "../../assets/img/companyDefaul.png";
 import Confirmation from "../../components/confirmationModel/confirmation";
 import DeftDaterange from "../../components/deftDaterange/index";
+import moment from "moment-timezone"; // Import moment-timezone
 
 export default function index() {
   const { listOfCompanyByAdmin, compnanyTotalCount } = useSelector(
@@ -57,9 +58,19 @@ export default function index() {
   }, [status]);
 
   const getCompnanyList = () => {
+    const utcDateForStart = dateRange[0]?.startDate;
+    const utcDateForEnd = dateRange[0]?.endDate;
+
+    const forStartDate = moment(utcDateForStart)
+      .tz("Asia/Kolkata")
+      .format("YYYY-MM-DD");
+    const forEndDate = moment(utcDateForEnd)
+      .tz("Asia/Kolkata")
+      .format("YYYY-MM-DD");
+
     const data = {
-      startDate: dateRange[0]?.startDate.toLocaleDateString(),
-      endDate: dateRange[0]?.endDate.toLocaleDateString(),
+      startDate: forStartDate,
+      endDate: forEndDate,
       accountStatus: status,
       search: searchData,
       page: currentPage,

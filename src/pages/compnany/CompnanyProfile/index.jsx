@@ -45,6 +45,7 @@ export default function index() {
               style={{
                 backgroundImage: `url(${profileBg})`,
                 height: 140,
+
                 backgroundSize: "cover",
               }}
               className=" rounded-top-4"

@@ -57,9 +57,19 @@ export default function index() {
   }, [status]);
 
   const getStudentList = () => {
+    const utcDateForStart = dateRange[0]?.startDate;
+    const utcDateForEnd = dateRange[0]?.endDate;
+
+    const forStartDate = moment(utcDateForStart)
+      .tz("Asia/Kolkata")
+      .format("YYYY-MM-DD");
+    const forEndDate = moment(utcDateForEnd)
+      .tz("Asia/Kolkata")
+      .format("YYYY-MM-DD");
+
     const data = {
-      startDate: dateRange[0]?.startDate.toLocaleDateString(),
-      endDate: dateRange[0]?.endDate.toLocaleDateString(),
+      startDate: forStartDate,
+      endDate: forEndDate,
       accountStatus: status,
       search: searchData,
       page: currentPage,
