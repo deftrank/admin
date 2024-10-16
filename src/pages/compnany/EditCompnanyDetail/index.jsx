@@ -7,10 +7,14 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import DeftSelect from "../../../components/dropdown";
 import { sem } from "../../../components/jsonData";
 import {
+  accountDetails,
   getCityList,
   getCompanyCategoryList,
   getCountryList,
   getSkillList,
+  getStateList,
+  registerCompany,
+  updateCompanyProfile,
 } from "../../../store/slice/onBoardingSlice";
 import { isEmailValid } from "../../../utils/appValidation";
 import { Form } from "react-bootstrap";
@@ -22,6 +26,7 @@ export default function index() {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({});
   const [formDataError, setFormDataError] = useState({});
+  const [locationData, setLocationData] = useState({});
   const { loginUserData } = useSelector((state) => state.auth);
   const {
     companyCategoryList,
@@ -29,6 +34,7 @@ export default function index() {
     countryListData,
     stateListData,
     cityListData,
+    userAccountDetails,
   } = useSelector((state) => state.onBoarding);
   const { id } = useParams();
 
@@ -42,13 +48,72 @@ export default function index() {
   };
 
   useEffect(() => {
-    handleCompanyCategoriesList();
+    fetchCompanyCategories();
     fetchSkillData();
     fetchCountryData();
-    fetchCityData();
+    getAccountDetails();
   }, []);
 
-  const handleCompanyCategoriesList = () => {
+  useEffect(() => {
+    if (locationData?.country) {
+      fetchStateData();
+    }
+    if (locationData?.state) {
+      fetchCityData();
+    }
+  }, [locationData]);
+
+  useEffect(() => {
+    userAccountDetails ? showAccountDetails() : "";
+  }, [userAccountDetails]);
+
+  const showAccountDetails = () => {
+    // console.log("userAccountDetails == ", userAccountDetails);
+    const accountData = userAccountDetails?.accountData;
+    const authdata = userAccountDetails?.authData;
+    setFormData((formData) => ({
+      ...formData,
+      company_name: accountData?.registered_name,
+      category_id: accountData?.category_id?._id,
+      category_Name: accountData?.category_id?.name,
+      company_person_name: accountData?.contact_person_name,
+      email: accountData?.auth_id?.email,
+      phone: accountData?.auth_id?.phone,
+      countryCode: accountData?.auth_id?.country_code,
+      company_website: accountData?.company_website,
+      linkedin_url: accountData?.linkedin_url,
+      skill_ids: accountData?.skills_id?._id,
+      skill_names: accountData?.skills_id?.name,
+      company_address: accountData?.company_address,
+      country_id: accountData?.country_id,
+      country_name: accountData?.country,
+      city_id: accountData?.city_id,
+      city_name: accountData?.city,
+      state_id: accountData?.state_id,
+      state_name: accountData?.state,
+      pin_code: accountData?.pin_code,
+      about: accountData?.about_company,
+    }));
+
+    setLocationData((formData) => ({
+      ...formData,
+      country: accountData?.country_id,
+      state: accountData?.state_id,
+      city: accountData?.city_id,
+    }));
+  };
+
+  const fetchStateData = (id, search) => {
+    let request = {
+      country_id: Number(locationData?.country),
+      page: 1,
+      limit: 100,
+      search: "",
+    };
+    dispatch(getStateList(request));
+  };
+
+  const fetchCompanyCategories = () => {
     const data = {
       page: 1,
       limit: 100,
@@ -76,12 +141,20 @@ export default function index() {
   };
   const fetchCityData = (id, search) => {
     let request = {
-      state_id: id ? id : formData?.state_id,
-      page: 0,
-      limit: 0,
+      state_id: Number(locationData?.state),
+      page: 1,
+      limit: 100,
       search: search,
     };
     dispatch(getCityList(request));
+  };
+
+  const getAccountDetails = () => {
+    const data = {
+      auth_id: id,
+      language: "en",
+    };
+    dispatch(accountDetails(data));
   };
 
   const handleSubmit = () => {
@@ -92,10 +165,10 @@ export default function index() {
       }));
       return;
     }
-    if (!formData?.Company_categories) {
+    if (!formData?.category_id) {
       setFormDataError((formDataError) => ({
         ...formDataError,
-        Company_categories: "Please enter your course name.",
+        category_id: "Please enter your course name.",
       }));
       return;
     }
@@ -150,7 +223,7 @@ export default function index() {
       }));
       return;
     }
-    if (!formData?.skills || formData?.skills?.length < 0) {
+    if (!formData?.skill_ids || formData?.skills?.length < 0) {
       setFormDataError((prevError) => ({
         ...prevError,
         skills: "Please  select most hired skills",
@@ -164,21 +237,21 @@ export default function index() {
       }));
       return;
     }
-    if (!formData?.country) {
+    if (!formData?.country_id) {
       setFormDataError((prevError) => ({
         ...prevError,
         country: "Please select your country",
       }));
       return;
     }
-    if (!formData?.state) {
+    if (!formData?.state_id) {
       setFormDataError((prevError) => ({
         ...prevError,
         state: "Please select your state",
       }));
       return;
     }
-    if (!formData?.city) {
+    if (!formData?.city_id) {
       setFormDataError((prevError) => ({
         ...prevError,
         city: "Please select your city",
@@ -202,32 +275,45 @@ export default function index() {
     }
 
     const data = {
-      auth_id: id ? id : "",
+      companyId: userAccountDetails?.accountData?._id
+        ? userAccountDetails?.accountData?._id
+        : "",
+      role_type: 2,
+      login_type: 2,
+      email: formData?.email,
+      country_code: formData?.countryCode,
+      phone: formData?.phone,
+      category_id: formData?.category_id,
+      skills_id: [formData?.skill_ids],
       registered_name: formData?.company_name,
-      category: formData?.Company_categories[0]?.label,
+      category: formData?.category_Name,
       contact_person_name: formData?.company_person_name,
-      contact_person_number: formData?.phone,
+      contact_person_number: formData.phone,
       company_website: formData?.company_website,
       linkedin_url: formData?.linkedin_url,
-      most_hired_skills: formData?.skills, // Corrected this line
+      most_hired_skills: [formData?.skill_names],
       company_address: formData?.company_address,
-      city: formData?.city,
-      state: formData?.state,
-      country: formData?.country,
-      countryCode: formData?.countryCode,
+      city: formData?.city_name,
+      state: formData?.state_name,
+      country: formData?.country_name,
       pin_code: formData?.pin_code,
       about_company: formData?.about,
+      company_logo: "https://examplecompany.com/logo.png",
+      language: "en",
       country_id: formData?.country_id,
       state_id: formData?.state_id,
       city_id: formData?.city_id,
-      company_logo: "https://examplecompany.com/logo.png",
-      language: "en",
     };
-
-    console.log("data == ", data);
-
-    // dispatch(register(data, navigate));
+    if (id) {
+      dispatch(updateCompanyProfile(data, navigate));
+    } else {
+      dispatch(registerCompany(data, navigate));
+    }
   };
+  // console.log(
+  //   "userAccountDetails == ",
+  //   userAccountDetails?.accountData?.auth_id?.country_code
+  // );
 
   return (
     <>
@@ -303,26 +389,30 @@ export default function index() {
             <div className="mb-3 col-md-6">
               <DeftSelect
                 label="Category"
-                error={formDataError?.Company_categories}
+                placeholder="Select Category *"
+                error={formDataError?.category_id}
                 options={
                   companyCategoryList &&
                   companyCategoryList?.map((item) => ({
-                    label: `${item.full_name}`,
-                    id: item._id,
+                    label: `${item.name}`,
+                    value: item._id,
                   }))
                 }
-                value={formData?.Company_categories}
+                value={formData?.category_id}
                 onChange={(val) => {
+                  const index = companyCategoryList?.findIndex(
+                    (item) => item._id === val
+                  );
                   setFormData((formData) => ({
                     ...formData,
-                    Company_categories: val,
+                    category_id: val,
+                    category_Name: companyCategoryList[index]?.name,
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
-                    Company_categories: "",
+                    category_id: "",
                   }));
                 }}
-                placeholder="Select Category *"
                 dropdownHeight="200px"
                 multi={false}
               />
@@ -368,6 +458,7 @@ export default function index() {
             <div className="mb-3 col-md-6">
               <PhoneInputField
                 label="Contact Number"
+                value={JSON.stringify(formData?.countryCode + formData.phone)}
                 error={formDataError?.phone}
                 PhoneData={phoneData || formData}
                 setPhoneData={(val) => {
@@ -424,16 +515,20 @@ export default function index() {
             <div className="mb-3 col-md-6">
               <DeftSelect
                 label="Most Hired Skills"
-                error={formDataError?.skills}
+                error={formDataError?.skill_ids}
                 options={skillListData?.map((item) => ({
                   label: item?.name,
                   value: item?._id,
                 }))}
                 value={formData?.skills}
                 onChange={(val) => {
+                  const index = skillListData?.findIndex(
+                    (item) => item._id === val
+                  );
                   setFormData((formData) => ({
                     ...formData,
-                    skills: val,
+                    skill_ids: val,
+                    skill_names: skillListData[index]?.name,
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
@@ -468,16 +563,30 @@ export default function index() {
               <DeftSelect
                 label="Country"
                 error={formDataError?.country}
-                options={countryListData}
-                value={formData?.country}
+                options={
+                  countryListData &&
+                  countryListData?.map((item) => ({
+                    label: `${item.name}`,
+                    value: item.id,
+                  }))
+                }
+                value={formData?.country_id}
                 onChange={(val) => {
+                  const index = countryListData?.findIndex(
+                    (item) => item.id == val
+                  );
                   setFormData((formData) => ({
                     ...formData,
-                    country: val,
+                    country_id: val,
+                    country_name: countryListData[index]?.name,
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
                     country: "",
+                  }));
+                  setLocationData((formData) => ({
+                    ...formData,
+                    country: val,
                   }));
                 }}
                 placeholder="Country"
@@ -487,18 +596,32 @@ export default function index() {
             </div>
             <div className="mb-3 col-md-6">
               <DeftSelect
-                label="City"
-                error={formDataError?.city}
-                options={cityListData}
-                value={formData?.city}
+                label="State"
+                error={formDataError?.state}
+                options={
+                  stateListData &&
+                  stateListData?.map((item) => ({
+                    label: `${item.name}`,
+                    value: item.id,
+                  }))
+                }
+                value={formData?.state_id}
                 onChange={(val) => {
+                  const index = stateListData?.findIndex(
+                    (item) => item.id == val
+                  );
                   setFormData((formData) => ({
                     ...formData,
-                    city: val,
+                    state_id: val,
+                    state_name: stateListData[index]?.name,
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
-                    city: "",
+                    state: "",
+                  }));
+                  setLocationData((formData) => ({
+                    ...formData,
+                    state: val,
                   }));
                 }}
                 dropdownHeight="200px"
@@ -507,18 +630,32 @@ export default function index() {
             </div>
             <div className="mb-3 col-md-6">
               <DeftSelect
-                label="State"
-                error={formDataError?.state}
-                options={stateListData}
-                value={formData?.state}
+                label="City"
+                error={formDataError?.city}
+                options={
+                  cityListData &&
+                  cityListData?.map((item) => ({
+                    label: `${item.name}`,
+                    value: item.id,
+                  }))
+                }
+                value={formData?.city_id}
                 onChange={(val) => {
+                  const index = cityListData?.findIndex(
+                    (item) => item.id == val
+                  );
                   setFormData((formData) => ({
                     ...formData,
-                    state: val,
+                    city_id: val,
+                    city_name: cityListData[index]?.name,
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
-                    state: "",
+                    city: "",
+                  }));
+                  setLocationData((formData) => ({
+                    ...formData,
+                    city: val,
                   }));
                 }}
                 dropdownHeight="200px"

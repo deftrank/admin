@@ -6,7 +6,7 @@ import api from "../../service/index";
 // import secureLocalStorage from "react-secure-storage";
 // import { act } from "preact/test-utils";
 // import { stepsArray } from "../../pages/onBoarding/stepperConstant";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 const slice = createSlice({
   name: "onBoarding",
@@ -30,6 +30,7 @@ const slice = createSlice({
     skillListData: [],
     countryListData: [],
     cityListData: [],
+    stateListData: [],
   },
   reducers: {
     onBoardingSuccess: (state, action) => {
@@ -56,15 +57,16 @@ const slice = createSlice({
     },
     universityListSuccess: (state, action) => {
       state.universityList = action.payload;
-      console.log("university", action.payload);
     },
     listOfUserByAdminSuccess(state, action) {
       state.userTotalCount = action.payload.total_count;
-      state.listOfUserByAdmin = action.payload.data;
+      state.listOfUserByAdmin =
+        action.payload.flag == "empty" ? [] : action.payload.data;
     },
     listOfCompanyByAdminSuccess(state, action) {
       state.compnanyTotalCount = action.payload.total_count;
-      state.listOfCompanyByAdmin = action.payload.data;
+      state.listOfCompanyByAdmin =
+        action.payload.flag == "empty" ? [] : action.payload.data;
     },
     getStudentDetailByIdSuccess(state, action) {
       state.studentDetail = action.payload;
@@ -116,6 +118,9 @@ const slice = createSlice({
     getCityListSuccess: (state, action) => {
       state.cityListData = action.payload;
     },
+    getStateListSuccess: (state, action) => {
+      state.stateListData = action.payload;
+    },
   },
 });
 
@@ -137,6 +142,7 @@ const {
   accountDetailsSuccess,
   companyCategoryListSuccess,
   getSkillListSuccess,
+  getStateListSuccess,
   getCountryListSuccess,
   getCityListSuccess,
 } = slice.actions;
@@ -190,8 +196,10 @@ export const getCollageList = (data) => async (dispatch) => {
 
 export const getCompanyCategoryList = (data) => async (dispatch) => {
   try {
-    const response = await api.post(DEFT_RANK_API.list.getCollageList, data);
-
+    const response = await api.post(
+      DEFT_RANK_API.list.getCompanyCategoryList,
+      data
+    );
     if (response?.status) {
       dispatch(companyCategoryListSuccess(response?.data?.data));
     } else {
@@ -211,6 +219,21 @@ export const getCountryList = (data) => async (dispatch) => {
     );
     if (response?.status == 200) {
       dispatch(getCountryListSuccess(response?.data?.data));
+    }
+  } catch (e) {
+    console.error(e);
+    toast.error(e.message || "An error occurred while updating the profile.");
+  }
+};
+
+export const getStateList = (data) => async (dispatch) => {
+  try {
+    const response = await api.post(
+      `${DEFT_RANK_API.onboarding.getStateList}`,
+      data
+    );
+    if (response?.status == 200) {
+      dispatch(getStateListSuccess(response?.data?.data));
     }
   } catch (e) {
     console.error(e);
@@ -314,6 +337,7 @@ export const getListOfUserByAdmin =
             dispatch(listOfUserByAdminSuccess(result));
           } else {
             // toast.error(result.message);
+            dispatch(listOfUserByAdminSuccess({ flag: "empty" }));
           }
         });
       // loadingBarRef.current.complete();
@@ -385,7 +409,7 @@ export const getListOfCompanyByAdmin = (data) => async (dispatch) => {
         if (result.status) {
           dispatch(listOfCompanyByAdminSuccess(result));
         } else {
-          // toast.error(result.message);
+          dispatch(listOfCompanyByAdminSuccess({ flag: "empty" }));
         }
         // loadingBarRef.current.complete();
       });
@@ -406,6 +430,45 @@ export const getStudentDetailById = (data) => async (dispatch) => {
           dispatch(getStudentDetailByIdSuccess(result));
         } else {
           // toast.error(result.message);
+        }
+      });
+  } catch (e) {
+    // return toast.error(e.message);
+  }
+};
+
+export const registerCompany = (data, navigate) => async () => {
+  // dispatch(apiFetching());
+  try {
+    await api
+      .post(DEFT_RANK_API.auth.registerCompany, data)
+      .then((response) => {
+        let result = response.data;
+        if (result.status) {
+          navigate("/company");
+          toast.success(result.message);
+        } else {
+          toast.error(result.message);
+        }
+      });
+  } catch (e) {
+    // return toast.error(e.message);
+  }
+};
+
+export const updateCompanyProfile = (data, navigate) => async () => {
+  console.log("data -- ", data);
+  // dispatch(apiFetching());
+  try {
+    await api
+      .post(DEFT_RANK_API.auth.updateCompanyProfile, data)
+      .then((response) => {
+        let result = response.data;
+        if (result.status) {
+          navigate("/company");
+          toast.success(result.message);
+        } else {
+          toast.error(result.message);
         }
       });
   } catch (e) {

@@ -12,6 +12,8 @@ export const DEFT_RANK_API = {
     getStudentDetailById: "admin/accountDetails",
     deleteUser: "admin/deleteUser",
     suspendUser: "admin/suspendUser",
+    registerCompany: "admin/registerCompany",
+    updateCompanyProfile: "admin/updateCompanyProfile",
   },
   //  listing
   list: {
@@ -19,6 +21,7 @@ export const DEFT_RANK_API = {
     getCollageList: "constant/collegeList",
     boardlist: "/constant/boardList",
     accountDetails: "admin/accountDetails",
+    getCompanyCategoryList: "constant/getCompanyCategoryList",
   },
   //  onBoarding
   onboarding: {
@@ -28,6 +31,7 @@ export const DEFT_RANK_API = {
     mostHiredSkill: "constant/getCompanySkillsList",
     getCountryList: "constant/getCountriesList",
     getCityList: "constant/getCitiesList",
+    getStateList: "constant/getStatesList",
   },
 };
 
