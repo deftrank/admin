@@ -82,8 +82,8 @@ export default function index() {
       countryCode: accountData?.auth_id?.country_code,
       company_website: accountData?.company_website,
       linkedin_url: accountData?.linkedin_url,
-      skill_ids: accountData?.skills_id?._id,
-      skill_names: accountData?.skills_id?.name,
+      skill_ids: accountData?.skills_id[0]?._id,
+      skill_names: accountData?.skills_id[0]?.name,
       company_address: accountData?.company_address,
       country_id: accountData?.country_id,
       country_name: accountData?.country,
@@ -317,6 +317,15 @@ export default function index() {
 
   return (
     <>
+      <h5 className="mb-4">
+        <span
+          className="text-muted fw-light"
+          onClick={() => navigate("/company")}
+        >
+          Company /
+        </span>{" "}
+        {id ? "Edit" : "Add"}
+      </h5>
       <div className="card mb-4">
         <h5 className="card-header">Edit Company Details</h5>
         <div className="card-body">

@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import profile from "../../../assets/img/default.jpg";
 import profileBg from "../../../assets/img/bg/profileBg.png";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getStudentDetailById } from "../../../store/slice/onBoardingSlice";
 import BasicAndPeronalDetail from "./basicAndPeronalDetail";
@@ -13,6 +13,7 @@ import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 
 export default function index() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const { studentDetail } = useSelector((state) => state.onBoarding);
   const dispatch = useDispatch();
@@ -31,6 +32,15 @@ export default function index() {
 
   return (
     <section className="py-4 container-fluid">
+      <h5 className="mb-4">
+        <span
+          className="text-muted fw-light"
+          onClick={() => navigate("/students")}
+        >
+          Student /
+        </span>{" "}
+        Details
+      </h5>
       <div className=" py-3 ">
         <div className="shadow-lg position-relative rounded-4">
           <div
@@ -52,7 +62,7 @@ export default function index() {
             }}
           />
           <div className="mt-5 pb-4 ">
-            <div className="container-fluid px-4">
+            <div className="px-5 col-10">
               <BasicAndPeronalDetail studentDetail={studentDetail} />
               <div className="mt-5">
                 <Tabs

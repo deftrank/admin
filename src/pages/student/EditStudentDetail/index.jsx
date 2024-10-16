@@ -144,6 +144,15 @@ export default function index() {
 
   return (
     <>
+      <h5 className="mb-4">
+        <span
+          className="text-muted fw-light"
+          onClick={() => navigate("/students")}
+        >
+          Student /
+        </span>{" "}
+        Edit
+      </h5>
       <div className="card mb-4">
         <h5 className="card-header">Edit Student Details</h5>
         <hr className="my-0" />

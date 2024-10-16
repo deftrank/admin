@@ -2,13 +2,15 @@
 import { useEffect } from "react";
 import profile from "../../../assets/img/default.jpg";
 import profileBg from "../../../assets/img/bg/profileBg.png";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getStudentDetailById } from "../../../store/slice/onBoardingSlice";
 import { Icon } from "@iconify/react";
 import { color } from "../../../themes/color/color";
+import moment from "moment/moment";
 
 export default function index() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const { studentDetail } = useSelector((state) => state.onBoarding);
   const dispatch = useDispatch();
@@ -28,6 +30,15 @@ export default function index() {
   return (
     <>
       <section className="py-4 container-fluid">
+        <h5 className="mb-4">
+          <span
+            className="text-muted fw-light"
+            onClick={() => navigate("/company")}
+          >
+            Company /
+          </span>{" "}
+          Detail
+        </h5>
         <div className=" py-3 ">
           <div className="shadow-lg position-relative rounded-4">
             <div

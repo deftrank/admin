@@ -58,6 +58,9 @@ export default function index() {
 
   const getCompnanyList = () => {
     const data = {
+      startDate: dateRange[0]?.startDate.toLocaleDateString(),
+      endDate: dateRange[0]?.endDate.toLocaleDateString(),
+      accountStatus: status,
       search: searchData,
       page: currentPage,
       limit: itemsPerPage,
