@@ -1,14 +1,11 @@
 // @ts-nocheck
-// // @ts-nocheck
-// import { Form, InputGroup } from "react-bootstrap";
-
 export default function DeftInput(props) {
   const {
-    value,
+    value = "", // Ensure value is always defined
     onchange,
     error,
     placeholder,
-    type,
+    type = "text", // Default type to 'text' if not provided
     readOnly,
     leftIcon,
     leftIconClick,
@@ -20,10 +17,11 @@ export default function DeftInput(props) {
     label,
     onClick,
   } = props;
+
   return (
     <>
       {label && (
-        <label htmlFor="email" className="form-label">
+        <label htmlFor={id} className="form-label">
           {label}
         </label>
       )}
@@ -37,10 +35,8 @@ export default function DeftInput(props) {
           type={type}
           className="form-control"
           id={id}
-          value={value}
-          onChange={(e) => {
-            onchange(e.target.value);
-          }}
+          value={value} // Value is always controlled
+          onChange={(e) => onchange(e.target.value)}
           name={name}
           placeholder={placeholder}
           autoFocus={autoFocus}

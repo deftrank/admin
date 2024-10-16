@@ -6,6 +6,7 @@ import api from "../../service/index";
 // import secureLocalStorage from "react-secure-storage";
 // import { act } from "preact/test-utils";
 // import { stepsArray } from "../../pages/onBoarding/stepperConstant";
+import { toast } from 'react-toastify';
 
 const slice = createSlice({
   name: "onBoarding",
@@ -163,7 +164,6 @@ export const accountDetails = (data) => async (dispatch) => {
   try {
     const response = await api.post(DEFT_RANK_API.list.accountDetails, data);
     if (response?.status) {
-      console.log("response == ", response?.data);
       dispatch(accountDetailsSuccess(response?.data)); // Only pass the relevant data
     } else {
       // toast.error(response?.message);
@@ -283,17 +283,18 @@ export const getProfile = () => async (dispatch) => {
     console.error(e.message);
   }
 };
-export const updateProfile = (data) => async (dispatch) => {
+export const updateProfile = (data, navigate) => async () => {
   try {
-    const response = await api.patch(
+    const response = await api.post(
       `${DEFT_RANK_API.onboarding.updateProfile}`,
       data
     );
-
-    if (response?.status === 200) {
-      dispatch(getProfileSuccess(response?.data));
+    let result = response.data;
+    if (result.status) {
+      navigate("/students");
+      toast.success(result.message);
     } else {
-      // toast.error(response?.message);
+      toast.error(result.message);
     }
   } catch (e) {
     console.error(e);

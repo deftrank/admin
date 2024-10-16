@@ -1,17 +1,14 @@
 // @ts-nocheck
-import React from "react";
+import { Form } from "react-bootstrap";
 
 const DeftSelect = ({
   options,
   value,
   onChange,
   placeholder,
-  multi,
-  dropdownHeight = "200px",
   className = "",
   label,
   error,
-  closeOnSelect,
   ...props
 }) => {
   return (
@@ -19,16 +16,18 @@ const DeftSelect = ({
       <label className="form-label" htmlFor="country">
         {label}
       </label>
-      <select
-        id="country"
+      <Form.Select
         className="select2 form-select"
+        value={value} // Control the select value
         onChange={(e) => onChange(e.target.value)}
       >
-        <option value="">Select</option>
+        <option value="" disabled selected={value == ""}>
+          {placeholder}
+        </option>
         {options?.map((item) => (
           <option value={item.value}>{item.label}</option>
         ))}
-      </select>
+      </Form.Select>
       {error && (
         <div className="text-danger font-size-14" style={{ fontWeight: 400 }}>
           {error}

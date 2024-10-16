@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import DeftInput from "../../../components/deftInput/deftInput";
 import PhoneInputField from "../../../components/phoneInput/phoneInput";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import DeftSelect from "../../../components/dropdown";
 import { sem } from "../../../components/jsonData";
 import {
@@ -14,9 +14,11 @@ import {
 } from "../../../store/slice/onBoardingSlice";
 import { isEmailValid } from "../../../utils/appValidation";
 import { Form } from "react-bootstrap";
+import profile from "../../../assets/img/companyDefaul.png";
 
 // @ts-nocheck
 export default function index() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({});
   const [formDataError, setFormDataError] = useState({});
@@ -28,10 +30,11 @@ export default function index() {
     stateListData,
     cityListData,
   } = useSelector((state) => state.onBoarding);
+  const { id } = useParams();
 
   const search = useLocation().search;
   const phone = new URLSearchParams(search).get("phone");
-  const id = new URLSearchParams(search).get("id");
+  // const id = new URLSearchParams(search).get("id");
 
   let phoneData = {
     countryCode: +91,
@@ -89,13 +92,13 @@ export default function index() {
       }));
       return;
     }
-    // if (!formData?.Company_categories) {
-    //   setFormDataError((formDataError) => ({
-    //     ...formDataError,
-    //     Company_categories: "Please enter your course name.",
-    //   }));
-    //   return;
-    // }
+    if (!formData?.Company_categories) {
+      setFormDataError((formDataError) => ({
+        ...formDataError,
+        Company_categories: "Please enter your course name.",
+      }));
+      return;
+    }
     if (!formData?.company_person_name) {
       setFormDataError((formDataError) => ({
         ...formDataError,
@@ -122,6 +125,13 @@ export default function index() {
       setFormDataError((prevError) => ({
         ...prevError,
         phone: "Please enter your contact number",
+      }));
+      return;
+    }
+    if (formData.phone.length < 10) {
+      setFormDataError((formDataError) => ({
+        ...formDataError,
+        phone: "Please enter your correct phone number.",
       }));
       return;
     }
@@ -192,7 +202,7 @@ export default function index() {
     }
 
     const data = {
-      auth_id: formData?.auth_id || loginUserData?.id || companyData?.id,
+      auth_id: id ? id : "",
       registered_name: formData?.company_name,
       category: formData?.Company_categories[0]?.label,
       contact_person_name: formData?.company_person_name,
@@ -226,7 +236,7 @@ export default function index() {
         <div className="card-body">
           <div className="d-flex align-items-start align-items-sm-center gap-4">
             <img
-              src="../assets/img/avatars/1.png"
+              src={profile}
               alt="user-avatar"
               className="d-block rounded"
               height="100"
@@ -240,7 +250,7 @@ export default function index() {
                 className="btn btn-primary me-2 mb-4"
                 tabIndex="0"
               >
-                <span className="d-none d-sm-block">Upload new photo</span>
+                <span className="d-none d-sm-block">Upload Logo</span>
                 <i className="bx bx-upload d-block d-sm-none"></i>
                 <input
                   type="file"
@@ -250,17 +260,21 @@ export default function index() {
                   accept="image/png, image/jpeg"
                 />
               </label>
-              <button
+              {/* <button
                 aria-label="Click me"
                 type="button"
                 className="btn btn-outline-secondary account-image-reset mb-4"
               >
                 <i className="bx bx-reset d-block d-sm-none"></i>
                 <span className="d-none d-sm-block">Reset</span>
-              </button>
+              </button> */}
               <p className="text-muted mb-0">
-                Allowed JPG, GIF or PNG. Max size of 800K
+                Allowed JPG, JPEG or PNG. Max size of 800K
               </p>
+              <small>
+                Note: Upload Logo launching soon! Stay tuned for more
+                information
+              </small>
             </div>
           </div>
         </div>
@@ -531,6 +545,17 @@ export default function index() {
               />
             </div>
             <div className="mb-3 col-12">
+              <div className="row">
+                <div className="col-11">
+                  <label htmlFor="email" className="form-label">
+                    About Company
+                    {/* <span className="text-end">ss</span> */}
+                  </label>
+                </div>
+                <div className="col-1">
+                  {formData?.about ? formData?.about?.length : 0}/500
+                </div>
+              </div>
               <Form.Control
                 as="textarea"
                 className="rounded-2"
@@ -564,6 +589,7 @@ export default function index() {
               aria-label="Click me"
               type="reset"
               className="btn btn-outline-secondary"
+              onClick={() => navigate("/company")}
             >
               Cancel
             </button>

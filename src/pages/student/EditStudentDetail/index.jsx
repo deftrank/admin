@@ -3,18 +3,20 @@ import { useEffect, useState } from "react";
 import DeftInput from "../../../components/deftInput/deftInput";
 import PhoneInputField from "../../../components/phoneInput/phoneInput";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import DeftSelect from "../../../components/dropdown";
 import { sem } from "../../../components/jsonData";
 import {
   accountDetails,
   getCollageList,
   getCourseList,
+  updateProfile,
 } from "../../../store/slice/onBoardingSlice";
 import { isEmailValid } from "../../../utils/appValidation";
 
 // @ts-nocheck
 export default function index() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({});
   const [formDataError, setFormDataError] = useState({});
   const { loginUserData } = useSelector((state) => state.auth);
@@ -38,6 +40,10 @@ export default function index() {
     handleCollageList();
     getAccountDetails();
   }, []);
+
+  useEffect(() => {
+    userAccountDetails ? showAccountDetails() : "";
+  }, [userAccountDetails]);
 
   const handleCollageList = () => {
     const data = {
@@ -66,6 +72,24 @@ export default function index() {
     dispatch(accountDetails(data));
   };
 
+  const showAccountDetails = () => {
+    const accountData = userAccountDetails?.accountData;
+    const authdata = userAccountDetails?.authData;
+    setFormData((formData) => ({
+      ...formData,
+      first_name: accountData?.first_name,
+      last_name: accountData?.last_name,
+      email: authdata?.email,
+      phone: authdata?.phone,
+      countryCode: authdata?.country_code,
+      courseName: accountData?.current_course
+        ? accountData?.current_course
+        : "",
+      semester: accountData?.semester,
+      collage: accountData?.college_name,
+    }));
+  };
+
   const handleSubmit = () => {
     console.log("registered");
     setFormDataError({});
@@ -80,27 +104,6 @@ export default function index() {
       setFormDataError((formDataError) => ({
         ...formDataError,
         last_name: "Please enter your last name.",
-      }));
-      return;
-    }
-    if (!formData.email) {
-      setFormDataError((formDataError) => ({
-        ...formDataError,
-        email: "Please enter your email address",
-      }));
-      return;
-    }
-    if (!isEmailValid(formData?.email)) {
-      setFormDataError((formDataError) => ({
-        ...formDataError,
-        email: "Please enter a valid email address",
-      }));
-      return;
-    }
-    if (!formData?.phone || formData.phone.length < 10) {
-      setFormDataError((formDataError) => ({
-        ...formDataError,
-        phone: "Please enter your phone number.",
       }));
       return;
     }
@@ -126,18 +129,18 @@ export default function index() {
       return;
     }
     const data = {
-      auth_id: loginUserData?.id,
+      userId: userAccountDetails?.accountData?._id
+        ? userAccountDetails?.accountData?._id
+        : "",
       first_name: formData?.first_name,
       last_name: formData?.last_name,
-      course_name: formData?.courseName[0]?.label,
-      semester: formData?.semester[0]?.label,
-      college_name: formData?.collage[0]?.label,
+      course_name: formData?.courseName,
+      semester: formData?.semester,
+      college_name: formData?.collage,
+      language: "en",
     };
-    console.log("data == ", data);
-    // dispatch(register(data, navigate));
+    dispatch(updateProfile(data, navigate));
   };
-
-  console.log("accountDetails == ", userAccountDetails);
 
   return (
     <>
@@ -186,6 +189,7 @@ export default function index() {
             </div>
             <div className="mb-3 col-md-6">
               <DeftInput
+                readOnly={true}
                 label="Email Id"
                 placeholder="Enter Email Id"
                 error={formDataError?.email}
@@ -205,9 +209,10 @@ export default function index() {
             </div>
             <div className="mb-3 col-md-6">
               <PhoneInputField
+                readOnly={true}
                 label="Phone Number"
                 error={formDataError?.phone}
-                PhoneData={phoneData || formData}
+                value={JSON.stringify(formData?.countryCode + formData.phone)}
                 setPhoneData={(val) => {
                   setFormData((formData) => ({
                     ...formData,
@@ -224,6 +229,7 @@ export default function index() {
             <div className="mb-3 col-md-6">
               <DeftSelect
                 label="Current Course Name"
+                placeholder="Select current Course Name"
                 error={formDataError?.courseName}
                 options={
                   courseList &&
@@ -251,6 +257,7 @@ export default function index() {
             <div className="mb-3 col-md-6">
               <DeftSelect
                 label="Semester"
+                placeholder="Select Semester"
                 error={formDataError?.semester}
                 options={sem}
                 value={formData?.semester}
@@ -271,6 +278,7 @@ export default function index() {
             <div className="mb-3 col-md-6">
               <DeftSelect
                 label="College Name"
+                placeholder="Select College Name"
                 error={formDataError?.collage}
                 options={
                   collageList &&
@@ -309,6 +317,7 @@ export default function index() {
               aria-label="Click me"
               type="reset"
               className="btn btn-outline-secondary"
+              onClick={() => navigate("/students")}
             >
               Cancel
             </button>

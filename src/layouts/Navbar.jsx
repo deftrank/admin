@@ -16,7 +16,6 @@ const Navbar = () => {
     navigate("/");
   };
 
-  console.log("👋 == ", getGreetingMessage())
   return (
     <>
       <nav

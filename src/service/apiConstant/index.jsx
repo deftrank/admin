@@ -23,7 +23,7 @@ export const DEFT_RANK_API = {
   //  onBoarding
   onboarding: {
     getProfile: "users/getProfile",
-    updateProfile: "users/updateProfile",
+    updateProfile: "admin/updateProfile",
     setEducation: "users/upsertEducationalDetails",
     mostHiredSkill: "constant/getCompanySkillsList",
     getCountryList: "constant/getCountriesList",

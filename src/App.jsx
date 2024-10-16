@@ -4,7 +4,7 @@ import { ToastContainer } from "react-toastify";
 import AppRoutes from "./router/AppRoutes";
 // import { Blank } from "./layouts/Blank";
 import store from "./store";
-import "react-toastify/dist/ReactToastify.css";
+import 'react-toastify/dist/ReactToastify.css';
 import { Provider } from "react-redux";
 import { AxiosInterceptor } from "./service";
 
@@ -18,7 +18,7 @@ function App() {
           <AppRoutes />
         </AxiosInterceptor>
       </Provider>
-      <ToastContainer theme="colored" />
+      <ToastContainer />
     </>
   );
 }
