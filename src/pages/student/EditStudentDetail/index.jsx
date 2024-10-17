@@ -291,7 +291,7 @@ export default function index() {
                 options={
                   collageList &&
                   collageList?.map((item) => ({
-                    label: `${item.university_name}`,
+                    label: `${item.college_name}`,
                     id: item._id,
                   }))
                 }

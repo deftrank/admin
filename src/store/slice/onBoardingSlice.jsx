@@ -59,12 +59,12 @@ const slice = createSlice({
       state.universityList = action.payload;
     },
     listOfUserByAdminSuccess(state, action) {
-      state.userTotalCount = action.payload.total_count;
+      state.userTotalCount = "empty" ? 0 : action.payload.total_count;
       state.listOfUserByAdmin =
         action.payload.flag == "empty" ? [] : action.payload.data;
     },
     listOfCompanyByAdminSuccess(state, action) {
-      state.compnanyTotalCount = action.payload.total_count;
+      state.compnanyTotalCount = "empty" ? 0 : action.payload.total_count;
       state.listOfCompanyByAdmin =
         action.payload.flag == "empty" ? [] : action.payload.data;
     },

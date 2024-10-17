@@ -1,14 +1,10 @@
-// @ts-nocheck
-// // @ts-nocheck
-// import { Form, InputGroup } from "react-bootstrap";
-
 import { useState } from "react";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css"; // Include styles
 import "react-date-range/dist/theme/default.css"; // Include theme
 import DeftInput from "../deftInput/deftInput";
 
-export default function index(props) {
+export default function Index(props) {
   const {
     value,
     onchange,
@@ -55,7 +51,26 @@ export default function index(props) {
     setOpen(false);
     onchange(state);
   };
-  console.log("state", state[0]?.startDate);
+
+  const handleClear = () => {
+    // Reset the state and displayed value
+    setState([
+      {
+        startDate: null,
+        endDate: null,
+        key: "selection",
+      },
+    ]);
+    setDisplayedValue(placeholder);
+    onchange([
+      {
+        startDate: null,
+        endDate: null,
+        key: "selection",
+      },
+    ]); // Notify the parent component of the cleared state
+    setOpen(false);
+  };
 
   return (
     <>
@@ -75,23 +90,22 @@ export default function index(props) {
               moveRangeOnFirstSelection={false}
               editableDateInputs={true}
             />
-            <div
-              className="card p-2 text-end"
-              onClick={handleConfirm} // Call handleConfirm on click
-            >
-              OK
+            <div className="row" style={{ background: "#fff" }}>
+              <div
+                className=" p-2 col-6 "
+                onClick={handleConfirm} // Call handleConfirm on click
+              >
+                OK
+              </div>
+              <div
+                className=" p-2 text-end col-6"
+                onClick={handleClear} // Call handleClear on click
+              >
+                Clear
+              </div>
             </div>
           </div>
         )}
-        {/* {open && (
-          <div>
-            <h4>Selected Range:</h4>
-            <p>
-              Start: {state[0].startDate.toLocaleDateString()} <br />
-              End: {state[0].endDate.toLocaleDateString()}
-            </p>
-          </div>
-        )} */}
       </div>
     </>
   );

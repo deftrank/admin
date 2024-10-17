@@ -64,7 +64,7 @@ export default function index() {
   }, [locationData]);
 
   useEffect(() => {
-    userAccountDetails ? showAccountDetails() : "";
+    userAccountDetails?.accountData ? showAccountDetails() : "";
   }, [userAccountDetails]);
 
   const showAccountDetails = () => {
@@ -310,11 +310,6 @@ export default function index() {
       dispatch(registerCompany(data, navigate));
     }
   };
-  // console.log(
-  //   "userAccountDetails == ",
-  //   userAccountDetails?.accountData?.auth_id?.country_code
-  // );
-
   return (
     <>
       <h5 className="mb-4">
