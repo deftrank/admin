@@ -13,12 +13,11 @@ export default function index(props) {
             {dialogData?.title}
           </h5>
           <button
-            aria-label="Click me"
             onClick={handleClose}
             type="button"
             className="btn-close"
             data-bs-dismiss="modal"
-            ariaLabel="Close"
+            aria-label="Close"
           ></button>
         </Modal.Header>
         <Modal.Body className={"container pt-4"}>

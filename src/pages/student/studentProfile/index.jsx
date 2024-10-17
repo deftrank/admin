@@ -64,7 +64,7 @@ export default function index() {
           <div className="mt-5 pb-4 ">
             <div className="px-5 col-10">
               <BasicAndPeronalDetail studentDetail={studentDetail} />
-              <div className="mt-5">
+              {/* <div className="mt-5">
                 <Tabs
                   defaultActiveKey="home"
                   id="uncontrolled-tab-example"
@@ -79,11 +79,8 @@ export default function index() {
                   <Tab eventKey="contact" title="Career Path">
                     <CareerPath />
                   </Tab>
-                  {/* <Tab eventKey="Subscription" title="Subscription Detail">
-                    Tab content for Contact
-                  </Tab> */}
                 </Tabs>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

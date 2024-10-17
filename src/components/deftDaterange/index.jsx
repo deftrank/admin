@@ -28,8 +28,8 @@ export default function index(props) {
 
   const [state, setState] = useState([
     {
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate: null,
+      endDate: null,
       key: "selection",
     },
   ]);
@@ -55,6 +55,7 @@ export default function index(props) {
     setOpen(false);
     onchange(state);
   };
+  console.log("state", state[0]?.startDate);
 
   return (
     <>
@@ -82,7 +83,7 @@ export default function index(props) {
             </div>
           </div>
         )}
-        {open && (
+        {/* {open && (
           <div>
             <h4>Selected Range:</h4>
             <p>
@@ -90,7 +91,7 @@ export default function index(props) {
               End: {state[0].endDate.toLocaleDateString()}
             </p>
           </div>
-        )}
+        )} */}
       </div>
     </>
   );

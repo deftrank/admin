@@ -61,12 +61,12 @@ export default function index() {
     const utcDateForStart = dateRange[0]?.startDate;
     const utcDateForEnd = dateRange[0]?.endDate;
 
-    const forStartDate = moment(utcDateForStart)
-      .tz("Asia/Kolkata")
-      .format("YYYY-MM-DD");
-    const forEndDate = moment(utcDateForEnd)
-      .tz("Asia/Kolkata")
-      .format("YYYY-MM-DD");
+    const forStartDate = utcDateForStart
+      ? moment(utcDateForStart).tz("Asia/Kolkata").format("YYYY-MM-DD")
+      : "";
+    const forEndDate = utcDateForEnd
+      ? moment(utcDateForEnd).tz("Asia/Kolkata").format("YYYY-MM-DD")
+      : "";
 
     const data = {
       startDate: forStartDate,
@@ -336,13 +336,20 @@ export default function index() {
                   </td>
                 </tr>
               ))}
-              <tr>
-                {listOfCompanyByAdmin?.length == 0 && (
+
+              {listOfCompanyByAdmin?.length == 0 && (
+                <tr
+                  style={{
+                    height: "20rem",
+                    fontSize: "2rem",
+                    fontWeight: "600",
+                  }}
+                >
                   <td colSpan="12" className="text-center">
                     No companies have been listed yet!
                   </td>
-                )}
-              </tr>
+                </tr>
+              )}
               <tr></tr>
             </tbody>
           </table>

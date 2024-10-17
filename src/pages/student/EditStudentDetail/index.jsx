@@ -258,7 +258,6 @@ export default function index() {
                     courseName: "",
                   }));
                 }}
-                placeholder="Current Course Name *"
                 dropdownHeight="200px"
                 multi={false}
               />
@@ -307,7 +306,6 @@ export default function index() {
                     collage: "",
                   }));
                 }}
-                placeholder="College Name *"
                 dropdownHeight="200px"
                 multi={false}
               />

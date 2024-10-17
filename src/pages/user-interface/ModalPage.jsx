@@ -24,12 +24,12 @@ export const ModalPage = () => {
                                 </button>
 
                                 {/* <!-- Modal --> */}
-                                <div className="modal fade" id="basicModal" tabIndex="-1" aria-hidden="true">
+                                <div className="modal fade" id="basicModal" tabindex="-1" aria-hidden="true">
                                     <div className="modal-dialog" role="document">
                                         <div className="modal-content">
                                             <div className="modal-header">
                                                 <h5 className="modal-title" id="exampleModalLabel1">Modal title</h5>
-                                                <button aria-label='Click me'
+                                                <button 
                                                     type="button"
                                                     className="btn-close"
                                                     data-bs-dismiss="modal"
@@ -83,12 +83,12 @@ export const ModalPage = () => {
                                 </button>
 
                                 {/* <!-- Modal --> */}
-                                <div className="modal fade" id="modalCenter" tabIndex="-1" aria-hidden="true">
+                                <div className="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
                                     <div className="modal-dialog modal-dialog-centered" role="document">
                                         <div className="modal-content">
                                             <div className="modal-header">
                                                 <h5 className="modal-title" id="modalCenterTitle">Modal title</h5>
-                                                <button aria-label='Click me'
+                                                <button
                                                     type="button"
                                                     className="btn-close"
                                                     data-bs-dismiss="modal"
@@ -142,12 +142,12 @@ export const ModalPage = () => {
                                 </button>
 
                                 {/* <!-- Modal --> */}
-                                <div className="modal modal-top fade" id="modalTop" tabIndex="-1">
+                                <div className="modal modal-top fade" id="modalTop" tabindex="-1">
                                     <div className="modal-dialog">
                                         <form className="modal-content">
                                             <div className="modal-header">
                                                 <h5 className="modal-title" id="modalTopTitle">Modal title</h5>
-                                                <button aria-label='Click me'
+                                                <button
                                                     type="button"
                                                     className="btn-close"
                                                     data-bs-dismiss="modal"
@@ -209,7 +209,7 @@ export const ModalPage = () => {
                                 </button>
 
                                 {/* <!-- Modal --> */}
-                                <div className="modal fade" id="youTubeModal" tabIndex="-1" aria-hidden="true">
+                                <div className="modal fade" id="youTubeModal" tabindex="-1" aria-hidden="true">
                                     <div className="modal-dialog" role="document">
                                         <div className="modal-content">
                                             <iframe height="350" src="https://www.youtube.com/embed/EngW7tLk6R8"></iframe>
@@ -243,7 +243,7 @@ export const ModalPage = () => {
                                         <div className="modal-content">
                                             <div className="modal-header">
                                                 <h5 className="modal-title" id="modalToggleLabel">Modal 1</h5>
-                                                <button aria-label='Click me'
+                                                <button
                                                     type="button"
                                                     className="btn-close"
                                                     data-bs-dismiss="modal"
@@ -268,12 +268,12 @@ export const ModalPage = () => {
                                     id="modalToggle2"
                                     aria-hidden="true"
                                     aria-labelledby="modalToggleLabel2"
-                                    tabIndex="-1">
+                                    tabindex="-1">
                                     <div className="modal-dialog modal-dialog-centered">
                                         <div className="modal-content">
                                             <div className="modal-header">
                                                 <h5 className="modal-title" id="modalToggleLabel2">Modal 2</h5>
-                                                <button aria-label='Click me'
+                                                <button
                                                     type="button"
                                                     className="btn-close"
                                                     data-bs-dismiss="modal"
@@ -308,12 +308,12 @@ export const ModalPage = () => {
                                 </button>
 
                                 {/* <!-- Modal --> */}
-                                <div className="modal fade" id="fullscreenModal" tabIndex="-1" aria-hidden="true">
+                                <div className="modal fade" id="fullscreenModal" tabindex="-1" aria-hidden="true">
                                     <div className="modal-dialog modal-fullscreen" role="document">
                                         <div className="modal-content">
                                             <div className="modal-header">
                                                 <h5 className="modal-title" id="modalFullTitle">Modal title</h5>
-                                                <button aria-label='Click me'
+                                                <button 
                                                     type="button"
                                                     className="btn-close"
                                                     data-bs-dismiss="modal"
@@ -425,12 +425,12 @@ export const ModalPage = () => {
                         <div className="col-lg-4 col-md-6">
                             <small className="text-light fw-medium">Sizes</small>
                             {/* <!-- Small Modal --> */}
-                            <div className="modal fade" id="smallModal" tabIndex="-1" aria-hidden="true">
+                            <div className="modal fade" id="smallModal" tabindex="-1" aria-hidden="true">
                                 <div className="modal-dialog modal-sm" role="document">
                                     <div className="modal-content">
                                         <div className="modal-header">
                                             <h5 className="modal-title" id="exampleModalLabel2">Modal title</h5>
-                                            <button aria-label='Click me'
+                                            <button
                                                 type="button"
                                                 className="btn-close"
                                                 data-bs-dismiss="modal"
@@ -464,12 +464,12 @@ export const ModalPage = () => {
                                 </div>
                             </div>
                             {/* <!-- Large Modal --> */}
-                            <div className="modal fade" id="largeModal" tabIndex="-1" aria-hidden="true">
+                            <div className="modal fade" id="largeModal" tabindex="-1" aria-hidden="true">
                                 <div className="modal-dialog modal-lg" role="document">
                                     <div className="modal-content">
                                         <div className="modal-header">
                                             <h5 className="modal-title" id="exampleModalLabel3">Modal title</h5>
-                                            <button aria-label='Click me'
+                                            <button
                                                 type="button"
                                                 className="btn-close"
                                                 data-bs-dismiss="modal"
@@ -503,12 +503,12 @@ export const ModalPage = () => {
                                 </div>
                             </div>
                             {/* <!-- Extra Large Modal --> */}
-                            <div className="modal fade" id="exLargeModal" tabIndex="-1" aria-hidden="true">
+                            <div className="modal fade" id="exLargeModal" tabindex="-1" aria-hidden="true">
                                 <div className="modal-dialog modal-xl" role="document">
                                     <div className="modal-content">
                                         <div className="modal-header">
                                             <h5 className="modal-title" id="exampleModalLabel4">Modal title</h5>
-                                            <button aria-label='Click me'
+                                            <button 
                                                 type="button"
                                                 className="btn-close"
                                                 data-bs-dismiss="modal"
@@ -576,12 +576,12 @@ export const ModalPage = () => {
                         <div className="col-lg-4 col-md-3">
                             <small className="text-light fw-medium">Scrolling long content</small>
                             {/* <!-- Modal --> */}
-                            <div className="modal fade" id="modalLong" tabIndex="-1" aria-hidden="true">
+                            <div className="modal fade" id="modalLong" tabindex="-1" aria-hidden="true">
                                 <div className="modal-dialog" role="document">
                                     <div className="modal-content">
                                         <div className="modal-header">
                                             <h5 className="modal-title" id="modalLongTitle">Modal title</h5>
-                                            <button aria-label='Click me'
+                                            <button
                                                 type="button"
                                                 className="btn-close"
                                                 data-bs-dismiss="modal"
@@ -682,7 +682,7 @@ export const ModalPage = () => {
                                     <div className="modal-content">
                                         <div className="modal-header">
                                             <h5 className="modal-title" id="modalScrollableTitle">Modal title</h5>
-                                            <button aria-label='Click me'
+                                            <button
                                                 type="button"
                                                 className="btn-close"
                                                 data-bs-dismiss="modal"
@@ -812,12 +812,12 @@ export const ModalPage = () => {
                                 </button>
 
                                 {/* <!-- Modal --> */}
-                                <div className="modal fade" id="backDropModal" data-bs-backdrop="static" tabIndex="-1">
+                                <div className="modal fade" id="backDropModal" data-bs-backdrop="static" tabindex="-1">
                                     <div className="modal-dialog">
                                         <form className="modal-content">
                                             <div className="modal-header">
                                                 <h5 className="modal-title" id="backDropModalTitle">Modal title</h5>
-                                                <button aria-label='Click me'
+                                                <button 
                                                     type="button"
                                                     className="btn-close"
                                                     data-bs-dismiss="modal"

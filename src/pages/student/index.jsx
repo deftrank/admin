@@ -11,8 +11,8 @@ import { Pagination } from "react-bootstrap";
 import DeftInput from "../../components/deftInput/deftInput";
 import { Icon } from "@iconify/react";
 import Confirmation from "../../components/confirmationModel/confirmation";
-import moment from "moment/moment";
 import DeftDaterange from "../../components/deftDaterange/index";
+import moment from "moment-timezone"; // Import moment-timezone
 
 export default function index() {
   const dispatch = useDispatch();
@@ -60,12 +60,12 @@ export default function index() {
     const utcDateForStart = dateRange[0]?.startDate;
     const utcDateForEnd = dateRange[0]?.endDate;
 
-    const forStartDate = moment(utcDateForStart)
-      .tz("Asia/Kolkata")
-      .format("YYYY-MM-DD");
-    const forEndDate = moment(utcDateForEnd)
-      .tz("Asia/Kolkata")
-      .format("YYYY-MM-DD");
+    const forStartDate = utcDateForStart
+      ? moment(utcDateForStart).tz("Asia/Kolkata").format("YYYY-MM-DD")
+      : "";
+    const forEndDate = utcDateForEnd
+      ? moment(utcDateForEnd).tz("Asia/Kolkata").format("YYYY-MM-DD")
+      : "";
 
     const data = {
       startDate: forStartDate,
@@ -84,6 +84,12 @@ export default function index() {
     } else {
       navigate(`/student-details/${id}`);
     }
+  };
+
+  const changeDate = (date) => {
+    // Parse the ISO date string directly
+    const localDate = moment(date).local();
+    return localDate.format("DD/MM/YYYY"); // Use uppercase YYYY for year
   };
 
   const deleteAccount = () => {
@@ -226,9 +232,7 @@ export default function index() {
                   </td>
                   <td>
                     <p className="mb-0">
-                      {item?.createdAt
-                        ? moment(item?.createdAt).format("DD MMM YYYY")
-                        : "-"}
+                      {item?.createdAt ? changeDate(item?.createdAt) : "-"}
                     </p>
                   </td>
                   <td>
@@ -336,15 +340,20 @@ export default function index() {
                   </td>
                 </tr>
               ))}
-              <tr>
-                {listOfUserByAdmin?.length == 0 ? (
+
+              {listOfUserByAdmin?.length == 0 && (
+                <tr
+                  style={{
+                    height: "20rem",
+                    fontSize: "2rem",
+                    fontWeight: "600",
+                  }}
+                >
                   <td colSpan="12" className="text-center">
                     No Students listed yet!
                   </td>
-                ) : (
-                  ""
-                )}
-              </tr>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
