@@ -85,11 +85,12 @@ export default function index() {
       courseName: accountData?.current_course
         ? accountData?.current_course
         : "",
+      course_id: accountData?.course_id ? accountData?.course_id : "",
       semester: accountData?.semester,
       collage: accountData?.college_name,
     }));
 
-    setSem(courseList[0]?.semester);
+    setSem(accountData?.course_data?.semester);
   };
 
   const handleSubmit = () => {
@@ -139,6 +140,7 @@ export default function index() {
       course_name: formData?.courseName,
       semester: formData?.semester,
       college_name: formData?.collage,
+      course_id: formData?.course_id,
       language: "en",
     };
     dispatch(updateProfile(data, navigate));
@@ -147,8 +149,8 @@ export default function index() {
   return (
     <>
       <h5 className="mb-4 text-decoration-underline ">
-          <span
-            className="text-muted fw-light cursor-pointer"
+        <span
+          className="text-muted fw-light cursor-pointer"
           onClick={() => navigate("/students")}
         >
           Student /
@@ -250,16 +252,17 @@ export default function index() {
                   courseList &&
                   courseList?.map((item) => ({
                     label: `${item.full_name}`,
-                    value: item.full_name,
+                    value: item._id,
                   }))
                 }
-                value={formData?.courseName}
+                value={formData?.course_id}
                 onChange={(val) => {
                   const index = courseList?.findIndex(
-                    (item) => item.full_name === val
+                    (item) => item._id === val
                   );
                   setFormData((formData) => ({
                     ...formData,
+                    course_id: val,
                     courseName: courseList[index]?.full_name,
                   }));
                   setFormDataError((formDataError) => ({
