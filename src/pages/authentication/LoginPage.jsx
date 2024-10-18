@@ -88,12 +88,12 @@ export const LoginPage = () => {
           <label className="form-label" htmlFor="password">
             Password
           </label>
-          <Link
+          {/* <Link
             aria-label="Go to Forgot Password Page"
             to="/forget-password"
           >
             <small>Forgot Password?</small>
-          </Link>
+          </Link> */}
         </div>
         <DeftInput
           placeholder="Enter password"
@@ -120,7 +120,8 @@ export const LoginPage = () => {
         <button
           aria-label="Click me"
           className="btn btn-primary d-grid w-100"
-          type="submit" onClick={handleSubmit}
+          type="submit"
+          onClick={handleSubmit}
         >
           Sign in
         </button>
