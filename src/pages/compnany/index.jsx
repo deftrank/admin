@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Pagination } from "react-bootstrap";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import {
+  clearAllState,
   deleteUser,
   getListOfCompanyByAdmin,
   suspendUser,
@@ -14,6 +15,7 @@ import CompanyDefault from "../../assets/img/companyDefaul.png";
 import Confirmation from "../../components/confirmationModel/confirmation";
 import DeftDaterange from "../../components/deftDaterange/index";
 import moment from "moment-timezone"; // Import moment-timezone
+import { changeDate } from "../../utils/appConstant";
 
 export default function index() {
   const { listOfCompanyByAdmin, compnanyTotalCount } = useSelector(
@@ -184,7 +186,11 @@ export default function index() {
                 aria-label="Click me"
                 type="submit"
                 className="btn btn-primary me-2"
-                onClick={() => handleClose("", "add")}
+                onClick={() => {
+                  handleClose("", "add");
+
+                  dispatch(clearAllState());
+                }}
               >
                 Add Company
               </button>
@@ -199,6 +205,7 @@ export default function index() {
                 <th>Category</th>
                 <th>Website</th>
                 <th>Address</th>
+                <th>Joined On</th>
                 <th>Status</th>
                 <th>Action</th>
               </tr>
@@ -232,16 +239,21 @@ export default function index() {
                     </div>
                   </td>
                   <td>
+                    <p className="mb-0">
+                      {item?.createdAt ? changeDate(item?.createdAt) : "-"}
+                    </p>
+                  </td>
+                  <td>
                     <span
                       className={`badge ${
                         item?.auth_id?.suspend_status == "active"
                           ? "bg-label-success"
+                          : item?.auth_id?.suspend_status == "pending"
+                          ? "bg-label-warning"
                           : "bg-label-danger"
-                      } me-1`}
+                      } me-1 text-capitalize`}
                     >
-                      {item?.auth_id?.suspend_status == "active"
-                        ? "Active"
-                        : "Suspended"}
+                      {item?.auth_id?.suspend_status}
                     </span>
                   </td>
                   <td>
@@ -292,20 +304,34 @@ export default function index() {
                               ...changePasswordModal,
                               show: true,
                               id: item.auth_id._id,
-                              title: "Disable Company",
+                              title: `${
+                                item?.auth_id?.suspend_status == "active"
+                                  ? "Suspend"
+                                  : "Enable"
+                              } Company`,
                               data: item,
-                              message:
-                                "Are you sure you want to disable this company",
+                              message: `Are you sure you want to ${
+                                item?.auth_id?.suspend_status == "active"
+                                  ? "suspend"
+                                  : "enable"
+                              } this company`,
                               type: "Disable",
                             }));
                           }}
                         >
                           <Icon
-                            icon="lsicon:disable-outline"
+                            icon={
+                              item?.auth_id?.suspend_status == "active"
+                                ? "lsicon:disable-outline"
+                                : "fontisto:radio-btn-active"
+                            }
                             height={20}
                             className={"me-1"}
                           />{" "}
-                          Disable Company
+                          {item?.auth_id?.suspend_status == "active"
+                            ? "Suspend"
+                            : "Enable"}{" "}
+                          Company
                         </a>
                         <a
                           aria-label="dropdown action option"

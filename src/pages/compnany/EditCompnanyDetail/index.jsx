@@ -70,7 +70,6 @@ export default function index() {
   const showAccountDetails = () => {
     // console.log("userAccountDetails == ", userAccountDetails);
     const accountData = userAccountDetails?.accountData;
-    const authdata = userAccountDetails?.authData;
     setFormData((formData) => ({
       ...formData,
       company_name: accountData?.registered_name,
@@ -79,7 +78,9 @@ export default function index() {
       company_person_name: accountData?.contact_person_name,
       email: accountData?.auth_id?.email,
       phone: accountData?.auth_id?.phone,
-      countryCode: accountData?.auth_id?.country_code,
+      countryCode: accountData?.auth_id?.country_code
+        ? accountData?.auth_id?.country_code
+        : "+91",
       company_website: accountData?.company_website,
       linkedin_url: accountData?.linkedin_url,
       skill_ids: accountData?.skills_id[0]?._id,
@@ -168,7 +169,7 @@ export default function index() {
     if (!formData?.category_id) {
       setFormDataError((formDataError) => ({
         ...formDataError,
-        category_id: "Please enter your course name.",
+        category_id: "Please select category.",
       }));
       return;
     }
@@ -226,7 +227,7 @@ export default function index() {
     if (!formData?.skill_ids || formData?.skills?.length < 0) {
       setFormDataError((prevError) => ({
         ...prevError,
-        skills: "Please  select most hired skills",
+        skill_ids: "Please  select most hired skills",
       }));
       return;
     }
@@ -442,6 +443,11 @@ export default function index() {
             </div>
             <div className="mb-3 col-md-6">
               <DeftInput
+                readOnly={
+                  id && userAccountDetails?.accountData?.auth_id?.email
+                    ? true
+                    : false
+                }
                 label="Official Mail Id"
                 placeholder="Enter Official Mail Id"
                 error={formDataError?.email}
@@ -461,6 +467,11 @@ export default function index() {
             </div>
             <div className="mb-3 col-md-6">
               <PhoneInputField
+                readOnly={
+                  id && userAccountDetails?.accountData?.auth_id?.phone
+                    ? true
+                    : false
+                }
                 label="Contact Number"
                 value={JSON.stringify(formData?.countryCode + formData.phone)}
                 error={formDataError?.phone}
@@ -536,7 +547,7 @@ export default function index() {
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
-                    skills: "",
+                    skill_ids: "",
                   }));
                 }}
                 placeholder="Current Course Name *"
@@ -593,7 +604,7 @@ export default function index() {
                     country: val,
                   }));
                 }}
-                placeholder="Country"
+                placeholder="Select Country"
                 dropdownHeight="200px"
                 multi={false}
               />
@@ -601,6 +612,7 @@ export default function index() {
             <div className="mb-3 col-md-6">
               <DeftSelect
                 label="State"
+                placeholder="Select State"
                 error={formDataError?.state}
                 options={
                   stateListData &&
@@ -635,6 +647,7 @@ export default function index() {
             <div className="mb-3 col-md-6">
               <DeftSelect
                 label="City"
+                placeholder="Select City"
                 error={formDataError?.city}
                 options={
                   cityListData &&

@@ -81,7 +81,7 @@ export default function index() {
       last_name: accountData?.last_name,
       email: authdata?.email,
       phone: authdata?.phone,
-      countryCode: authdata?.country_code,
+      countryCode: authdata?.country_code ? authdata?.country_code : "+91",
       courseName: accountData?.current_course
         ? accountData?.current_course
         : "",
@@ -198,7 +198,9 @@ export default function index() {
             </div>
             <div className="mb-3 col-md-6">
               <DeftInput
-                readOnly={true}
+                readOnly={
+                  id && userAccountDetails?.authData?.email ? true : false
+                }
                 label="Email Id"
                 placeholder="Enter Email Id"
                 error={formDataError?.email}
@@ -218,7 +220,9 @@ export default function index() {
             </div>
             <div className="mb-3 col-md-6">
               <PhoneInputField
-                readOnly={true}
+                readOnly={
+                  id && userAccountDetails?.authData?.phone ? true : false
+                }
                 label="Phone Number"
                 error={formDataError?.phone}
                 value={JSON.stringify(formData?.countryCode + formData.phone)}

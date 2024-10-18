@@ -2,7 +2,7 @@
 import "react-phone-input-2/lib/style.css";
 import PhoneInput from "react-phone-input-2";
 export default function PhoneInputField(props) {
-  const { value, setPhoneData, error, label } = props;
+  const { value, setPhoneData, error, label, readOnly } = props;
 
   return (
     <>
@@ -20,6 +20,7 @@ export default function PhoneInputField(props) {
         international={true}
         country="in"
         value={value}
+        disabled={readOnly}
         onChange={(val, data) => {
           // Extract the phone number without the country code
           let phoneNumber = val.slice(data?.dialCode?.length).trim();

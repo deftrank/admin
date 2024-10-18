@@ -13,6 +13,7 @@ import { Icon } from "@iconify/react";
 import Confirmation from "../../components/confirmationModel/confirmation";
 import DeftDaterange from "../../components/deftDaterange/index";
 import moment from "moment-timezone"; // Import moment-timezone
+import { changeDate } from "../../utils/appConstant";
 
 export default function index() {
   const dispatch = useDispatch();
@@ -84,12 +85,6 @@ export default function index() {
     } else {
       navigate(`/student-details/${id}`);
     }
-  };
-
-  const changeDate = (date) => {
-    // Parse the ISO date string directly
-    const localDate = moment(date).local();
-    return localDate.format("DD/MM/YYYY"); // Use uppercase YYYY for year
   };
 
   const deleteAccount = () => {
@@ -241,11 +236,9 @@ export default function index() {
                         item?.auth_id?.suspend_status == "active"
                           ? "bg-label-success"
                           : "bg-label-danger"
-                      } me-1`}
+                      } me-1 text-capitalize`}
                     >
-                      {item?.auth_id?.suspend_status == "active"
-                        ? "Active"
-                        : "Suspended"}
+                      {item?.auth_id?.suspend_status}
                     </span>
                   </td>
                   <td>
@@ -270,7 +263,7 @@ export default function index() {
                             height={20}
                             className={"me-1"}
                           />{" "}
-                          Edit Account
+                          Edit User
                         </a>
                         <a
                           aria-label="dropdown action option"
@@ -285,7 +278,7 @@ export default function index() {
                             height={20}
                             className={"me-1"}
                           />{" "}
-                          View Account
+                          View User
                         </a>
                         <a
                           aria-label="dropdown action option"
@@ -296,20 +289,33 @@ export default function index() {
                               ...changePasswordModal,
                               show: true,
                               id: item.auth_id._id,
-                              title: "Disable Account",
+                              title: `${
+                                item?.auth_id?.suspend_status == "active"
+                                  ? "Suspend"
+                                  : "Enable"
+                              } User`,
                               data: item,
-                              message:
-                                "Are you sure you want to disable this account",
-                              type: "Disable",
+                              message: `Are you sure you want to ${
+                                item?.auth_id?.suspend_status == "active"
+                                  ? "suspend"
+                                  : "enable"
+                              } this user`,
                             }));
                           }}
                         >
                           <Icon
-                            icon="lsicon:disable-outline"
+                            icon={
+                              item?.auth_id?.suspend_status == "active"
+                                ? "lsicon:disable-outline"
+                                : "fontisto:radio-btn-active"
+                            }
                             height={20}
                             className={"me-1"}
                           />{" "}
-                          Disable Account
+                          {item?.auth_id?.suspend_status == "active"
+                            ? "Suspend"
+                            : "Enable"}{" "}
+                          User
                         </a>
                         <a
                           aria-label="dropdown action option"
@@ -320,10 +326,10 @@ export default function index() {
                               ...changePasswordModal,
                               show: true,
                               id: item.auth_id._id,
-                              title: "Delete Account",
+                              title: "Delete User",
                               data: item,
                               message:
-                                "Are you sure you want to delete this account",
+                                "Are you sure you want to delete this user",
                               type: "Delete",
                             }));
                           }}
@@ -333,7 +339,7 @@ export default function index() {
                             height={20}
                             className={"me-1"}
                           />{" "}
-                          Delete Account
+                          Delete User
                         </a>
                       </div>
                     </div>

@@ -86,7 +86,7 @@ export default function index() {
                     <div className="col-4 pt-2">
                       <div className="d-flex align-items-center">
                         <Icon
-                          icon="mdi:email-outline"
+                          icon="mdi:tag"
                           className="fs-2 me-3" // Increased margin for more space
                           style={{ color: color.secondaryGray }}
                         />
@@ -103,7 +103,7 @@ export default function index() {
                     <div className="col-4 pt-2">
                       <div className="d-flex align-items-center">
                         <Icon
-                          icon="mdi:phone-outline"
+                          icon="mdi:account"
                           className="fs-2 me-3" // Increased margin for more space
                           style={{ color: color.secondaryGray }}
                         />
@@ -122,7 +122,7 @@ export default function index() {
                     <div className="col-4 pt-2">
                       <div className="d-flex align-items-center">
                         <Icon
-                          icon="mdi:calendar-outline"
+                          icon="mdi:email"
                           className="fs-2 me-3" // Increased margin for more space
                           style={{ color: color.secondaryGray }}
                         />
@@ -141,7 +141,7 @@ export default function index() {
                     <div className="col-4 pt-2">
                       <div className="d-flex align-items-center">
                         <Icon
-                          icon="mdi:book-open-outline"
+                          icon="mdi:phone"
                           className="fs-2 me-3" // Increased margin for more space
                           style={{ color: color.secondaryGray }}
                         />
@@ -160,7 +160,7 @@ export default function index() {
                     <div className="col-4 pt-2">
                       <div className="d-flex align-items-center">
                         <Icon
-                          icon="mdi:school-outline"
+                          icon="mdi:web"
                           className="fs-2 me-3" // Increased margin for more space
                           style={{ color: color.secondaryGray }}
                         />
@@ -177,7 +177,7 @@ export default function index() {
                     <div className="col-4 pt-2">
                       <div className="d-flex align-items-center">
                         <Icon
-                          icon="mdi:calendar-month-outline"
+                          icon="mdi:linkedin"
                           className="fs-2 me-3" // Increased margin for more space
                           style={{ color: color.secondaryGray }}
                         />
@@ -193,7 +193,7 @@ export default function index() {
                     {/* Location */}
                     <div className="col-8 pt-2 d-flex align-items-center">
                       <Icon
-                        icon="mdi:map-marker-outline"
+                        icon="mdi:map-marker"
                         className="fs-2 me-3" // Increased margin for more space
                         style={{ color: color.secondaryGray }}
                       />

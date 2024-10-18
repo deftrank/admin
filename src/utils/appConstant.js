@@ -1,3 +1,4 @@
+// @ts-nocheck
 import moment from 'moment';
 import { useEffect } from 'react';
 import secureLocalStorage from 'react-secure-storage';
@@ -174,4 +175,12 @@ export const convertUTCToLocalTime = (eventDate) => {
   let minutes = moment(localTime, 'YYYY/MM/DD HH:mm').minutes();
   localTime = new Date(year, month, day, hours, minutes, 0);
   return localTime;
+};
+
+
+
+export const changeDate = (date) => {
+  // Parse the ISO date string directly
+  const localDate = moment(date).local();
+  return localDate.format("DD/MM/YYYY"); // Use uppercase YYYY for year
 };

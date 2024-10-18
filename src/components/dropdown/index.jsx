@@ -11,6 +11,7 @@ const DeftSelect = ({
   error,
   ...props
 }) => {
+
   return (
     <>
       <label className="form-label" htmlFor="country">
@@ -21,7 +22,7 @@ const DeftSelect = ({
         value={value} // Control the select value
         onChange={(e) => onChange(e.target.value)}
       >
-        <option value="" disabled selected={value == ""}>
+        <option value="" disabled selected={value == undefined || null || ""}>
           {placeholder}
         </option>
         {options?.map((item) => (

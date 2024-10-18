@@ -59,12 +59,14 @@ const slice = createSlice({
       state.universityList = action.payload;
     },
     listOfUserByAdminSuccess(state, action) {
-      state.userTotalCount = "empty" ? 0 : action.payload.total_count;
+      state.userTotalCount =
+        action.payload.flag == "empty" ? 0 : action.payload.total_count;
       state.listOfUserByAdmin =
         action.payload.flag == "empty" ? [] : action.payload.data;
     },
     listOfCompanyByAdminSuccess(state, action) {
-      state.compnanyTotalCount = "empty" ? 0 : action.payload.total_count;
+      state.compnanyTotalCount =
+        action.payload.flag == "empty" ? 0 : action.payload.total_count;
       state.listOfCompanyByAdmin =
         action.payload.flag == "empty" ? [] : action.payload.data;
     },
@@ -121,6 +123,9 @@ const slice = createSlice({
     getStateListSuccess: (state, action) => {
       state.stateListData = action.payload;
     },
+    clearStateSuccess: (state, action) => {
+      state.userAccountDetails = null;
+    },
   },
 });
 
@@ -145,6 +150,7 @@ const {
   getStateListSuccess,
   getCountryListSuccess,
   getCityListSuccess,
+  clearStateSuccess,
 } = slice.actions;
 
 //  stepper currentIndex
@@ -493,4 +499,8 @@ export const submitEducationData = (data) => async (dispatch) => {
     console.error(e.message);
     // toast.error("An error occurred while fetching the college list."); // Optional error message
   }
+};
+
+export const clearAllState = () => async (dispatch) => {
+  dispatch(clearStateSuccess());
 };
