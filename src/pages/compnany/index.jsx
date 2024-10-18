@@ -18,9 +18,8 @@ import moment from "moment-timezone"; // Import moment-timezone
 import { changeDate } from "../../utils/appConstant";
 
 export default function index() {
-  const { listOfCompanyByAdmin, compnanyTotalCount } = useSelector(
-    (state) => state.onBoarding
-  );
+  const { listOfCompanyByAdmin, compnanyTotalCount, companyCount } =
+    useSelector((state) => state.onBoarding);
   const loadingBarRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -144,15 +143,16 @@ export default function index() {
                 <button
                   aria-label="Click me"
                   type="button"
-                  className="btn btn-outline-primary dropdown-toggle"
+                  className="btn btn-outline-primary dropdown-toggle text-capitalize"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  Status
+                  {status ? `${status} Company` : "Company Status"}
                 </button>
                 <ul className="dropdown-menu">
                   <li>
                     <a
+                      style={{ cursor: "pointer" }}
                       aria-label="dropdown action link"
                       className="dropdown-item"
                       onClick={() => setStatus("active")}
@@ -162,6 +162,17 @@ export default function index() {
                   </li>
                   <li>
                     <a
+                      style={{ cursor: "pointer" }}
+                      aria-label="dropdown action link"
+                      className="dropdown-item"
+                      onClick={() => setStatus("pending")}
+                    >
+                      Pending
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      style={{ cursor: "pointer" }}
                       aria-label="dropdown action link"
                       className="dropdown-item"
                       onClick={() => setStatus("suspended")}
@@ -171,6 +182,7 @@ export default function index() {
                   </li>
                   <li>
                     <a
+                      style={{ cursor: "pointer" }}
                       aria-label="dropdown action link"
                       className="dropdown-item"
                       onClick={() => setStatus("")}
@@ -225,7 +237,17 @@ export default function index() {
                     </div>
                   </td>
                   <td>{item.category}</td>
-                  <td>{item.company_website}</td>
+                  <td>
+                    <div
+                      style={{
+                        width: "10vw",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {item.company_website}
+                    </div>
+                  </td>
 
                   <td>
                     <div
@@ -372,7 +394,9 @@ export default function index() {
                   }}
                 >
                   <td colSpan="12" className="text-center">
-                    No companies have been listed yet!
+                    {companyCount == 0
+                      ? "No companies have been listed yet!"
+                      : "No result available"}
                   </td>
                 </tr>
               )}

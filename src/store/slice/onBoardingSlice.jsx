@@ -31,6 +31,8 @@ const slice = createSlice({
     countryListData: [],
     cityListData: [],
     stateListData: [],
+    userCount: 0,
+    companyCount: 0,
   },
   reducers: {
     onBoardingSuccess: (state, action) => {
@@ -61,12 +63,16 @@ const slice = createSlice({
     listOfUserByAdminSuccess(state, action) {
       state.userTotalCount =
         action.payload.flag == "empty" ? 0 : action.payload.total_count;
+      state.userCount =
+        action.payload.flag == "empty" ? 0 : action.payload.count;
       state.listOfUserByAdmin =
         action.payload.flag == "empty" ? [] : action.payload.data;
     },
     listOfCompanyByAdminSuccess(state, action) {
       state.compnanyTotalCount =
         action.payload.flag == "empty" ? 0 : action.payload.total_count;
+      state.companyCount =
+        action.payload.flag == "empty" ? 0 : action.payload.count;
       state.listOfCompanyByAdmin =
         action.payload.flag == "empty" ? [] : action.payload.data;
     },
@@ -370,8 +376,9 @@ export const deleteUser =
               suspendType: suspendType,
             })
           );
+          toast.success(result.message);
         } else {
-          // toast.error(result.message);
+          toast.error(result.message);
         }
         // loadingBarRef.current.complete();
       });

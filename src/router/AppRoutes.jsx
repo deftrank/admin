@@ -135,6 +135,9 @@ const AppRoutes = () => {
         { path: "company-add", element: <EditCompnany /> },
         { path: "company-edit/:id", element: <EditCompnany /> },
         { path: "company-details/:id", element: <CompnanyProfile /> },
+        { path: "job", element: <DashboardPage /> },
+        { path: "internship", element: <DashboardPage /> },
+        { path: "transaction", element: <DashboardPage /> },
       ],
     },
     {

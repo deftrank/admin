@@ -30,14 +30,14 @@ export default function index() {
   return (
     <>
       <section className="py-4 container-fluid">
-        <h5 className="mb-4">
+        <h5 className="mb-4 text-decoration-underline ">
           <span
-            className="text-muted fw-light"
+            className="text-muted fw-light cursor-pointer"
             onClick={() => navigate("/company")}
           >
             Company /
           </span>{" "}
-          Detail
+          Details
         </h5>
         <div className=" py-3 ">
           <div className="shadow-lg position-relative rounded-4">

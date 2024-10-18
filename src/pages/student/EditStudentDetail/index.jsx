@@ -5,7 +5,6 @@ import PhoneInputField from "../../../components/phoneInput/phoneInput";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import DeftSelect from "../../../components/dropdown";
-import { sem } from "../../../components/jsonData";
 import {
   accountDetails,
   getCollageList,
@@ -18,6 +17,7 @@ import { isEmailValid } from "../../../utils/appValidation";
 export default function index() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({});
+  const [sem, setSem] = useState([]);
   const [formDataError, setFormDataError] = useState({});
   const { loginUserData } = useSelector((state) => state.auth);
   const { collageList, courseList, userAccountDetails } = useSelector(
@@ -88,6 +88,8 @@ export default function index() {
       semester: accountData?.semester,
       collage: accountData?.college_name,
     }));
+
+    setSem(courseList[0]?.semester);
   };
 
   const handleSubmit = () => {
@@ -144,9 +146,9 @@ export default function index() {
 
   return (
     <>
-      <h5 className="mb-4">
-        <span
-          className="text-muted fw-light"
+      <h5 className="mb-4 text-decoration-underline ">
+          <span
+            className="text-muted fw-light cursor-pointer"
           onClick={() => navigate("/students")}
         >
           Student /
@@ -248,21 +250,24 @@ export default function index() {
                   courseList &&
                   courseList?.map((item) => ({
                     label: `${item.full_name}`,
-                    id: item._id,
+                    value: item.full_name,
                   }))
                 }
                 value={formData?.courseName}
                 onChange={(val) => {
+                  const index = courseList?.findIndex(
+                    (item) => item.full_name === val
+                  );
                   setFormData((formData) => ({
                     ...formData,
-                    courseName: val,
+                    courseName: courseList[index]?.full_name,
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
                     courseName: "",
                   }));
+                  setSem(courseList[index]?.semester);
                 }}
-                dropdownHeight="200px"
                 multi={false}
               />
             </div>
@@ -271,7 +276,13 @@ export default function index() {
                 label="Semester"
                 placeholder="Select Semester"
                 error={formDataError?.semester}
-                options={sem}
+                options={
+                  sem &&
+                  sem?.map((item) => ({
+                    label: `${item}`,
+                    value: item,
+                  }))
+                }
                 value={formData?.semester}
                 onChange={(val) => {
                   setFormData((formData) => ({
@@ -283,7 +294,6 @@ export default function index() {
                     semester: "",
                   }));
                 }}
-                dropdownHeight="200px"
                 multi={false}
               />
             </div>
@@ -296,7 +306,7 @@ export default function index() {
                   collageList &&
                   collageList?.map((item) => ({
                     label: `${item.college_name}`,
-                    id: item._id,
+                    value: item.college_name,
                   }))
                 }
                 value={formData?.collage}
@@ -310,7 +320,6 @@ export default function index() {
                     collage: "",
                   }));
                 }}
-                dropdownHeight="200px"
                 multi={false}
               />
             </div>

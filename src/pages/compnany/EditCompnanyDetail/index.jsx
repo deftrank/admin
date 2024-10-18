@@ -83,8 +83,10 @@ export default function index() {
         : "+91",
       company_website: accountData?.company_website,
       linkedin_url: accountData?.linkedin_url,
-      skill_ids: accountData?.skills_id[0]?._id,
-      skill_names: accountData?.skills_id[0]?.name,
+      skill_ids: accountData?.skills_id ? accountData?.skills_id[0]?._id : "",
+      skill_names: accountData?.skills_id
+        ? accountData?.skills_id[0]?.name
+        : "",
       company_address: accountData?.company_address,
       country_id: accountData?.country_id,
       country_name: accountData?.country,
@@ -213,14 +215,14 @@ export default function index() {
     if (!formData?.company_website) {
       setFormDataError((prevError) => ({
         ...prevError,
-        company_website: "Please enter your company website url",
+        company_website: "Please enter your company website URL",
       }));
       return;
     }
     if (!formData?.linkedin_url) {
       setFormDataError((prevError) => ({
         ...prevError,
-        linkedin_url: "Please enter your Linkedin url",
+        linkedin_url: "Please enter your Linkedin URL",
       }));
       return;
     }
@@ -313,9 +315,9 @@ export default function index() {
   };
   return (
     <>
-      <h5 className="mb-4">
+      <h5 className="mb-4 text-decoration-underline ">
         <span
-          className="text-muted fw-light"
+          className="text-muted fw-light cursor-pointer"
           onClick={() => navigate("/company")}
         >
           Company /
@@ -374,8 +376,8 @@ export default function index() {
           <div className="row">
             <div className="mb-3 col-md-6">
               <DeftInput
-                label="Company Registered Name"
-                placeholder="Enter Company Registered Name"
+                label="REGISTERED COMPANY NAME"
+                placeholder="Enter Registered Company Name"
                 error={formDataError?.company_name}
                 value={formData?.company_name}
                 type="text"
@@ -685,11 +687,12 @@ export default function index() {
                 placeholder="Enter Pin Code"
                 error={formDataError?.pin_code}
                 value={formData?.pin_code}
+                maxLength={6}
                 type="text"
                 onchange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    pin_code: val,
+                    pin_code: val.replace(/[^0-9.]/g, ""),
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,

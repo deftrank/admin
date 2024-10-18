@@ -16,6 +16,7 @@ export default function DeftInput(props) {
     id,
     label,
     onClick,
+    maxLength
   } = props;
 
   return (
@@ -42,6 +43,7 @@ export default function DeftInput(props) {
           autoFocus={autoFocus}
           readOnly={readOnly}
           onClick={onClick}
+          maxLength={maxLength}
         />
         {rightIcon && (
           <span className="input-group-text" onClick={rightIconClick}>

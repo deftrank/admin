@@ -18,7 +18,7 @@ import { changeDate } from "../../utils/appConstant";
 export default function index() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { listOfUserByAdmin, userTotalCount } = useSelector(
+  const { listOfUserByAdmin, userTotalCount, userCount } = useSelector(
     (state) => state.onBoarding
   );
   const [currentPage, setCurrentPage] = useState(1);
@@ -140,15 +140,16 @@ export default function index() {
                 <button
                   aria-label="Click me"
                   type="button"
-                  className="btn btn-outline-primary dropdown-toggle"
+                  className="btn btn-outline-primary dropdown-toggle text-capitalize"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  Status
+                  {status ? `${status} Users` : "User Status"}
                 </button>
                 <ul className="dropdown-menu">
                   <li>
                     <a
+                      style={{ cursor: "pointer" }}
                       aria-label="dropdown action link"
                       className="dropdown-item"
                       onClick={() => setStatus("active")}
@@ -158,15 +159,17 @@ export default function index() {
                   </li>
                   <li>
                     <a
+                      style={{ cursor: "pointer" }}
                       aria-label="dropdown action link"
                       className="dropdown-item"
                       onClick={() => setStatus("suspended")}
                     >
-                      Suspend
+                      Suspended
                     </a>
                   </li>
                   <li>
                     <a
+                      style={{ cursor: "pointer" }}
                       aria-label="dropdown action link"
                       className="dropdown-item"
                       onClick={() => setStatus("")}
@@ -198,26 +201,49 @@ export default function index() {
               {listOfUserByAdmin?.map((item) => (
                 <tr key={item?.id}>
                   <td>
-                    {" "}
-                    {item?.first_name
-                      ? item?.first_name + " " + item?.last_name
-                      : "-"}
+                    <div
+                      style={{
+                        width: "8vw",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {item?.first_name
+                        ? item?.first_name + " " + item?.last_name
+                        : "-"}
+                    </div>
                   </td>
-                  <td>{item?.auth_id?.email ? item?.auth_id?.email : "-"}</td>
+                  <td>
+                    <div
+                      style={{
+                        width: "8vw",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {item?.auth_id?.email ? item?.auth_id?.email : "-"}
+                    </div>
+                  </td>
                   <td>
                     {item?.auth_id?.phone
                       ? item?.auth_id?.country_code + item?.auth_id?.phone
                       : "-"}
                   </td>
                   <td>
-                    <p className="mb-0">
+                    <div
+                      style={{
+                        width: "8vw",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
                       {item?.current_course ? item?.current_course : "-"}
-                    </p>
+                    </div>
                   </td>
                   <td>
                     <div
                       style={{
-                        width: "20rem",
+                        width: "8vw",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                       }}
@@ -356,7 +382,9 @@ export default function index() {
                   }}
                 >
                   <td colSpan="12" className="text-center">
-                    No Students listed yet!
+                    {userCount == 0
+                      ? "No Students listed yet!"
+                      : "No result available"}
                   </td>
                 </tr>
               )}

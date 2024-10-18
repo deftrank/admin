@@ -19,7 +19,6 @@
                 "available": true,
                 "link": "/students"
             }
-           
         ]
     },
     {
@@ -30,20 +29,18 @@
                 "icon": "bx bx-box",
                 "available": true,
                 "link": "/company"
-               
             },
-        
             {
                 "text": "Jobs",
                 "icon": "bx bx-table",
                 "available": true,
-                "link": "/"
+                "link": "/job"
             },
             {
                 "text": "Internships",
                 "icon": "bx bx-table",
                 "available": true,
-                "link": "/"
+                "link": "/internship"
             }
         ]
     },
@@ -54,10 +51,8 @@
                 "text": "Transactions",
                 "icon": "bx bx-box",
                 "available": true,
-                "link": ""
-               
+                "link": "/transaction"
             }
         ]
     }
-    
 ]

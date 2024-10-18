@@ -184,3 +184,7 @@ export const changeDate = (date) => {
   const localDate = moment(date).local();
   return localDate.format("DD/MM/YYYY"); // Use uppercase YYYY for year
 };
+
+export const makeAnArray = (n) => {
+  return Array.from({ length: n }, (u, i) => i);
+};
