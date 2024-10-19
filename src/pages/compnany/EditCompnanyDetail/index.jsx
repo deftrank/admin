@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DeftInput from "../../../components/deftInput/deftInput";
 import PhoneInputField from "../../../components/phoneInput/phoneInput";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,6 +23,7 @@ import {
 } from "../../../utils/appValidation";
 import { Form } from "react-bootstrap";
 import profile from "../../../assets/img/companyDefaul.png";
+import LoadingBar from "react-top-loading-bar";
 
 // @ts-nocheck
 export default function index() {
@@ -31,6 +32,7 @@ export default function index() {
   const [formData, setFormData] = useState({});
   const [formDataError, setFormDataError] = useState({});
   const [locationData, setLocationData] = useState({});
+  const loadingBarRef = useRef(null);
   const { loginUserData } = useSelector((state) => state.auth);
   const {
     companyCategoryList,
@@ -156,7 +158,7 @@ export default function index() {
       auth_id: id,
       language: "en",
     };
-    dispatch(accountDetails(data));
+    dispatch(accountDetails(data,loadingBarRef));
   };
 
   const handleSubmit = () => {
@@ -769,6 +771,7 @@ export default function index() {
           </div>
         </div>
       </div>
+      <LoadingBar color={"#0b0b7c"} height="0.5rem" ref={loadingBarRef} />
     </>
   );
 }

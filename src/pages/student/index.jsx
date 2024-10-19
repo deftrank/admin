@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
@@ -14,6 +14,7 @@ import Confirmation from "../../components/confirmationModel/confirmation";
 import DeftDaterange from "../../components/deftDaterange/index";
 import moment from "moment-timezone"; // Import moment-timezone
 import { changeDate } from "../../utils/appConstant";
+import LoadingBar from "react-top-loading-bar";
 
 export default function index() {
   const dispatch = useDispatch();
@@ -28,6 +29,7 @@ export default function index() {
   const [changePasswordModal, setChangePasswordModal] = useState([]);
   const [dateRange, setDateRange] = useState({});
   const [status, setStatus] = useState("");
+  const loadingBarRef = useRef(null);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -76,7 +78,7 @@ export default function index() {
       page: currentPage,
       limit: itemsPerPage,
     };
-    dispatch(getListOfUserByAdmin(data));
+    dispatch(getListOfUserByAdmin(data, loadingBarRef));
   };
 
   const handleClose = (id, flag) => {
@@ -110,80 +112,80 @@ export default function index() {
   return (
     <>
       <div className="card">
-      <div class="p-3">
-        <h4>Students</h4>
+        <div class="p-3">
+          <h4>Students</h4>
           <div class="d-flex justify-content-between">
-          <div class="row">
-            <div class="col-5 input-group-merge">
-              <DeftInput
-                placeholder="Search by name"
-                type="text"
-                value={searchData}
-                onchange={(value) => {
-                  setCurrentPage(1);
-                  setSearchData(value);
-                }}
-                leftIcon={<i className="bx bx-search"></i>}
-              />  
-            </div>
-            <div class="col-4 p-0 input-group-merge">
-            <DeftDaterange
-                placeholder="Filter by Date"
-                type="text"
-                value={searchData}
-                onchange={(value) => {
-                  setDateRange(value);
-                }}
-                leftIcon={<i className="bx bx-search"></i>}
-              />
-            </div>
-            <div class="col-3">
-              <div className="btn-group">
-                <button
-                style={{minWidth:120}}
-                  aria-label="Click me"
-                  type="button"
-                  className="btn btn-outline-primary dropdown-toggle text-capitalize"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  {status ? `${status}` : "All Users"}
-                </button>
-                <ul className="dropdown-menu">
-                  <li>
-                    <a
-                      style={{ cursor: "pointer" }}
-                      aria-label="dropdown action link"
-                      className="dropdown-item"
-                      onClick={() => setStatus("active")}
-                    >
-                      Active
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      style={{ cursor: "pointer" }}
-                      aria-label="dropdown action link"
-                      className="dropdown-item"
-                      onClick={() => setStatus("suspended")}
-                    >
-                      Suspended
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      style={{ cursor: "pointer" }}
-                      aria-label="dropdown action link"
-                      className="dropdown-item"
-                      onClick={() => setStatus("")}
-                    >
-                      Np Filter
-                    </a>
-                  </li>
-                </ul>
+            <div class="row">
+              <div class="col-5 input-group-merge">
+                <DeftInput
+                  placeholder="Search by name"
+                  type="text"
+                  value={searchData}
+                  onchange={(value) => {
+                    setCurrentPage(1);
+                    setSearchData(value);
+                  }}
+                  leftIcon={<i className="bx bx-search"></i>}
+                />
+              </div>
+              <div class="col-4 p-0 input-group-merge">
+                <DeftDaterange
+                  placeholder="Filter by Date"
+                  type="text"
+                  value={searchData}
+                  onchange={(value) => {
+                    setDateRange(value);
+                  }}
+                  leftIcon={<i className="bx bx-search"></i>}
+                />
+              </div>
+              <div class="col-3">
+                <div className="btn-group">
+                  <button
+                    style={{ minWidth: 120 }}
+                    aria-label="Click me"
+                    type="button"
+                    className="btn btn-outline-primary dropdown-toggle text-capitalize"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    {status ? `${status}` : "All Users"}
+                  </button>
+                  <ul className="dropdown-menu">
+                    <li>
+                      <a
+                        style={{ cursor: "pointer" }}
+                        aria-label="dropdown action link"
+                        className="dropdown-item"
+                        onClick={() => setStatus("active")}
+                      >
+                        Active
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        style={{ cursor: "pointer" }}
+                        aria-label="dropdown action link"
+                        className="dropdown-item"
+                        onClick={() => setStatus("suspended")}
+                      >
+                        Suspended
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        style={{ cursor: "pointer" }}
+                        aria-label="dropdown action link"
+                        className="dropdown-item"
+                        onClick={() => setStatus("")}
+                      >
+                        Np Filter
+                      </a>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
-          </div>
           </div>
         </div>
 
@@ -465,6 +467,7 @@ export default function index() {
           }
         />
       )}
+      <LoadingBar color={"#0b0b7c"} height="0.5rem" ref={loadingBarRef} />
     </>
   );
 }

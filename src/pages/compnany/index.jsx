@@ -16,11 +16,11 @@ import Confirmation from "../../components/confirmationModel/confirmation";
 import DeftDaterange from "../../components/deftDaterange/index";
 import moment from "moment-timezone"; // Import moment-timezone
 import { changeDate } from "../../utils/appConstant";
+import LoadingBar from "react-top-loading-bar";
 
 export default function index() {
   const { listOfCompanyByAdmin, compnanyTotalCount, companyCount } =
     useSelector((state) => state.onBoarding);
-  const loadingBarRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchData, setSearchData] = useState("");
@@ -31,6 +31,7 @@ export default function index() {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+  const loadingBarRef = useRef(null);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const totalPages = Math.ceil(compnanyTotalCount / itemsPerPage);
 
@@ -77,7 +78,7 @@ export default function index() {
       page: currentPage,
       limit: itemsPerPage,
     };
-    dispatch(getListOfCompanyByAdmin(data));
+    dispatch(getListOfCompanyByAdmin(data, loadingBarRef));
   };
 
   const handleClose = (id, flag) => {
@@ -478,6 +479,7 @@ export default function index() {
           }
         />
       )}
+      <LoadingBar color={"#0b0b7c"} height="0.5rem" ref={loadingBarRef} />
     </>
   );
 }

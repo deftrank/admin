@@ -178,7 +178,8 @@ export const getCourseList = (data) => async (dispatch) => {
   }
 };
 
-export const accountDetails = (data) => async (dispatch) => {
+export const accountDetails = (data, loadingBarRef) => async (dispatch) => {
+  loadingBarRef.current.continuousStart();
   try {
     const response = await api.post(DEFT_RANK_API.list.accountDetails, data);
     if (response?.status) {
@@ -186,8 +187,10 @@ export const accountDetails = (data) => async (dispatch) => {
     } else {
       // toast.error(response?.message);
     }
+    loadingBarRef.current.complete();
   } catch (e) {
     console.error(e.message);
+    loadingBarRef.current.complete();
   }
 };
 
@@ -339,7 +342,7 @@ export const updateProfile = (data, navigate) => async () => {
 
 export const getListOfUserByAdmin =
   (data, loadingBarRef) => async (dispatch) => {
-    // loadingBarRef.current.continuousStart();
+    loadingBarRef.current.continuousStart();
     try {
       await api
         .post(DEFT_RANK_API.auth.getListOfUserByAdmin, data)
@@ -352,10 +355,10 @@ export const getListOfUserByAdmin =
             dispatch(listOfUserByAdminSuccess({ flag: "empty" }));
           }
         });
-      // loadingBarRef.current.complete();
+      loadingBarRef.current.complete();
     } catch (e) {
       // return toast.error(e.message);
-      // loadingBarRef.current.complete();
+      loadingBarRef.current.complete();
     }
   };
 
@@ -412,25 +415,26 @@ export const suspendUser =
     }
   };
 
-export const getListOfCompanyByAdmin = (data) => async (dispatch) => {
-  // loadingBarRef.current.continuousStart();
-  try {
-    await api
-      .post(DEFT_RANK_API.auth.getListOfCompanyByAdmin, data)
-      .then((response) => {
-        let result = response.data;
-        if (result.status) {
-          dispatch(listOfCompanyByAdminSuccess(result));
-        } else {
-          dispatch(listOfCompanyByAdminSuccess({ flag: "empty" }));
-        }
-        // loadingBarRef.current.complete();
-      });
-  } catch (e) {
-    // return toast.error(e.message);
-    // loadingBarRef.current.complete();
-  }
-};
+export const getListOfCompanyByAdmin =
+  (data, loadingBarRef) => async (dispatch) => {
+    loadingBarRef.current.continuousStart();
+    try {
+      await api
+        .post(DEFT_RANK_API.auth.getListOfCompanyByAdmin, data)
+        .then((response) => {
+          let result = response.data;
+          if (result.status) {
+            dispatch(listOfCompanyByAdminSuccess(result));
+          } else {
+            dispatch(listOfCompanyByAdminSuccess({ flag: "empty" }));
+          }
+          loadingBarRef.current.complete();
+        });
+    } catch (e) {
+      // return toast.error(e.message);
+      loadingBarRef.current.complete();
+    }
+  };
 
 export const getStudentDetailById = (data) => async (dispatch) => {
   // dispatch(apiFetching());

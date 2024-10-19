@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DeftInput from "../../../components/deftInput/deftInput";
 import PhoneInputField from "../../../components/phoneInput/phoneInput";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,6 +12,7 @@ import {
   updateProfile,
 } from "../../../store/slice/onBoardingSlice";
 import { isEmailValid } from "../../../utils/appValidation";
+import LoadingBar from "react-top-loading-bar";
 
 // @ts-nocheck
 export default function index() {
@@ -24,6 +25,7 @@ export default function index() {
     (state) => state.onBoarding
   );
   const dispatch = useDispatch();
+  const loadingBarRef = useRef(null);
 
   const search = useLocation().search;
   const phone = new URLSearchParams(search).get("phone");
@@ -69,7 +71,7 @@ export default function index() {
       auth_id: id,
       language: "en",
     };
-    dispatch(accountDetails(data));
+    dispatch(accountDetails(data, loadingBarRef));
   };
 
   const showAccountDetails = () => {
@@ -347,6 +349,7 @@ export default function index() {
           </div>
         </div>
       </div>
+      <LoadingBar color={"#0b0b7c"} height="0.5rem" ref={loadingBarRef} />
     </>
   );
 }
