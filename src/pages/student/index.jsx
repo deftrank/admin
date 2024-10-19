@@ -110,9 +110,11 @@ export default function index() {
   return (
     <>
       <div className="card">
-        <div class="container-fluid">
-          <div class="row card-header justify-content-start">
-            <div class="col-4 input-group-merge">
+      <div class="p-3">
+        <h4>Students</h4>
+          <div class="d-flex justify-content-between">
+          <div class="row">
+            <div class="col-5 input-group-merge">
               <DeftInput
                 placeholder="Search by name"
                 type="text"
@@ -122,11 +124,11 @@ export default function index() {
                   setSearchData(value);
                 }}
                 leftIcon={<i className="bx bx-search"></i>}
-              />
+              />  
             </div>
-            <div class="col-4 input-group-merge">
-              <DeftDaterange
-                placeholder="Search by date range"
+            <div class="col-4 p-0 input-group-merge">
+            <DeftDaterange
+                placeholder="Filter by Date"
                 type="text"
                 value={searchData}
                 onchange={(value) => {
@@ -135,9 +137,10 @@ export default function index() {
                 leftIcon={<i className="bx bx-search"></i>}
               />
             </div>
-            <div class="col-4">
+            <div class="col-3">
               <div className="btn-group">
                 <button
+                style={{minWidth:120}}
                   aria-label="Click me"
                   type="button"
                   className="btn btn-outline-primary dropdown-toggle text-capitalize"
@@ -180,6 +183,7 @@ export default function index() {
                 </ul>
               </div>
             </div>
+          </div>
           </div>
         </div>
 

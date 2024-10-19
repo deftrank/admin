@@ -4,7 +4,7 @@ import "react-date-range/dist/styles.css"; // Include styles
 import "react-date-range/dist/theme/default.css"; // Include theme
 import DeftInput from "../deftInput/deftInput";
 
-export default function Index(props) {
+export default function DeftDateRange({...props}) {
   const {
     value,
     onchange,
@@ -85,23 +85,25 @@ export default function Index(props) {
         {open && (
           <div style={{ position: "absolute", zIndex: 1000 }}>
             <DateRange
+      
               ranges={state}
               onChange={handleSelect}
               moveRangeOnFirstSelection={false}
               editableDateInputs={true}
             />
             <div className="row" style={{ background: "#fff" }}>
-              <div
-                className=" p-2 col-6 "
-                onClick={handleConfirm} // Call handleConfirm on click
-              >
-                OK
-              </div>
+             
               <div
                 className=" p-2 text-end col-6"
                 onClick={handleClear} // Call handleClear on click
               >
                 Clear
+              </div>
+              <div
+                className=" p-2 col-6 "
+                onClick={handleConfirm} // Call handleConfirm on click
+              >
+                OK
               </div>
             </div>
           </div>

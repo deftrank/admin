@@ -113,9 +113,11 @@ export default function index() {
   return (
     <>
       <div className="card">
-        <div class="container">
-          <div class="row card-header justify-content-start">
-            <div class="col-4 input-group-merge">
+        <div class="p-3">
+          <h4>Companies</h4>
+          <div class="d-flex justify-content-between">
+            <div class="row">
+            <div class="col-5  input-group-merge">
               <DeftInput
                 placeholder="Search by name"
                 type="text"
@@ -127,9 +129,9 @@ export default function index() {
                 leftIcon={<i className="bx bx-search"></i>}
               />
             </div>
-            <div class="col-4 input-group-merge">
+            <div class="col-4 p-0 input-group-merge">
               <DeftDaterange
-                placeholder="Search by date range"
+                placeholder="Filter by Date"
                 type="text"
                 value={searchData}
                 onchange={(value) => {
@@ -138,7 +140,7 @@ export default function index() {
                 leftIcon={<i className="bx bx-search"></i>}
               />
             </div>
-            <div class="col-2">
+            <div class="col-3">
               <div className="btn-group">
                 <button
                   aria-label="Click me"
@@ -193,7 +195,9 @@ export default function index() {
                 </ul>
               </div>
             </div>
-            <div class="col-2 d-flex justify-content-end">
+            </div>
+         
+            <div class="d-flex text-end">
               <button
                 aria-label="Click me"
                 type="submit"
@@ -267,13 +271,12 @@ export default function index() {
                   </td>
                   <td>
                     <span
-                      className={`badge ${
-                        item?.auth_id?.suspend_status == "active"
-                          ? "bg-label-success"
-                          : item?.auth_id?.suspend_status == "pending"
+                      className={`badge ${item?.auth_id?.suspend_status == "active"
+                        ? "bg-label-success"
+                        : item?.auth_id?.suspend_status == "pending"
                           ? "bg-label-warning"
                           : "bg-label-danger"
-                      } me-1 text-capitalize`}
+                        } me-1 text-capitalize`}
                     >
                       {item?.auth_id?.suspend_status}
                     </span>
@@ -326,17 +329,15 @@ export default function index() {
                               ...changePasswordModal,
                               show: true,
                               id: item.auth_id._id,
-                              title: `${
-                                item?.auth_id?.suspend_status == "active"
-                                  ? "Suspend"
-                                  : "Enable"
-                              } Company`,
+                              title: `${item?.auth_id?.suspend_status == "active"
+                                ? "Suspend"
+                                : "Enable"
+                                } Company`,
                               data: item,
-                              message: `Are you sure you want to ${
-                                item?.auth_id?.suspend_status == "active"
-                                  ? "suspend"
-                                  : "enable"
-                              } this company`,
+                              message: `Are you sure you want to ${item?.auth_id?.suspend_status == "active"
+                                ? "suspend"
+                                : "enable"
+                                } this company`,
                               type: "Disable",
                             }));
                           }}
