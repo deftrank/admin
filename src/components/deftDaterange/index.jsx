@@ -6,20 +6,8 @@ import DeftInput from "../deftInput/deftInput";
 
 export default function DeftDateRange({ ...props }) {
   const {
-    value,
     onchange,
-    error,
     placeholder,
-    type,
-    readOnly,
-    leftIcon,
-    leftIconClick,
-    rightIcon,
-    rightIconClick,
-    name,
-    autoFocus,
-    id,
-    label,
   } = props;
 
   const [state, setState] = useState([
@@ -96,15 +84,20 @@ export default function DeftDateRange({ ...props }) {
               moveRangeOnFirstSelection={false}
               editableDateInputs={true}
             />
-            <div className="row" style={{ background: "#fff" }}>
+            <div
+              className="row"
+              style={{ background: "#fff", width: "100%", marginLeft: "0rem" }}
+            >
               <div
                 className=" p-2 text-end col-6"
+                style={{ cursor: "pointer" }}
                 onClick={handleClear} // Call handleClear on click
               >
                 Clear
               </div>
               <div
                 className=" p-2 col-6 "
+                style={{ cursor: "pointer" }}
                 onClick={handleConfirm} // Call handleConfirm on click
               >
                 OK

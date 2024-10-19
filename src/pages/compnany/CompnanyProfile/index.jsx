@@ -149,8 +149,8 @@ export default function index() {
                           style={{ color: color.secondaryGray }}
                           className="mb-0"
                         >
-                          {studentDetail?.authData?.phone
-                            ? `${studentDetail.authData.country_code}${studentDetail.authData.phone}`
+                          {studentDetail?.accountData?.contact_person_number
+                            ? `${studentDetail?.accountData?.countryCode}${studentDetail?.accountData?.contact_person_number}`
                             : "-"}
                         </h6>
                       </div>

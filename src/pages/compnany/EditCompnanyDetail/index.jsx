@@ -81,9 +81,7 @@ export default function index() {
       company_person_name: accountData?.contact_person_name,
       email: accountData?.auth_id?.email,
       phone: accountData?.contact_person_number,
-      countryCode: accountData?.auth_id?.country_code
-        ? accountData?.auth_id?.country_code
-        : "+91",
+      countryCode: accountData?.countryCode ? accountData?.countryCode : "+91",
       company_website: accountData?.company_website,
       linkedin_url: accountData?.linkedin_url,
       skill_ids: accountData?.skills_id[0],
@@ -299,7 +297,7 @@ export default function index() {
       role_type: 2,
       login_type: 2,
       email: formData?.email,
-      country_code: formData?.countryCode,
+      countryCode: formData?.countryCode,
       phone: formData?.phone,
       category_id: formData?.category_id,
       skills_id: [formData?.skill_ids],
