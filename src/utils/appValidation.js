@@ -9,3 +9,26 @@ export const isEmailValid = (/** @type {any} */ email) => {
 
   return valid;
 };
+
+export const isWebsiteValid = (/** @type {any} */ url) => {
+  var valid = true;
+  var regex =
+    /^(https?:\/\/)?([\da-z.-]+\.[a-z.]{2,6}|[a-z0-9-]+\.[a-z.]{2,6})([\/\w .-]*)*\/?$/;
+
+  if (!regex.test(url.replace(/\s/g, ""))) {
+    valid = false;
+  }
+
+  return valid;
+};
+
+export const islinkedinValid = (/** @type {any} */ url) => {
+  var valid = true;
+  var regex = /^(https?:\/\/)?(www\.)?(linkedin\.com\/.*)$/;
+
+  if (!regex.test(url.replace(/\s/g, ""))) {
+    valid = false;
+  }
+
+  return valid;
+};

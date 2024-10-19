@@ -117,86 +117,86 @@ export default function index() {
           <h4>Companies</h4>
           <div class="d-flex justify-content-between">
             <div class="row">
-            <div class="col-5  input-group-merge">
-              <DeftInput
-                placeholder="Search by name"
-                type="text"
-                value={searchData}
-                onchange={(value) => {
-                  setCurrentPage(1);
-                  setSearchData(value);
-                }}
-                leftIcon={<i className="bx bx-search"></i>}
-              />
-            </div>
-            <div class="col-4 p-0 input-group-merge">
-              <DeftDaterange
-                placeholder="Filter by Date"
-                type="text"
-                value={searchData}
-                onchange={(value) => {
-                  setDateRange(value);
-                }}
-                leftIcon={<i className="bx bx-search"></i>}
-              />
-            </div>
-            <div class="col-3">
-              <div className="btn-group">
-                <button
-                  aria-label="Click me"
-                  type="button"
-                  className="btn btn-outline-primary dropdown-toggle text-capitalize"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  {status ? `${status} Company` : "Company Status"}
-                </button>
-                <ul className="dropdown-menu">
-                  <li>
-                    <a
-                      style={{ cursor: "pointer" }}
-                      aria-label="dropdown action link"
-                      className="dropdown-item"
-                      onClick={() => setStatus("active")}
-                    >
-                      Active
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      style={{ cursor: "pointer" }}
-                      aria-label="dropdown action link"
-                      className="dropdown-item"
-                      onClick={() => setStatus("pending")}
-                    >
-                      Pending
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      style={{ cursor: "pointer" }}
-                      aria-label="dropdown action link"
-                      className="dropdown-item"
-                      onClick={() => setStatus("suspended")}
-                    >
-                      Suspend
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      style={{ cursor: "pointer" }}
-                      aria-label="dropdown action link"
-                      className="dropdown-item"
-                      onClick={() => setStatus("")}
-                    >
-                      All
-                    </a>
-                  </li>
-                </ul>
+              <div class="col-5  input-group-merge">
+                <DeftInput
+                  placeholder="Search by name"
+                  type="text"
+                  value={searchData}
+                  onchange={(value) => {
+                    setCurrentPage(1);
+                    setSearchData(value);
+                  }}
+                  leftIcon={<i className="bx bx-search"></i>}
+                />
+              </div>
+              <div class="col-4 p-0 input-group-merge">
+                <DeftDaterange
+                  placeholder="Filter by Date"
+                  type="text"
+                  value={searchData}
+                  onchange={(value) => {
+                    setDateRange(value);
+                  }}
+                  leftIcon={<i className="bx bx-search"></i>}
+                />
+              </div>
+              <div class="col-3">
+                <div className="btn-group">
+                  <button
+                    aria-label="Click me"
+                    type="button"
+                    className="btn btn-outline-primary dropdown-toggle text-capitalize"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    {status ? `${status}` : "All Company"}
+                  </button>
+                  <ul className="dropdown-menu">
+                    <li>
+                      <a
+                        style={{ cursor: "pointer" }}
+                        aria-label="dropdown action link"
+                        className="dropdown-item"
+                        onClick={() => setStatus("active")}
+                      >
+                        Active
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        style={{ cursor: "pointer" }}
+                        aria-label="dropdown action link"
+                        className="dropdown-item"
+                        onClick={() => setStatus("pending")}
+                      >
+                        Pending
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        style={{ cursor: "pointer" }}
+                        aria-label="dropdown action link"
+                        className="dropdown-item"
+                        onClick={() => setStatus("suspended")}
+                      >
+                        Suspend
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        style={{ cursor: "pointer" }}
+                        aria-label="dropdown action link"
+                        className="dropdown-item"
+                        onClick={() => setStatus("")}
+                      >
+                        All
+                      </a>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
-            </div>
-         
+
             <div class="d-flex text-end">
               <button
                 aria-label="Click me"
@@ -271,12 +271,13 @@ export default function index() {
                   </td>
                   <td>
                     <span
-                      className={`badge ${item?.auth_id?.suspend_status == "active"
-                        ? "bg-label-success"
-                        : item?.auth_id?.suspend_status == "pending"
+                      className={`badge ${
+                        item?.auth_id?.suspend_status == "active"
+                          ? "bg-label-success"
+                          : item?.auth_id?.suspend_status == "pending"
                           ? "bg-label-warning"
                           : "bg-label-danger"
-                        } me-1 text-capitalize`}
+                      } me-1 text-capitalize`}
                     >
                       {item?.auth_id?.suspend_status}
                     </span>
@@ -329,15 +330,17 @@ export default function index() {
                               ...changePasswordModal,
                               show: true,
                               id: item.auth_id._id,
-                              title: `${item?.auth_id?.suspend_status == "active"
-                                ? "Suspend"
-                                : "Enable"
-                                } Company`,
+                              title: `${
+                                item?.auth_id?.suspend_status == "active"
+                                  ? "Suspend"
+                                  : "Enable"
+                              } Company`,
                               data: item,
-                              message: `Are you sure you want to ${item?.auth_id?.suspend_status == "active"
-                                ? "suspend"
-                                : "enable"
-                                } this company`,
+                              message: `Are you sure you want to ${
+                                item?.auth_id?.suspend_status == "active"
+                                  ? "suspend"
+                                  : "enable"
+                              } this company?`,
                               type: "Disable",
                             }));
                           }}
@@ -368,7 +371,7 @@ export default function index() {
                               title: "Delete Company",
                               data: item,
                               message:
-                                "Are you sure you want to delete this Company",
+                                "Are you sure you want to delete this Company?",
                               type: "Delete",
                             }));
                           }}

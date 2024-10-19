@@ -14,7 +14,7 @@ const getGreetingMessage = (name) => {
         greeting = 'Good Evening! 🌙';
     }
 
-    return `👋 Hello ${name}, ${greeting}!`;
+    return `👋 Hello ${name}, ${greeting}`;
 };
 
 export default getGreetingMessage;

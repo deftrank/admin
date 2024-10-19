@@ -16,7 +16,11 @@ import {
   registerCompany,
   updateCompanyProfile,
 } from "../../../store/slice/onBoardingSlice";
-import { isEmailValid } from "../../../utils/appValidation";
+import {
+  isEmailValid,
+  isWebsiteValid,
+  islinkedinValid,
+} from "../../../utils/appValidation";
 import { Form } from "react-bootstrap";
 import profile from "../../../assets/img/companyDefaul.png";
 
@@ -68,7 +72,6 @@ export default function index() {
   }, [userAccountDetails]);
 
   const showAccountDetails = () => {
-    // console.log("userAccountDetails == ", userAccountDetails);
     const accountData = userAccountDetails?.accountData;
     setFormData((formData) => ({
       ...formData,
@@ -77,16 +80,14 @@ export default function index() {
       category_Name: accountData?.category_id?.name,
       company_person_name: accountData?.contact_person_name,
       email: accountData?.auth_id?.email,
-      phone: accountData?.auth_id?.phone,
+      phone: accountData?.contact_person_number,
       countryCode: accountData?.auth_id?.country_code
         ? accountData?.auth_id?.country_code
         : "+91",
       company_website: accountData?.company_website,
       linkedin_url: accountData?.linkedin_url,
-      skill_ids: accountData?.skills_id ? accountData?.skills_id[0]?._id : "",
-      skill_names: accountData?.skills_id
-        ? accountData?.skills_id[0]?.name
-        : "",
+      skill_ids: accountData?.skills_id[0],
+      skill_names: accountData?.most_hired_skills[0],
       company_address: accountData?.company_address,
       country_id: accountData?.country_id,
       country_name: accountData?.country,
@@ -109,8 +110,8 @@ export default function index() {
   const fetchStateData = (id, search) => {
     let request = {
       country_id: Number(locationData?.country),
-      page: 1,
-      limit: 100,
+      page: 0,
+      limit: 0,
       search: "",
     };
     dispatch(getStateList(request));
@@ -118,8 +119,8 @@ export default function index() {
 
   const fetchCompanyCategories = () => {
     const data = {
-      page: 1,
-      limit: 100,
+      page: 0,
+      limit: 0,
       search: "",
     };
     dispatch(getCompanyCategoryList(data));
@@ -145,8 +146,8 @@ export default function index() {
   const fetchCityData = (id, search) => {
     let request = {
       state_id: Number(locationData?.state),
-      page: 1,
-      limit: 100,
+      page: 0,
+      limit: 0,
       search: search,
     };
     dispatch(getCityList(request));
@@ -219,10 +220,24 @@ export default function index() {
       }));
       return;
     }
+    if (!isWebsiteValid(formData?.company_website)) {
+      setFormDataError((formDataError) => ({
+        ...formDataError,
+        company_website: "Company website must be a valid URL",
+      }));
+      return;
+    }
     if (!formData?.linkedin_url) {
       setFormDataError((prevError) => ({
         ...prevError,
         linkedin_url: "Please enter your Linkedin URL",
+      }));
+      return;
+    }
+    if (!islinkedinValid(formData?.linkedin_url)) {
+      setFormDataError((formDataError) => ({
+        ...formDataError,
+        linkedin_url: "LinkedIn URL must be a valid URL",
       }));
       return;
     }
@@ -315,17 +330,20 @@ export default function index() {
   };
   return (
     <>
-      <h5 className="mb-4 text-decoration-underline ">
+      <h5 className="mb-4">
         <span
           className="text-muted fw-light cursor-pointer"
           onClick={() => navigate("/company")}
         >
-          Company /
+          <span className="text-decoration-underline">Company</span> /
         </span>{" "}
-        {id ? "Edit" : "Add"}
+        <span className="text-decoration-underline">
+          {" "}
+          {id ? "Edit" : "Add"}
+        </span>
       </h5>
       <div className="card mb-4">
-        <h5 className="card-header">Edit Company Details</h5>
+        <h5 className="card-header">{id ? "Edit" : "Add"} Company Details</h5>
         <div className="card-body">
           <div className="d-flex align-items-start align-items-sm-center gap-4">
             <img
@@ -537,7 +555,7 @@ export default function index() {
                   label: item?.name,
                   value: item?._id,
                 }))}
-                value={formData?.skills}
+                value={formData?.skill_ids}
                 onChange={(val) => {
                   const index = skillListData?.findIndex(
                     (item) => item._id === val

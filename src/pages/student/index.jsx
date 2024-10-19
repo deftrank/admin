@@ -147,7 +147,7 @@ export default function index() {
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  {status ? `${status} Users` : "User Status"}
+                  {status ? `${status}` : "All Users"}
                 </button>
                 <ul className="dropdown-menu">
                   <li>
@@ -177,7 +177,7 @@ export default function index() {
                       className="dropdown-item"
                       onClick={() => setStatus("")}
                     >
-                      All
+                      Np Filter
                     </a>
                   </li>
                 </ul>
@@ -329,7 +329,7 @@ export default function index() {
                                 item?.auth_id?.suspend_status == "active"
                                   ? "suspend"
                                   : "enable"
-                              } this user`,
+                              } this user?`,
                             }));
                           }}
                         >
@@ -359,7 +359,7 @@ export default function index() {
                               title: "Delete User",
                               data: item,
                               message:
-                                "Are you sure you want to delete this user",
+                                "Are you sure you want to delete this user?",
                               type: "Delete",
                             }));
                           }}

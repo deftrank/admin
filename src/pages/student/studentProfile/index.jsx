@@ -32,14 +32,14 @@ export default function index() {
 
   return (
     <section className="py-4 container-fluid">
-      <h5 className="mb-4 text-decoration-underline ">
+      <h5 className="mb-4">
         <span
           className="text-muted fw-light cursor-pointer"
           onClick={() => navigate("/students")}
         >
-          Student /
+          <span className="text-decoration-underline">Student</span> /
         </span>{" "}
-        Details
+        <span className="text-decoration-underline"> Details</span>
       </h5>
       <div className=" py-3 ">
         <div className="shadow-lg position-relative rounded-4">
