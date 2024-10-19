@@ -36,7 +36,7 @@ const Navbar = () => {
           className="navbar-nav-right d-flex align-items-center"
           id="navbar-collapse"
         >
-          {getGreetingMessage('Admin')}
+          {getGreetingMessage("Admin")}
           <ul className="navbar-nav flex-row align-items-center ms-auto">
             <li className="nav-item navbar-dropdown dropdown-user dropdown">
               <a
@@ -102,11 +102,13 @@ const Navbar = () => {
                   <div className="dropdown-divider"></div>
                 </li>
                 <li>
-                  <a aria-label="click to log out" className="dropdown-item">
+                  <a
+                    aria-label="click to log out"
+                    className="dropdown-item"
+                    onClick={handleLogout}
+                  >
                     <i className="bx bx-power-off me-2"></i>
-                    <span className="align-middle" onClick={handleLogout}>
-                      Log Out
-                    </span>
+                    <span className="align-middle">Log Out</span>
                   </a>
                 </li>
               </ul>

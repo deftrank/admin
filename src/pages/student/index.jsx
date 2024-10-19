@@ -179,7 +179,7 @@ export default function index() {
                         className="dropdown-item"
                         onClick={() => setStatus("")}
                       >
-                        Np Filter
+                        All Users
                       </a>
                     </li>
                   </ul>

@@ -101,14 +101,14 @@ export default function index() {
     if (!formData?.first_name) {
       setFormDataError((formDataError) => ({
         ...formDataError,
-        first_name: "Please enter your first name.",
+        first_name: "Please enter your first name",
       }));
       return;
     }
     if (!formData?.last_name) {
       setFormDataError((formDataError) => ({
         ...formDataError,
-        last_name: "Please enter your last name.",
+        last_name: "Please enter your last name",
       }));
       return;
     }

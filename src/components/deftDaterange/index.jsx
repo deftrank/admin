@@ -5,10 +5,7 @@ import "react-date-range/dist/theme/default.css"; // Include theme
 import DeftInput from "../deftInput/deftInput";
 
 export default function DeftDateRange({ ...props }) {
-  const {
-    onchange,
-    placeholder,
-  } = props;
+  const { onchange, placeholder } = props;
 
   const [state, setState] = useState([
     {
@@ -90,14 +87,14 @@ export default function DeftDateRange({ ...props }) {
             >
               <div
                 className=" p-2 text-end col-6"
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer", fontWeight: "600" }}
                 onClick={handleClear} // Call handleClear on click
               >
                 Clear
               </div>
               <div
                 className=" p-2 col-6 "
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer", fontWeight: "600" }}
                 onClick={handleConfirm} // Call handleConfirm on click
               >
                 OK

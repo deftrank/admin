@@ -165,21 +165,21 @@ export default function index() {
     if (!formData?.company_name) {
       setFormDataError((formDataError) => ({
         ...formDataError,
-        company_name: "Please enter your company  name.",
+        company_name: "Please enter your company  name",
       }));
       return;
     }
     if (!formData?.category_id) {
       setFormDataError((formDataError) => ({
         ...formDataError,
-        category_id: "Please select category.",
+        category_id: "Please select category",
       }));
       return;
     }
     if (!formData?.company_person_name) {
       setFormDataError((formDataError) => ({
         ...formDataError,
-        company_person_name: "Please enter company person name .",
+        company_person_name: "Please enter company person name",
       }));
       return;
     }
@@ -208,7 +208,7 @@ export default function index() {
     if (formData.phone.length < 10) {
       setFormDataError((formDataError) => ({
         ...formDataError,
-        phone: "Please enter your correct phone number.",
+        phone: "Please enter your correct phone number",
       }));
       return;
     }
@@ -287,7 +287,7 @@ export default function index() {
     if (!formData?.about) {
       setFormDataError((prevError) => ({
         ...prevError,
-        about: "Please enter about your company. ",
+        about: "Please enter about your company",
       }));
       return;
     }
