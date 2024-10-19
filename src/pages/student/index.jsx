@@ -208,6 +208,13 @@ export default function index() {
                 <tr key={item?.id}>
                   <td>
                     <div
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title={
+                        item?.first_name
+                          ? item?.first_name + " " + item?.last_name
+                          : ""
+                      }
                       style={{
                         width: "8vw",
                         overflow: "hidden",
@@ -221,6 +228,9 @@ export default function index() {
                   </td>
                   <td>
                     <div
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title={item?.auth_id?.email ? item?.auth_id?.email : ""}
                       style={{
                         width: "8vw",
                         overflow: "hidden",
@@ -237,6 +247,9 @@ export default function index() {
                   </td>
                   <td>
                     <div
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title={item?.current_course ? item?.current_course : ""}
                       style={{
                         width: "8vw",
                         overflow: "hidden",
@@ -248,6 +261,9 @@ export default function index() {
                   </td>
                   <td>
                     <div
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title={item?.college_name ? item?.college_name : ""}
                       style={{
                         width: "8vw",
                         overflow: "hidden",

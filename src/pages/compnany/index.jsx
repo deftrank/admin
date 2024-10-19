@@ -232,6 +232,9 @@ export default function index() {
                 <tr key={item?.id}>
                   <td>
                     <div
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title={item.registered_name ? item.registered_name : ""}
                       style={{
                         width: "10vw",
                         overflow: "hidden",
@@ -244,6 +247,9 @@ export default function index() {
                   <td>{item.category}</td>
                   <td>
                     <div
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title={item.company_website}
                       style={{
                         width: "10vw",
                         overflow: "hidden",
@@ -256,6 +262,9 @@ export default function index() {
 
                   <td>
                     <div
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title={item?.company_address ? item?.company_address : ""}
                       style={{
                         width: "10vw",
                         overflow: "hidden",

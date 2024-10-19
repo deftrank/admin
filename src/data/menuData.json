@@ -14,7 +14,7 @@
         "header": "STUDENTS",
         "items": [
             {
-                "text": "Lists",
+                "text": "List",
                 "icon": "bx bx-envelope",
                 "available": true,
                 "link": "/students"
@@ -25,7 +25,7 @@
         "header": "Companies",
         "items": [
             {
-                "text": "Lists",
+                "text": "List",
                 "icon": "bx bx-box",
                 "available": true,
                 "link": "/company"
