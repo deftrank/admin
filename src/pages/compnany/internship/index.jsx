@@ -7,6 +7,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import {
   clearAllState,
   deleteUser,
+  getListOfInternshipByAdmin,
   getListOfJobByAdmin,
   suspendUser,
   verifyJob,
@@ -84,7 +85,7 @@ export default function index() {
       verify_job: filterData?.verify_job,
       language: "en",
     };
-    dispatch(getListOfJobByAdmin(data, loadingBarRef));
+    dispatch(getListOfInternshipByAdmin(data, loadingBarRef));
   };
 
   const handleClose = (id, flag) => {
@@ -116,12 +117,11 @@ export default function index() {
     dispatch(suspendUser(data, setChangePasswordModal, "job"));
   };
 
-
   return (
     <>
       <div className="card">
         <div className="p-3">
-          <h4>Jobs</h4>
+          <h4>Internship</h4>
           <div className="row">
             <div className="col-3  input-group-merge">
               <DeftInput

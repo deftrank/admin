@@ -36,6 +36,8 @@ const slice = createSlice({
     jobTotalCount: 0,
     jobCount: 0,
     listOfCompanyByAdmin: [],
+    internshipTotalCount: 0,
+    listOfJobByAdmin: [],
   },
   reducers: {
     onBoardingSuccess: (state, action) => {
@@ -143,6 +145,30 @@ const slice = createSlice({
       state.listOfJobByAdmin =
         action.payload.flag == "empty" ? [] : action.payload.data;
     },
+    listOfInternshipByAdminSuccess(state, action) {
+      state.internshipTotalCount =
+        action.payload.flag == "empty" ? 0 : action.payload.total_count;
+      state.internshipcompanyCount =
+        action.payload.flag == "empty" ? 0 : action.payload.count;
+      state.listOfInternshipByAdmin =
+        action.payload.flag == "empty" ? [] : action.payload.data;
+    },
+    verifyJobSuccess(state, action) {
+      const newObjId = action.payload.data.id;
+      if (action.payload.suspendType == "job") {
+        const suspendIndex = state.listOfJobByAdmin?.findIndex(
+          (item) => item._id === newObjId
+        );
+        state.listOfJobByAdmin[suspendIndex].is_verified =
+          action.payload.data.status;
+      } else {
+        const suspendIndex = state.listOfUserByAdmin?.findIndex(
+          (item) => item.auth_id._id === newObjId
+        );
+        state.listOfUserByAdmin[suspendIndex].auth_id.suspend_status =
+          action.payload.data.status;
+      }
+    },
   },
 });
 
@@ -169,6 +195,8 @@ const {
   getCityListSuccess,
   clearStateSuccess,
   listOfJobByAdminSuccess,
+  verifyJobSuccess,
+  listOfInternshipByAdminSuccess,
 } = slice.actions;
 
 //  stepper currentIndex
@@ -540,6 +568,47 @@ export const getListOfJobByAdmin =
             dispatch(listOfJobByAdminSuccess(result));
           } else {
             dispatch(listOfJobByAdminSuccess({ flag: "empty" }));
+          }
+          loadingBarRef.current.complete();
+        });
+    } catch (e) {
+      loadingBarRef.current.complete();
+    }
+  };
+
+export const verifyJob =
+  (data, setChangePasswordModal, suspendType) => async (dispatch) => {
+    // dispatch(apiFetching());
+    try {
+      await api.post(DEFT_RANK_API.jobs.verifyJob, data).then((response) => {
+        let result = response.data;
+        if (result.status) {
+          setChangePasswordModal((changePasswordModal) => ({
+            ...changePasswordModal,
+            show: false,
+          }));
+          dispatch(verifyJobSuccess({ data: data, suspendType: suspendType }));
+        } else {
+          // toast.error(result.message);
+        }
+      });
+    } catch (e) {
+      // return toast.error(e.message);
+    }
+  };
+
+export const getListOfInternshipByAdmin =
+  (data, loadingBarRef) => async (dispatch) => {
+    loadingBarRef.current.continuousStart();
+    try {
+      await api
+        .post(DEFT_RANK_API.jobs.getListOfJobByAdmin, data)
+        .then((response) => {
+          let result = response.data;
+          if (result.status) {
+            dispatch(listOfInternshipByAdminSuccess(result));
+          } else {
+            dispatch(listOfInternshipByAdminSuccess({ flag: "empty" }));
           }
           loadingBarRef.current.complete();
         });
