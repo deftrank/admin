@@ -33,6 +33,9 @@ export const DEFT_RANK_API = {
     getCityList: "constant/getCitiesList",
     getStateList: "constant/getStatesList",
   },
+  jobs: {
+    getListOfJobByAdmin: "admin/admin-job-list",
+  },
 };
 
 export const API_RESPONSE = {

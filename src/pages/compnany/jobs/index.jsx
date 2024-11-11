@@ -1,0 +1,533 @@
+// @ts-nocheck
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Pagination } from "react-bootstrap";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import {
+  clearAllState,
+  deleteUser,
+  getListOfJobByAdmin,
+  suspendUser,
+} from "../../../store/slice/onBoardingSlice";
+import DeftInput from "../../../components/deftInput/deftInput";
+import Confirmation from "../../../components/confirmationModel/confirmation";
+import DeftDaterange from "../../../components/deftDaterange/index";
+import moment from "moment-timezone"; // Import moment-timezone
+import { changeDate } from "../../../utils/appConstant";
+import LoadingBar from "react-top-loading-bar";
+
+export default function index() {
+  const { listOfJobByAdmin, jobTotalCount, jobCount } = useSelector(
+    (state) => state.onBoarding
+  );
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [searchData, setSearchData] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [changePasswordModal, setChangePasswordModal] = useState({});
+  const [dateRange, setDateRange] = useState({});
+  const [status, setStatus] = useState("");
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+  const loadingBarRef = useRef(null);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const totalPages = Math.ceil(jobTotalCount / itemsPerPage);
+
+  useEffect(() => {
+    getJobList();
+  }, []);
+
+  useEffect(() => {
+    getJobList();
+  }, [currentPage]);
+
+  useEffect(() => {
+    getJobList();
+  }, [searchData]);
+
+  useEffect(() => {
+    getJobList();
+  }, [itemsPerPage]);
+
+  useEffect(() => {
+    getJobList();
+  }, [dateRange]);
+
+  useEffect(() => {
+    getJobList();
+  }, [status]);
+
+  const getJobList = () => {
+    const utcDateForStart = dateRange[0]?.startDate;
+    const utcDateForEnd = dateRange[0]?.endDate;
+
+    const forStartDate = utcDateForStart
+      ? moment(utcDateForStart).tz("Asia/Kolkata").format("YYYY-MM-DD")
+      : "";
+    const forEndDate = utcDateForEnd
+      ? moment(utcDateForEnd).tz("Asia/Kolkata").format("YYYY-MM-DD")
+      : "";
+
+    const data = {
+      search: searchData,
+      page: currentPage,
+      limit: itemsPerPage,
+      sort_by: 0,
+      skills: [],
+      location: [],
+      job_status: "",
+      verify_job: "",
+      language: "en",
+    };
+    dispatch(getListOfJobByAdmin(data, loadingBarRef));
+  };
+
+  const handleClose = (id, flag) => {
+    if (flag == "edit") {
+      navigate(`/job-edit/${id}`);
+    } else if (flag == "add") {
+      navigate(`/job-add`);
+    } else {
+      navigate(`/job-details/${id}`);
+    }
+  };
+
+  const deleteAccount = () => {
+    const data = {
+      auth_id: changePasswordModal?.id,
+      language: "en",
+    };
+    dispatch(deleteUser(data, setChangePasswordModal, "job"));
+  };
+
+  const suspentAccount = () => {
+    const data = {
+      auth_id: changePasswordModal?.id,
+      status:
+        changePasswordModal?.data?.auth_id?.suspend_status == "active"
+          ? "suspended"
+          : "active",
+      language: "en",
+    };
+    dispatch(suspendUser(data, setChangePasswordModal, "job"));
+  };
+
+  return (
+    <>
+      <div className="card">
+        <div className="p-3">
+          <h4>Jobs</h4>
+          <div className="d-flex justify-content-between">
+            <div className="row">
+              <div className="col-5  input-group-merge">
+                <DeftInput
+                  placeholder="Search by name"
+                  type="text"
+                  value={searchData}
+                  onchange={(value) => {
+                    setCurrentPage(1);
+                    setSearchData(value);
+                  }}
+                  leftIcon={<i className="bx bx-search"></i>}
+                />
+              </div>
+              <div className="col-4 p-0 input-group-merge">
+                <DeftDaterange
+                  placeholder="Filter by Date"
+                  type="text"
+                  value={searchData}
+                  onchange={(value) => {
+                    setDateRange(value);
+                  }}
+                  leftIcon={<i className="bx bx-search"></i>}
+                />
+              </div>
+              <div className="col-3">
+                <div className="btn-group">
+                  <button
+                    aria-label="Click me"
+                    type="button"
+                    className="btn btn-outline-primary dropdown-toggle text-capitalize"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    {status ? `${status}` : "All job"}
+                  </button>
+                  <ul className="dropdown-menu">
+                    <li>
+                      <a
+                        style={{ cursor: "pointer" }}
+                        aria-label="dropdown action link"
+                        className="dropdown-item"
+                        onClick={() => setStatus("active")}
+                      >
+                        Active
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        style={{ cursor: "pointer" }}
+                        aria-label="dropdown action link"
+                        className="dropdown-item"
+                        onClick={() => setStatus("pending")}
+                      >
+                        Pending
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        style={{ cursor: "pointer" }}
+                        aria-label="dropdown action link"
+                        className="dropdown-item"
+                        onClick={() => setStatus("suspended")}
+                      >
+                        Suspend
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        style={{ cursor: "pointer" }}
+                        aria-label="dropdown action link"
+                        className="dropdown-item"
+                        onClick={() => setStatus("")}
+                      >
+                        All
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="d-flex text-end">
+              <button
+                aria-label="Click me"
+                type="submit"
+                className="btn btn-primary me-2"
+                onClick={() => {
+                  handleClose("", "add");
+
+                  dispatch(clearAllState());
+                }}
+              >
+                Add Job
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="table-responsive text-nowrap">
+          <table className="table table-hover">
+            <thead className="table-dark">
+              <tr>
+                <th>Name</th>
+                <th>Office Locations</th>
+                <th>Skills</th>
+                <th>Address</th>
+                <th>Joined On</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody className="table-border-bottom-0">
+              {listOfJobByAdmin?.map((item) => (
+                <tr key={item?.id}>
+                  <td>
+                    <div
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title={item.title ? item.title : ""}
+                      style={{
+                        width: "10vw",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {item.title ? item.title : "-"}
+                    </div>
+                  </td>
+                  <td>
+                    <div
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title={item.title ? item.title : ""}
+                      style={{
+                        width: "10vw",
+                        overflow: "hidden",
+                        display: " -webkit-box",
+                        WebkitBoxOrient: "vertical",
+                      }}
+                    >
+                      {item.office_location?.map((location, index) => (
+                        <>
+                          {location}{" "}
+                          {index < item.office_location?.length - 1 ? (
+                            <span>,</span>
+                          ) : (
+                            ""
+                          )}{" "}
+                        </>
+                      ))}
+                      {item.office_location?.length == 0 ? "-" : ""}
+                    </div>
+                  </td>
+                  <td>
+                    <div
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title={item.title ? item.title : ""}
+                      style={{
+                        width: "9vw",
+                        overflow: "hidden",
+                        display: " -webkit-box",
+                        WebkitBoxOrient: "vertical",
+                      }}
+                    >
+                      {/* {item.primary_skills[0]} */}
+                      {item.supporting_skills?.map((location, index) => (
+                        <>
+                          {location}{" "}
+                          {index < item.office_location?.length - 1 ? (
+                            <span>,</span>
+                          ) : (
+                            ""
+                          )}{" "}
+                        </>
+                      ))}
+                      {item.supporting_skills?.length == 0 ? "-" : ""}
+                    </div>
+                  </td>
+
+                  <td>
+                    <div
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title={item?.company_address ? item?.company_address : ""}
+                      style={{
+                        width: "10vw",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {item?.company_address ? item?.company_address : "-"}
+                    </div>
+                  </td>
+                  <td>
+                    <p className="mb-0">
+                      {item?.createdAt ? changeDate(item?.createdAt) : "-"}
+                    </p>
+                  </td>
+                  <td>
+                    <span
+                      className={`badge ${
+                        item?.auth_id?.suspend_status == "active"
+                          ? "bg-label-success"
+                          : item?.auth_id?.suspend_status == "pending"
+                          ? "bg-label-warning"
+                          : "bg-label-danger"
+                      } me-1 text-capitalize`}
+                    >
+                      {item?.auth_id?.suspend_status}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="dropdown">
+                      <button
+                        aria-label="Click me"
+                        type="button"
+                        className="btn p-0 dropdown-toggle hide-arrow"
+                        data-bs-toggle="dropdown"
+                      >
+                        <i className="bx bx-dots-vertical-rounded"></i>
+                      </button>
+                      <div className="dropdown-menu">
+                        <a
+                          aria-label="dropdown action option"
+                          className="dropdown-item"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => handleClose(item.auth_id._id, "edit")}
+                        >
+                          <Icon
+                            icon="iconamoon:edit-thin"
+                            height={20}
+                            className={"me-1"}
+                          />{" "}
+                          Edit Company
+                        </a>
+                        <a
+                          aria-label="dropdown action option"
+                          className="dropdown-item"
+                          style={{ cursor: "pointer" }}
+                          onClick={() =>
+                            handleClose(item.auth_id._id, "detail")
+                          }
+                        >
+                          <Icon
+                            icon="lsicon:view-outline"
+                            height={20}
+                            className={"me-1"}
+                          />{" "}
+                          View Company
+                        </a>
+                        <a
+                          aria-label="dropdown action option"
+                          className="dropdown-item"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => {
+                            setChangePasswordModal((changePasswordModal) => ({
+                              ...changePasswordModal,
+                              show: true,
+                              id: item.auth_id._id,
+                              title: `${
+                                item?.auth_id?.suspend_status == "active"
+                                  ? "Suspend"
+                                  : "Enable"
+                              } Company`,
+                              data: item,
+                              message: `Are you sure you want to ${
+                                item?.auth_id?.suspend_status == "active"
+                                  ? "suspend"
+                                  : "enable"
+                              } this company?`,
+                              type: "Disable",
+                            }));
+                          }}
+                        >
+                          <Icon
+                            icon={
+                              item?.auth_id?.suspend_status == "active"
+                                ? "lsicon:disable-outline"
+                                : "fontisto:radio-btn-active"
+                            }
+                            height={20}
+                            className={"me-1"}
+                          />{" "}
+                          {item?.auth_id?.suspend_status == "active"
+                            ? "Suspend"
+                            : "Enable"}{" "}
+                          Company
+                        </a>
+                        <a
+                          aria-label="dropdown action option"
+                          className="dropdown-item"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => {
+                            setChangePasswordModal((changePasswordModal) => ({
+                              ...changePasswordModal,
+                              show: true,
+                              id: item.auth_id._id,
+                              title: "Delete Company",
+                              data: item,
+                              message:
+                                "Are you sure you want to delete this Company?",
+                              type: "Delete",
+                            }));
+                          }}
+                        >
+                          <Icon
+                            icon="mdi-light:delete"
+                            height={20}
+                            className={"me-1"}
+                          />{" "}
+                          Delete Company
+                        </a>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+
+              {listOfJobByAdmin?.length == 0 && (
+                <tr
+                  style={{
+                    height: "20rem",
+                    fontSize: "2rem",
+                    fontWeight: "600",
+                  }}
+                >
+                  <td colSpan="12" className="text-center">
+                    {jobCount == 0
+                      ? "No companies have been listed yet!"
+                      : "No result available"}
+                  </td>
+                </tr>
+              )}
+              <tr></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div className="container mt-4">
+          <div className="row justify-content-center">
+            <div className="col">
+              <span className="p-2">Show</span>
+              <div className="btn-group">
+                <select
+                  className="btn btn-outline-primary dropdown-toggle"
+                  onChange={(e) => setItemsPerPage(e.target.value)}
+                >
+                  <option value="5">5</option>
+                  <option value="10" selected>
+                    10
+                  </option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+              <span className="p-2">entries</span>
+            </div>
+
+            <div className="col p-1">
+              {" "}
+              Showing <b>
+                {currentPage * itemsPerPage - (itemsPerPage - 1)}
+              </b>{" "}
+              to <b>{currentPage * itemsPerPage}</b> of <b>{jobTotalCount}</b>{" "}
+              entries
+            </div>
+
+            <div className="col">
+              <div className="d-flex justify-content-end">
+                <Pagination>
+                  <Pagination.Prev
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  />
+                  {[...Array(totalPages).keys()].map((page) => (
+                    <Pagination.Item
+                      key={page + 1}
+                      active={page + 1 === currentPage}
+                      onClick={() => handlePageChange(page + 1)}
+                    >
+                      {page + 1}
+                    </Pagination.Item>
+                  ))}
+                  <Pagination.Next
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  />
+                </Pagination>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {changePasswordModal && (
+        <Confirmation
+          dialogData={changePasswordModal}
+          open={changePasswordModal?.show}
+          handleClose={() => setChangePasswordModal(false)}
+          handleSubmit={() =>
+            changePasswordModal?.type == "Delete"
+              ? deleteAccount()
+              : suspentAccount()
+          }
+        />
+      )}
+      <LoadingBar color={"#0b0b7c"} height="0.5rem" ref={loadingBarRef} />
+    </>
+  );
+}

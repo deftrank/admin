@@ -33,6 +33,9 @@ const slice = createSlice({
     stateListData: [],
     userCount: 0,
     companyCount: 0,
+    jobTotalCount: 0,
+    jobCount: 0,
+    listOfCompanyByAdmin: [],
   },
   reducers: {
     onBoardingSuccess: (state, action) => {
@@ -132,6 +135,14 @@ const slice = createSlice({
     clearStateSuccess: (state, action) => {
       state.userAccountDetails = null;
     },
+    listOfJobByAdminSuccess(state, action) {
+      state.jobTotalCount =
+        action.payload.flag == "empty" ? 0 : action.payload.total_count;
+      state.jobcompanyCount =
+        action.payload.flag == "empty" ? 0 : action.payload.count;
+      state.listOfJobByAdmin =
+        action.payload.flag == "empty" ? [] : action.payload.data;
+    },
   },
 });
 
@@ -157,6 +168,7 @@ const {
   getCountryListSuccess,
   getCityListSuccess,
   clearStateSuccess,
+  listOfJobByAdminSuccess,
 } = slice.actions;
 
 //  stepper currentIndex
@@ -515,3 +527,23 @@ export const submitEducationData = (data) => async (dispatch) => {
 export const clearAllState = () => async (dispatch) => {
   dispatch(clearStateSuccess());
 };
+
+export const getListOfJobByAdmin =
+  (data, loadingBarRef) => async (dispatch) => {
+    loadingBarRef.current.continuousStart();
+    try {
+      await api
+        .post(DEFT_RANK_API.jobs.getListOfJobByAdmin, data)
+        .then((response) => {
+          let result = response.data;
+          if (result.status) {
+            dispatch(listOfJobByAdminSuccess(result));
+          } else {
+            dispatch(listOfJobByAdminSuccess({ flag: "empty" }));
+          }
+          loadingBarRef.current.complete();
+        });
+    } catch (e) {
+      loadingBarRef.current.complete();
+    }
+  };
