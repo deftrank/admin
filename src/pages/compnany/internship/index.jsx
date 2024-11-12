@@ -22,7 +22,7 @@ import { jobTypes } from "../jobInternshipConfig";
 import CommonComponent from "../commonComponent";
 
 export default function index() {
-  const { listOfJobByAdmin, jobTotalCount, jobCount } = useSelector(
+  const { listOfInternshipByAdmin, jobTotalCount, jobCount } = useSelector(
     (state) => state.onBoarding
   );
   const dispatch = useDispatch();
@@ -66,13 +66,6 @@ export default function index() {
   const getJobList = (filterData) => {
     const utcDateForStart = dateRange[0]?.startDate;
     const utcDateForEnd = dateRange[0]?.endDate;
-
-    const forStartDate = utcDateForStart
-      ? moment(utcDateForStart).tz("Asia/Kolkata").format("YYYY-MM-DD")
-      : "";
-    const forEndDate = utcDateForEnd
-      ? moment(utcDateForEnd).tz("Asia/Kolkata").format("YYYY-MM-DD")
-      : "";
 
     const data = {
       search: searchData,
@@ -298,7 +291,7 @@ export default function index() {
               </tr>
             </thead>
             <tbody className="table-border-bottom-0">
-              {listOfJobByAdmin?.map((item) => (
+              {listOfInternshipByAdmin?.map((item) => (
                 <tr key={item?.id}>
                   <td>
                     <div
@@ -351,17 +344,16 @@ export default function index() {
                         WebkitBoxOrient: "vertical",
                       }}
                     >
-                      {/* {item.primary_skills[0]} */}
-                      {item.supporting_skills?.map((location, index) => (
+                      {/* {item.supporting_skills?.map((location, index) => (
                         <>
                           {location}{" "}
-                          {index < item.office_location?.length - 1 ? (
+                          {index < item.supporting_skills?.length - 1 ? (
                             <span>,</span>
                           ) : (
                             ""
                           )}{" "}
                         </>
-                      ))}
+                      ))} */}
                       {item.supporting_skills?.length == 0 ? "-" : ""}
                     </div>
                   </td>
@@ -530,7 +522,7 @@ export default function index() {
                 </tr>
               ))}
 
-              {listOfJobByAdmin?.length == 0 && (
+              {listOfInternshipByAdmin?.length == 0 && (
                 <tr
                   style={{
                     height: "20rem",

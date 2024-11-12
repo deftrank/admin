@@ -38,6 +38,7 @@ const slice = createSlice({
     listOfCompanyByAdmin: [],
     internshipTotalCount: 0,
     listOfJobByAdmin: [],
+    listOfInternshipByAdmin: [],
   },
   reducers: {
     onBoardingSuccess: (state, action) => {
@@ -599,10 +600,10 @@ export const verifyJob =
 
 export const getListOfInternshipByAdmin =
   (data, loadingBarRef) => async (dispatch) => {
-    loadingBarRef.current.continuousStart();
+    // loadingBarRef.current.continuousStart();
     try {
       await api
-        .post(DEFT_RANK_API.jobs.getListOfJobByAdmin, data)
+        .post(DEFT_RANK_API.jobs.getListOfInternshipByAdmin, data)
         .then((response) => {
           let result = response.data;
           if (result.status) {
@@ -610,9 +611,9 @@ export const getListOfInternshipByAdmin =
           } else {
             dispatch(listOfInternshipByAdminSuccess({ flag: "empty" }));
           }
-          loadingBarRef.current.complete();
+          // loadingBarRef.current.complete();
         });
     } catch (e) {
-      loadingBarRef.current.complete();
+      // loadingBarRef.current.complete();
     }
   };
