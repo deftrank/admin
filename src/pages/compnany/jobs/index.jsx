@@ -7,7 +7,9 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import {
   clearAllState,
   deleteUser,
+  getCityList,
   getListOfJobByAdmin,
+  getSkillList,
   suspendUser,
   verifyJob,
 } from "../../../store/slice/onBoardingSlice";
@@ -21,9 +23,8 @@ import { jobTypes } from "../jobInternshipConfig";
 import CommonComponent from "../commonComponent";
 
 export default function index() {
-  const { listOfJobByAdmin, jobTotalCount, jobCount } = useSelector(
-    (state) => state.onBoarding
-  );
+  const { listOfJobByAdmin, jobTotalCount, jobCount, skillListData ,cityListData} =
+    useSelector((state) => state.onBoarding);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchData, setSearchData] = useState("");
@@ -61,7 +62,11 @@ export default function index() {
   // useEffect(() => {
   //   getJobList();
   // }, [filter]);
-
+  console.log(filter);
+  useEffect(() => {
+    fetchSkillList();
+    fetchCitiesList("");
+  }, []);
   const getJobList = (filterData) => {
     const utcDateForStart = dateRange[0]?.startDate;
     const utcDateForEnd = dateRange[0]?.endDate;
@@ -78,8 +83,8 @@ export default function index() {
       page: currentPage,
       limit: itemsPerPage,
       sort_by: filterData?.sort_by?.value,
-      skills: [],
-      location: [],
+      skills: filter?.skills,
+      location: filter?.location,
       job_status: filterData?.job_status,
       verify_job: filterData?.verify_job,
       language: "en",
@@ -87,6 +92,23 @@ export default function index() {
     dispatch(getListOfJobByAdmin(data, loadingBarRef));
   };
 
+  const fetchSkillList = () => {
+    let data = {
+      page: 1,
+      limit: 100,
+      search: "",
+    };
+    dispatch(getSkillList(data));
+  };
+  const fetchCitiesList = (search) => {
+    let data = {
+      state_id: 0,
+      page: 1,
+      limit: 100,
+      search: search,
+    };
+    dispatch(getCityList(data));
+  };
   const handleClose = (id, flag) => {
     if (flag == "edit") {
       navigate(`/job-edit/${id}`);
@@ -115,7 +137,6 @@ export default function index() {
     };
     dispatch(suspendUser(data, setChangePasswordModal, "job"));
   };
-
 
   return (
     <>
@@ -179,7 +200,10 @@ export default function index() {
                 <CommonComponent
                   title="Filter Job"
                   filter={filter}
+                  skillListData={skillListData}
+                  cityListData={cityListData}
                   setFilter={setFilter}
+                  fetchCitiesList={fetchCitiesList}
                   applyFilter={getJobList}
                 />
               </div>

@@ -7,8 +7,10 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import {
   clearAllState,
   deleteUser,
+  getCityList,
   getListOfInternshipByAdmin,
   getListOfJobByAdmin,
+  getSkillList,
   suspendUser,
   verifyJob,
 } from "../../../store/slice/onBoardingSlice";
@@ -22,7 +24,7 @@ import { jobTypes } from "../jobInternshipConfig";
 import CommonComponent from "../commonComponent";
 
 export default function index() {
-  const { listOfInternshipByAdmin, jobTotalCount, jobCount } = useSelector(
+  const { listOfInternshipByAdmin, jobTotalCount, jobCount,skillListData ,cityListData } = useSelector(
     (state) => state.onBoarding
   );
   const dispatch = useDispatch();
@@ -59,6 +61,12 @@ export default function index() {
     getJobList();
   }, [dateRange]);
 
+
+  useEffect(() => {
+    fetchSkillList();
+    fetchCitiesList("");
+  }, []);
+
   // useEffect(() => {
   //   getJobList();
   // }, [filter]);
@@ -72,15 +80,32 @@ export default function index() {
       page: currentPage,
       limit: itemsPerPage,
       sort_by: filterData?.sort_by?.value,
-      skills: [],
-      location: [],
+      skills: filter?.skills,
+      location: filter?.location,
       job_status: filterData?.job_status,
       verify_job: filterData?.verify_job,
       language: "en",
     };
     dispatch(getListOfInternshipByAdmin(data, loadingBarRef));
   };
-
+ 
+  const fetchSkillList = () => {
+    let data = {
+      page: 1,
+      limit: 100,
+      search: "",
+    };
+    dispatch(getSkillList(data));
+  };
+  const fetchCitiesList = (search) => {
+    let data = {
+      state_id: 0,
+      page: 1,
+      limit: 100,
+      search: search,
+    };
+    dispatch(getCityList(data));
+  };
   const handleClose = (id, flag) => {
     if (flag == "edit") {
       navigate(`/job-edit/${id}`);
@@ -172,7 +197,10 @@ export default function index() {
                 <CommonComponent
                   title="Filter Job"
                   filter={filter}
+                  skillListData={skillListData}
+                  cityListData={cityListData}
                   setFilter={setFilter}
+                  fetchCitiesList={fetchCitiesList}
                   applyFilter={getJobList}
                 />
               </div>
