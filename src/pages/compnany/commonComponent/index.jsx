@@ -1,9 +1,9 @@
 // @ts-nocheck
 import { jobTypes } from "../jobInternshipConfig";
 import DeftMultiselect from "../../../components/deftMultiselect/index";
-
+import Select from 'react-select'
 export default function CommonComponent({ ...props }) {
-  const { title, applyFilter, filter, setFilter } = props;
+  const { title, applyFilter, filter, setFilter ,skillListData,cityListData,fetchCitiesList} = props;
 
   return (
     <>
@@ -20,13 +20,13 @@ export default function CommonComponent({ ...props }) {
         <div className="mt-4">
           <span className="menu-header-text">Primary Skill</span>
           <DeftMultiselect
-            options={jobTypes?.map((item) => ({
-              label: item?.title,
-              value: item?.value,
+            options={skillListData?.map((item) => ({
+              label: item?.name,
+              value: item?._id,
             }))}
             value={filter?.skills}
             onChange={(val) => {
-              setFormData({ ...formData, skills: val });
+              setFilter({ ...filter, skills: val?.map((item)=>item?.label) });
             }}
             placeholder="Search"
             dropdownHeight="200px"
@@ -35,19 +35,43 @@ export default function CommonComponent({ ...props }) {
         </div>
         <div className="mt-4">
           <span className="menu-header-text">Location</span>
-          <DeftMultiselect
-            options={jobTypes?.map((item) => ({
-              label: item?.title,
-              value: item?.value,
+           <Select
+              placeholder="Job Location"
+              className={"w-100"}
+              options={cityListData?.map((item) => ({
+                label: item.name,
+                value: item._id,
+              }))}
+              value={filter?.maxValue}
+              onChange={(selectedOptions) => {
+                // Ensure we limit the selection to a maximum of 3 locations
+                const limitedSelection = selectedOptions.slice(0, 3);
+
+                const limitedSelectionLabels = selectedOptions?.map((option) => option.label);
+
+                  setFilter({
+                  ...filter,
+                  location: limitedSelectionLabels,
+                  maxValue: limitedSelection,
+                });
+              }}
+              onInputChange={(e) => fetchCitiesList(e)}
+              isMulti
+            />
+          {/* <DeftMultiselect
+            options={cityListData?.map((item) => ({
+              label: item?.name,
+              value: item?._id,
             }))}
             value={filter?.skills}
             onChange={(val) => {
-              setFormData({ ...formData, skills: val });
+
+              setFilter({ ...filter, location: val?.map((item)=>item?.label) });
             }}
             placeholder="Search"
             dropdownHeight="200px"
             multi={true}
-          />
+          /> */}
         </div>
         <div className="mt-4">
           <span className="menu-header-text">Short By</span>
