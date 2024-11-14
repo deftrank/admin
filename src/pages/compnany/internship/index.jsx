@@ -12,6 +12,7 @@ import {
   getListOfJobByAdmin,
   getSkillList,
   suspendUser,
+  updateJob,
   verifyJob,
 } from "../../../store/slice/onBoardingSlice";
 import DeftInput from "../../../components/deftInput/deftInput";
@@ -120,19 +121,21 @@ export default function index() {
     const data = {
       id: changePasswordModal?.id,
       status: changePasswordModal?.value,
-      type: 1,
+      type: 2,
       language: "en",
     };
-    dispatch(verifyJob(data, setChangePasswordModal, "job"));
+    dispatch(verifyJob(data, setChangePasswordModal, "internship"));
   };
 
   const suspentAccount = () => {
+
     const data = {
-      id: changePasswordModal?.id,
-      status: changePasswordModal?.data?.status == 1 ? "suspended" : "active",
+      id: changePasswordModal?.data?._id,
+      type:2,
+      status: changePasswordModal?.data?.status==1?3:1,
       language: "en",
     };
-    dispatch(suspendUser(data, setChangePasswordModal, "job"));
+    dispatch(updateJob(data, setChangePasswordModal, "internship"));
   };
 
   return (
@@ -351,7 +354,7 @@ export default function index() {
                         <>
                           {location}{" "}
                           {index < item.office_location?.length - 1 ? (
-                            <span>,</span>
+                            <span key={index}>,</span>
                           ) : (
                             ""
                           )}{" "}
@@ -481,7 +484,7 @@ export default function index() {
                         ) : (
                           ""
                         )}
-                        {item?.is_verified == 1 || item?.is_verified == 2 ? (
+                        {item?.is_verified == 1 ? (
                           <a
                             aria-label="dropdown action option"
                             className="dropdown-item"
