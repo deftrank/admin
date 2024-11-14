@@ -313,7 +313,8 @@ const suspentAccount = () => {
           <table className="table table-hover">
             <thead className="table-dark">
               <tr>
-                <th>Name</th>
+                <th>Job Title</th>
+                <th>Company Name</th>
                 <th>Office Locations</th>
                 <th>Skills</th>
                 <th>Positions</th>
@@ -349,6 +350,20 @@ const suspentAccount = () => {
                       style={{
                         width: "10vw",
                         overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {item?.companyData?.firstName ? item?.companyData?.firstName : "-"}
+                    </div>
+                  </td>
+                  <td>
+                    <div
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title={item.title ? item.title : ""}
+                      style={{
+                        width: "10vw",
+                        overflow: "hidden",
                         display: " -webkit-box",
                         WebkitBoxOrient: "vertical",
                       }}
@@ -363,7 +378,7 @@ const suspentAccount = () => {
                           )}{" "}
                         </>
                       ))}
-                      {item.office_location?.length == 0 ? "-" : ""}
+                      {item.office_location?.length == 0 ? "Remote" : ""}
                     </div>
                   </td>
                   <td>
@@ -431,7 +446,7 @@ const suspentAccount = () => {
                         ? "pending"
                         : item?.is_verified == 2
                         ? "verify"
-                        : "rejected"}
+                        : item?.is_verified == 2?"suspend":"rejected"}
                     </span>
                   </td>
                   <td>
@@ -488,7 +503,7 @@ const suspentAccount = () => {
                         ) : (
                           ""
                         )}
-                        {item?.is_verified == 1 ? (
+                        {item?.is_verified == 1 || item?.is_verified==2  ? (
                           <a
                             aria-label="dropdown action option"
                             className="dropdown-item"
@@ -516,6 +531,38 @@ const suspentAccount = () => {
                               className={"me-1"}
                             />{" "}
                             Reject Job
+                          </a>
+                        ) : (
+                          ""
+                        )}
+                          {item?.is_verified == 1 || item?.is_verified==2   ? (
+                          <a
+                            aria-label="dropdown action option"
+                            className="dropdown-item"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                              setChangePasswordModal((changePasswordModal) => ({
+                                ...changePasswordModal,
+                                show: true,
+                                id: item._id,
+                                title: `Reject Company`,
+                                data: item,
+                                message: `Are you sure you want to reject this job?`,
+                                type: "suspend",
+                                value: 4,
+                              }));
+                            }}
+                          >
+                            <Icon
+                              icon={
+                                item?.is_verified == 1
+                                  ? "lsicon:disable-outline"
+                                  : "fontisto:radio-btn-active"
+                              }
+                              height={20}
+                              className={"me-1"}
+                            />{" "}
+                           suspend Job
                           </a>
                         ) : (
                           ""
@@ -549,7 +596,7 @@ const suspentAccount = () => {
                             height={20}
                             className={"me-1"}
                           />{" "}
-                          {item?.status == 1 ? "Suspend" : "Enable"} Job
+                          {item?.status == 1 ? "Active" : "Deactive"} Job
                         </a>
                       </div>
                     </div>

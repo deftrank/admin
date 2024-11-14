@@ -35,10 +35,14 @@ const slice = createSlice({
     companyCount: 0,
     jobTotalCount: 0,
     jobCount: 0,
+    queriesTotalCount:0,
+    queriesCount:0,
     listOfCompanyByAdmin: [],
     internshipTotalCount: 0,
     listOfJobByAdmin: [],
     listOfInternshipByAdmin: [],
+    listOfQueriesTestByAdmin:[]
+
   },
   reducers: {
     onBoardingSuccess: (state, action) => {
@@ -204,6 +208,14 @@ const slice = createSlice({
           action.payload.data.status;
       }
     },
+    listOfQueriesTestByAdminSuccess(state,action){
+      state.queriesTotalCount =
+      action.payload.flag == "empty" ? 0 : action.payload.total_count;
+    state.queriesCount =
+      action.payload.flag == "empty" ? 0 : action.payload.count;
+    state.listOfQueriesTestByAdmin =
+      action.payload.flag == "empty" ? [] : action.payload.data;
+    }
   },
 });
 
@@ -234,6 +246,7 @@ const {
   verifyJobSuccess,
   verifyInternShipSuccess,
   updateJobStatusSuccess,
+  listOfQueriesTestByAdminSuccess
 } = slice.actions;
 
 //  stepper currentIndex
@@ -609,7 +622,7 @@ export const getListOfJobByAdmin =
           loadingBarRef.current.complete();
         });
     } catch (e) {
-      loadingBarRef.current.complete();
+      // loadingBarRef.current.complete();
     }
   };
 
@@ -678,6 +691,25 @@ export const getListOfInternshipByAdmin =
             dispatch(listOfInternshipByAdminSuccess(result));
           } else {
             dispatch(listOfInternshipByAdminSuccess({ flag: "empty" }));
+          }
+          // loadingBarRef.current.complete();
+        });
+    } catch (e) {
+      // loadingBarRef.current.complete();
+    }
+  };
+  export const getListOfQueriesTestByAdmin =
+  (data, loadingBarRef) => async (dispatch) => {
+    // loadingBarRef.current.continuousStart();
+    try {
+      await api
+        .post(DEFT_RANK_API.test.queriesList, data)
+        .then((response) => {
+          let result = response.data;
+          if (result.status) {
+            dispatch(listOfQueriesTestByAdminSuccess(result));
+          } else {
+            dispatch(listOfQueriesTestByAdminSuccess({ flag: "empty" }));
           }
           // loadingBarRef.current.complete();
         });

@@ -39,6 +39,9 @@ export const DEFT_RANK_API = {
     updateJObStatus:"admin/update-job-internship-status",
     getListOfInternshipByAdmin: "admin/admin-internship-list",
   },
+  test:{
+    queriesList:"admin/comp-test-listing"
+  }
 };
 
 export const API_RESPONSE = {

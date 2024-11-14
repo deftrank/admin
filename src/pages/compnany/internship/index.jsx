@@ -310,7 +310,8 @@ export default function index() {
           <table className="table table-hover">
             <thead className="table-dark">
               <tr>
-                <th>Name</th>
+              <th>Internship Title</th>
+                <th>Company Name</th>
                 <th>Office Locations</th>
                 <th>Skills</th>
                 <th>Positions</th>
@@ -346,6 +347,20 @@ export default function index() {
                       style={{
                         width: "10vw",
                         overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {item?.companyData?.firstName ? item?.companyData?.firstName : "-"}
+                    </div>
+                  </td>
+                  <td>
+                    <div
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title={item.title ? item.title : ""}
+                      style={{
+                        width: "10vw",
+                        overflow: "hidden",
                         display: " -webkit-box",
                         WebkitBoxOrient: "vertical",
                       }}
@@ -360,7 +375,7 @@ export default function index() {
                           )}{" "}
                         </>
                       ))}
-                      {item.office_location?.length == 0 ? "-" : ""}
+                      {item.office_location?.length == 0 ? "Remote" : ""}
                     </div>
                   </td>
                   <td>
