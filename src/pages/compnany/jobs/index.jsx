@@ -23,6 +23,7 @@ import LoadingBar from "react-top-loading-bar";
 import { jobTypes } from "../jobInternshipConfig";
 import CommonComponent from "../commonComponent";
 import { JobType, jobVerifyStatus, status } from "../../../utils/statusEnums";
+import { PAGES_ENUM } from "../../../utils/appEnums";
 
 export default function index() {
   const {
