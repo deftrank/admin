@@ -102,8 +102,7 @@ export default function index() {
   const suspentAccount = () => {
     const data = {
       auth_id: changePasswordModal?.id,
-      status:
-        changePasswordModal?.data?.auth_id?.suspend_status == "active"
+      status:changePasswordModal?.data?.auth_id?.suspend_status == "active"
           ? "suspended"
           : "active",
       language: "en",

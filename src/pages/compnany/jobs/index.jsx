@@ -11,6 +11,7 @@ import {
   getListOfJobByAdmin,
   getSkillList,
   suspendUser,
+  updateJob,
   verifyJob,
 } from "../../../store/slice/onBoardingSlice";
 import DeftInput from "../../../components/deftInput/deftInput";
@@ -21,10 +22,16 @@ import { changeDate } from "../../../utils/appConstant";
 import LoadingBar from "react-top-loading-bar";
 import { jobTypes } from "../jobInternshipConfig";
 import CommonComponent from "../commonComponent";
+import { JobType, jobVerifyStatus, status } from "../../../utils/statusEnums";
 
 export default function index() {
-  const { listOfJobByAdmin, jobTotalCount, jobCount, skillListData ,cityListData} =
-    useSelector((state) => state.onBoarding);
+  const {
+    listOfJobByAdmin,
+    jobTotalCount,
+    jobCount,
+    skillListData,
+    cityListData,
+  } = useSelector((state) => state.onBoarding);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchData, setSearchData] = useState("");
@@ -94,8 +101,8 @@ export default function index() {
 
   const fetchSkillList = () => {
     let data = {
-      page: 1,
-      limit: 100,
+      page: PAGES_ENUM?.PAGE,
+      limit: PAGES_ENUM?.PER_PAGE,
       search: "",
     };
     dispatch(getSkillList(data));
@@ -103,8 +110,8 @@ export default function index() {
   const fetchCitiesList = (search) => {
     let data = {
       state_id: 0,
-      page: 1,
-      limit: 100,
+      page: PAGES_ENUM?.PAGE,
+      limit: PAGES_ENUM?.PER_PAGE,
       search: search,
     };
     dispatch(getCityList(data));
@@ -123,7 +130,7 @@ export default function index() {
     const data = {
       id: changePasswordModal?.id,
       status: changePasswordModal?.value,
-      type: 1,
+      type: JobType?.job,
       language: "en",
     };
     dispatch(verifyJob(data, setChangePasswordModal, "job"));
@@ -131,11 +138,12 @@ export default function index() {
 
   const suspentAccount = () => {
     const data = {
-      id: changePasswordModal?.id,
-      status: changePasswordModal?.data?.status == 1 ? "suspended" : "active",
+      id: changePasswordModal?.data?._id,
+      type: JobType?.job,
+      status: changePasswordModal?.data?.status == status?.active ? status?.suspend: status?.active,
       language: "en",
     };
-    dispatch(suspendUser(data, setChangePasswordModal, "job"));
+    dispatch(updateJob(data, setChangePasswordModal, "job"));
   };
 
   return (
@@ -310,7 +318,8 @@ export default function index() {
           <table className="table table-hover">
             <thead className="table-dark">
               <tr>
-                <th>Name</th>
+                <th>Job Title</th>
+                <th>Company Name</th>
                 <th>Office Locations</th>
                 <th>Skills</th>
                 <th>Positions</th>
@@ -346,6 +355,22 @@ export default function index() {
                       style={{
                         width: "10vw",
                         overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {item?.companyData?.firstName
+                        ? item?.companyData?.firstName
+                        : "-"}
+                    </div>
+                  </td>
+                  <td>
+                    <div
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title={item.title ? item.title : ""}
+                      style={{
+                        width: "10vw",
+                        overflow: "hidden",
                         display: " -webkit-box",
                         WebkitBoxOrient: "vertical",
                       }}
@@ -360,7 +385,7 @@ export default function index() {
                           )}{" "}
                         </>
                       ))}
-                      {item.office_location?.length == 0 ? "-" : ""}
+                      {item.office_location?.length == 0 ? "Remote" : ""}
                     </div>
                   </td>
                   <td>
@@ -417,29 +442,31 @@ export default function index() {
                   <td>
                     <span
                       className={`badge ${
-                        item?.is_verified == 1
+                        item?.is_verified == jobVerifyStatus?.create
                           ? "bg-label-warning"
-                          : item?.is_verified == 2
+                          : item?.is_verified == jobVerifyStatus?.verify
                           ? "bg-label-success"
                           : "bg-label-danger"
                       } me-1`}
                     >
-                      {item?.is_verified == 1
+                      {item?.is_verified == jobVerifyStatus?.create
                         ? "pending"
-                        : item?.is_verified == 2
+                        : item?.is_verified == jobVerifyStatus?.verify
                         ? "verify"
+                        : item?.is_verified == jobVerifyStatus?.suspended
+                        ? "suspend"
                         : "rejected"}
                     </span>
                   </td>
                   <td>
                     <span
                       className={`badge ${
-                        item?.status == 1
+                        item?.status == status?.active
                           ? "bg-label-success"
                           : "bg-label-danger"
                       } me-1`}
                     >
-                      {item?.status == 1 ? "Active" : "Deactive"}
+                      {item?.status == status?.active ? "Active" : "Deactive"}
                     </span>
                   </td>
                   <td>
@@ -453,7 +480,9 @@ export default function index() {
                         <i className="bx bx-dots-vertical-rounded"></i>
                       </button>
                       <div className="dropdown-menu">
-                        {item?.is_verified == 1 || item?.is_verified == 3 ? (
+                        {item?.is_verified == jobVerifyStatus?.create ||
+                        item?.is_verified == jobVerifyStatus?.reject ||
+                        item?.is_verified == jobVerifyStatus?.suspended ? (
                           <a
                             aria-label="dropdown action option"
                             className="dropdown-item"
@@ -485,7 +514,8 @@ export default function index() {
                         ) : (
                           ""
                         )}
-                        {item?.is_verified == 1 || item?.is_verified == 2 ? (
+                        {item?.is_verified == jobVerifyStatus?.create ||
+                        item?.is_verified == jobVerifyStatus?.verify ? (
                           <a
                             aria-label="dropdown action option"
                             className="dropdown-item"
@@ -505,7 +535,7 @@ export default function index() {
                           >
                             <Icon
                               icon={
-                                item?.is_verified == 1
+                                item?.is_verified == jobVerifyStatus?.create
                                   ? "lsicon:disable-outline"
                                   : "fontisto:radio-btn-active"
                               }
@@ -513,6 +543,39 @@ export default function index() {
                               className={"me-1"}
                             />{" "}
                             Reject Job
+                          </a>
+                        ) : (
+                          ""
+                        )}
+                        {item?.is_verified == jobVerifyStatus?.create ||
+                        item?.is_verified == jobVerifyStatus?.verify ? (
+                          <a
+                            aria-label="dropdown action option"
+                            className="dropdown-item"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                              setChangePasswordModal((changePasswordModal) => ({
+                                ...changePasswordModal,
+                                show: true,
+                                id: item._id,
+                                title: `Reject Company`,
+                                data: item,
+                                message: `Are you sure you want to reject this job?`,
+                                type: "suspend",
+                                value: 4,
+                              }));
+                            }}
+                          >
+                            <Icon
+                              icon={
+                                item?.is_verified == jobVerifyStatus?.create
+                                  ? "lsicon:disable-outline"
+                                  : "fontisto:radio-btn-active"
+                              }
+                              height={20}
+                              className={"me-1"}
+                            />{" "}
+                            suspend Job
                           </a>
                         ) : (
                           ""
@@ -527,11 +590,15 @@ export default function index() {
                               show: true,
                               id: item.job_id,
                               title: `${
-                                item?.status == 1 ? "Suspend" : "Enable"
+                                item?.status == status?.active
+                                  ? "Suspend"
+                                  : "Enable"
                               } Company`,
                               data: item,
                               message: `Are you sure you want to ${
-                                item?.status == 1 ? "suspend" : "enable"
+                                item?.status == status?.active
+                                  ? "suspend"
+                                  : "enable"
                               } this job?`,
                               type: "disable",
                             }));
@@ -539,14 +606,17 @@ export default function index() {
                         >
                           <Icon
                             icon={
-                              item?.status == 1
+                              item?.status == status?.active
                                 ? "lsicon:disable-outline"
                                 : "fontisto:radio-btn-active"
                             }
                             height={20}
                             className={"me-1"}
                           />{" "}
-                          {item?.status == 1 ? "Suspend" : "Enable"} Job
+                          {item?.status !== status?.active
+                            ? "Active"
+                            : "Deactive"}{" "}
+                          Job
                         </a>
                       </div>
                     </div>
