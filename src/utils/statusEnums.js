@@ -6,7 +6,8 @@ export const jobVerifyStatus = {
 };
 export const status = {
     active: 1,
-    deactive:2
+    deactive:2,
+    suspend:3
 }
 export const JobType = {
     job: 1,

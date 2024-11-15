@@ -25,8 +25,13 @@ import CommonComponent from "../commonComponent";
 import { JobType, jobVerifyStatus, status } from "../../../utils/statusEnums";
 
 export default function index() {
-  const { listOfJobByAdmin, jobTotalCount, jobCount, skillListData ,cityListData} =
-    useSelector((state) => state.onBoarding);
+  const {
+    listOfJobByAdmin,
+    jobTotalCount,
+    jobCount,
+    skillListData,
+    cityListData,
+  } = useSelector((state) => state.onBoarding);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchData, setSearchData] = useState("");
@@ -96,8 +101,8 @@ export default function index() {
 
   const fetchSkillList = () => {
     let data = {
-      page: 1,
-      limit: 100,
+      page: PAGES_ENUM?.PAGE,
+      limit: PAGES_ENUM?.PER_PAGE,
       search: "",
     };
     dispatch(getSkillList(data));
@@ -105,8 +110,8 @@ export default function index() {
   const fetchCitiesList = (search) => {
     let data = {
       state_id: 0,
-      page: 1,
-      limit: 100,
+      page: PAGES_ENUM?.PAGE,
+      limit: PAGES_ENUM?.PER_PAGE,
       search: search,
     };
     dispatch(getCityList(data));
@@ -131,15 +136,15 @@ export default function index() {
     dispatch(verifyJob(data, setChangePasswordModal, "job"));
   };
 
-const suspentAccount = () => {
-
-  const data = {
-    id: changePasswordModal?.data?._id,
-    type: JobType?.job,
-    status: changePasswordModal?.value,    language: "en",
+  const suspentAccount = () => {
+    const data = {
+      id: changePasswordModal?.data?._id,
+      type: JobType?.job,
+      status: changePasswordModal?.data?.status == status?.active ? status?.suspend: status?.active,
+      language: "en",
+    };
+    dispatch(updateJob(data, setChangePasswordModal, "job"));
   };
-  dispatch(updateJob(data, setChangePasswordModal, "job"));
-};
 
   return (
     <>
@@ -353,7 +358,9 @@ const suspentAccount = () => {
                         textOverflow: "ellipsis",
                       }}
                     >
-                      {item?.companyData?.firstName ? item?.companyData?.firstName : "-"}
+                      {item?.companyData?.firstName
+                        ? item?.companyData?.firstName
+                        : "-"}
                     </div>
                   </td>
                   <td>
@@ -446,7 +453,9 @@ const suspentAccount = () => {
                         ? "pending"
                         : item?.is_verified == jobVerifyStatus?.verify
                         ? "verify"
-                        : item?.is_verified == jobVerifyStatus?.suspended ?"suspend":"rejected"}
+                        : item?.is_verified == jobVerifyStatus?.suspended
+                        ? "suspend"
+                        : "rejected"}
                     </span>
                   </td>
                   <td>
@@ -457,7 +466,7 @@ const suspentAccount = () => {
                           : "bg-label-danger"
                       } me-1`}
                     >
-                      {item?.status ==  status?.active ? "Active" : "Deactive"}
+                      {item?.status == status?.active ? "Active" : "Deactive"}
                     </span>
                   </td>
                   <td>
@@ -471,7 +480,9 @@ const suspentAccount = () => {
                         <i className="bx bx-dots-vertical-rounded"></i>
                       </button>
                       <div className="dropdown-menu">
-                        {item?.is_verified == jobVerifyStatus?.create || item?.is_verified == jobVerifyStatus?.reject|| item?.is_verified == jobVerifyStatus?.suspended ? (
+                        {item?.is_verified == jobVerifyStatus?.create ||
+                        item?.is_verified == jobVerifyStatus?.reject ||
+                        item?.is_verified == jobVerifyStatus?.suspended ? (
                           <a
                             aria-label="dropdown action option"
                             className="dropdown-item"
@@ -503,7 +514,8 @@ const suspentAccount = () => {
                         ) : (
                           ""
                         )}
-                        {item?.is_verified == jobVerifyStatus?.create || item?.is_verified==jobVerifyStatus?.verify ? (
+                        {item?.is_verified == jobVerifyStatus?.create ||
+                        item?.is_verified == jobVerifyStatus?.verify ? (
                           <a
                             aria-label="dropdown action option"
                             className="dropdown-item"
@@ -535,7 +547,8 @@ const suspentAccount = () => {
                         ) : (
                           ""
                         )}
-                          {item?.is_verified == jobVerifyStatus?.create || item?.is_verified==jobVerifyStatus?.verify   ? (
+                        {item?.is_verified == jobVerifyStatus?.create ||
+                        item?.is_verified == jobVerifyStatus?.verify ? (
                           <a
                             aria-label="dropdown action option"
                             className="dropdown-item"
@@ -562,7 +575,7 @@ const suspentAccount = () => {
                               height={20}
                               className={"me-1"}
                             />{" "}
-                           suspend Job
+                            suspend Job
                           </a>
                         ) : (
                           ""
@@ -577,11 +590,15 @@ const suspentAccount = () => {
                               show: true,
                               id: item.job_id,
                               title: `${
-                                item?.status == status?.active ? "Suspend" : "Enable"
+                                item?.status == status?.active
+                                  ? "Suspend"
+                                  : "Enable"
                               } Company`,
                               data: item,
                               message: `Are you sure you want to ${
-                                item?.status == status?.active ? "suspend" : "enable"
+                                item?.status == status?.active
+                                  ? "suspend"
+                                  : "enable"
                               } this job?`,
                               type: "disable",
                             }));
@@ -589,14 +606,17 @@ const suspentAccount = () => {
                         >
                           <Icon
                             icon={
-                              item?.status ==status?.active
+                              item?.status == status?.active
                                 ? "lsicon:disable-outline"
                                 : "fontisto:radio-btn-active"
                             }
                             height={20}
                             className={"me-1"}
                           />{" "}
-                          {item?.status !== status?.active ? "Active" : "Deactive"} Job
+                          {item?.status !== status?.active
+                            ? "Active"
+                            : "Deactive"}{" "}
+                          Job
                         </a>
                       </div>
                     </div>

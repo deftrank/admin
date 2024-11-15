@@ -24,6 +24,7 @@ import LoadingBar from "react-top-loading-bar";
 import { jobTypes } from "../jobInternshipConfig";
 import CommonComponent from "../commonComponent";
 import { JobType, jobVerifyStatus, status } from "../../../utils/statusEnums";
+import { PAGES_ENUM } from "../../../utils/appEnums";
 
 export default function index() {
   const { listOfInternshipByAdmin, jobTotalCount, jobCount,skillListData ,cityListData } = useSelector(
@@ -94,8 +95,8 @@ export default function index() {
  
   const fetchSkillList = () => {
     let data = {
-      page: 1,
-      limit: 100,
+      page: PAGES_ENUM?.PAGE,
+      limit: PAGES_ENUM?.PER_PAGE,
       search: "",
     };
     dispatch(getSkillList(data));
@@ -103,8 +104,8 @@ export default function index() {
   const fetchCitiesList = (search) => {
     let data = {
       state_id: 0,
-      page: 1,
-      limit: 100,
+      page: PAGES_ENUM?.PAGE,
+      limit: PAGES_ENUM?.PER_PAGE,
       search: search,
     };
     dispatch(getCityList(data));
@@ -134,7 +135,7 @@ export default function index() {
     const data = {
       id: changePasswordModal?.data?._id,
       type: JobType?.internship,
-      status: changePasswordModal?.data?.status==1?3:1,
+      status: changePasswordModal?.data?.status == status?.active ? status?.suspend: status?.active,
       language: "en",
     };
     dispatch(updateJob(data, setChangePasswordModal, "internship"));
