@@ -23,6 +23,7 @@ import { changeDate } from "../../../utils/appConstant";
 import LoadingBar from "react-top-loading-bar";
 import { jobTypes } from "../jobInternshipConfig";
 import CommonComponent from "../commonComponent";
+import { JobType, jobVerifyStatus, status } from "../../../utils/statusEnums";
 
 export default function index() {
   const { listOfInternshipByAdmin, jobTotalCount, jobCount,skillListData ,cityListData } = useSelector(
@@ -38,6 +39,7 @@ export default function index() {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
   const loadingBarRef = useRef(null);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const totalPages = Math.ceil(jobTotalCount / itemsPerPage);
@@ -121,7 +123,7 @@ export default function index() {
     const data = {
       id: changePasswordModal?.id,
       status: changePasswordModal?.value,
-      type: 2,
+      type: JobType?.internship,
       language: "en",
     };
     dispatch(verifyJob(data, setChangePasswordModal, "internship"));
@@ -131,7 +133,7 @@ export default function index() {
 
     const data = {
       id: changePasswordModal?.data?._id,
-      type:2,
+      type: JobType?.internship,
       status: changePasswordModal?.data?.status==1?3:1,
       language: "en",
     };
@@ -429,26 +431,26 @@ export default function index() {
                     </p>
                   </td>
                   <td>
-                    <span
+                  <span
                       className={`badge ${
-                        item?.is_verified == 1
+                        item?.is_verified == jobVerifyStatus?.create
                           ? "bg-label-warning"
-                          : item?.is_verified == 2
+                          : item?.is_verified == jobVerifyStatus?.verify
                           ? "bg-label-success"
                           : "bg-label-danger"
                       } me-1`}
                     >
-                      {item?.is_verified == 1
+                      {item?.is_verified ===jobVerifyStatus?.create
                         ? "pending"
-                        : item?.is_verified == 2
+                        : item?.is_verified === jobVerifyStatus?.verify
                         ? "verify"
-                        : "rejected"}
+                        : item?.is_verified === jobVerifyStatus?.suspended ?"suspend":"rejected"}
                     </span>
                   </td>
                   <td>
                     <span
                       className={`badge ${
-                        item?.status == 1
+                        item?.status == status?.active
                           ? "bg-label-success"
                           : "bg-label-danger"
                       } me-1`}
@@ -467,7 +469,7 @@ export default function index() {
                         <i className="bx bx-dots-vertical-rounded"></i>
                       </button>
                       <div className="dropdown-menu">
-                        {item?.is_verified == 1 || item?.is_verified == 3 ? (
+                        {item?.is_verified ===jobVerifyStatus?.create || item?.is_verified === jobVerifyStatus?.reject || item?.is_verified == jobVerifyStatus?.suspended ? (
                           <a
                             aria-label="dropdown action option"
                             className="dropdown-item"
@@ -479,7 +481,7 @@ export default function index() {
                                 id: item._id,
                                 title: `Accept Job`,
                                 data: item,
-                                message: `Are you sure you want to accept this job?`,
+                                message: `Are you sure you want to accept this internship?`,
                                 type: "verify",
                                 value: 2,
                               }));
@@ -494,12 +496,12 @@ export default function index() {
                               height={20}
                               className={"me-1"}
                             />{" "}
-                            Accept Job
+                            Accept Internship
                           </a>
                         ) : (
                           ""
                         )}
-                        {item?.is_verified == 1 ? (
+                        {item?.is_verified == jobVerifyStatus?.create || item?.is_verified==jobVerifyStatus?.verify ? (
                           <a
                             aria-label="dropdown action option"
                             className="dropdown-item"
@@ -511,7 +513,7 @@ export default function index() {
                                 id: item._id,
                                 title: `Reject Company`,
                                 data: item,
-                                message: `Are you sure you want to reject this job?`,
+                                message: `Are you sure you want to reject this internship?`,
                                 type: "verify",
                                 value: 3,
                               }));
@@ -519,14 +521,46 @@ export default function index() {
                           >
                             <Icon
                               icon={
-                                item?.is_verified == 1
+                                item?.is_verified == jobVerifyStatus?.create
                                   ? "lsicon:disable-outline"
                                   : "fontisto:radio-btn-active"
                               }
                               height={20}
                               className={"me-1"}
                             />{" "}
-                            Reject Job
+                            Reject Internship
+                          </a>
+                        ) : (
+                          ""
+                        )}
+                        {item?.is_verified == jobVerifyStatus?.reject || item?.is_verified == jobVerifyStatus?.suspended||item?.is_verified===jobVerifyStatus?.verify ? (
+                          <a
+                            aria-label="dropdown action option"
+                            className="dropdown-item"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                              setChangePasswordModal((changePasswordModal) => ({
+                                ...changePasswordModal,
+                                show: true,
+                                id: item._id,
+                                title: `Reject Company`,
+                                data: item,
+                                message: `Are you sure you want to suspend this internship?`,
+                                type: "verify",
+                                value: 4,
+                              }));
+                            }}
+                          >
+                            <Icon
+                              icon={
+                                item?.is_verified == jobVerifyStatus?.create
+                                  ? "lsicon:disable-outline"
+                                  : "fontisto:radio-btn-active"
+                              }
+                              height={20}
+                              className={"me-1"}
+                            />{" "}
+                           suspend Internship
                           </a>
                         ) : (
                           ""
@@ -541,26 +575,26 @@ export default function index() {
                               show: true,
                               id: item.job_id,
                               title: `${
-                                item?.status == 1 ? "Suspend" : "Enable"
+                                item?.status == status?.active ?"Active" : "Deactive"
                               } Company`,
                               data: item,
                               message: `Are you sure you want to ${
-                                item?.status == 1 ? "suspend" : "enable"
-                              } this job?`,
+                                item?.status == status?.active ? "Active" : "Deactive"
+                              } this internship?`,
                               type: "disable",
                             }));
                           }}
                         >
                           <Icon
                             icon={
-                              item?.status == 1
+                              item?.status == status?.active
                                 ? "lsicon:disable-outline"
                                 : "fontisto:radio-btn-active"
                             }
                             height={20}
                             className={"me-1"}
                           />{" "}
-                          {item?.status == 1 ? "Suspend" : "Enable"} Job
+                          {item?.status !== status?.active ? "Active" : "Deactive"} Internship
                         </a>
                       </div>
                     </div>

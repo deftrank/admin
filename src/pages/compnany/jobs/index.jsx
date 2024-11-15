@@ -22,6 +22,7 @@ import { changeDate } from "../../../utils/appConstant";
 import LoadingBar from "react-top-loading-bar";
 import { jobTypes } from "../jobInternshipConfig";
 import CommonComponent from "../commonComponent";
+import { JobType, jobVerifyStatus, status } from "../../../utils/statusEnums";
 
 export default function index() {
   const { listOfJobByAdmin, jobTotalCount, jobCount, skillListData ,cityListData} =
@@ -124,7 +125,7 @@ export default function index() {
     const data = {
       id: changePasswordModal?.id,
       status: changePasswordModal?.value,
-      type: 1,
+      type: JobType?.job,
       language: "en",
     };
     dispatch(verifyJob(data, setChangePasswordModal, "job"));
@@ -134,9 +135,8 @@ const suspentAccount = () => {
 
   const data = {
     id: changePasswordModal?.data?._id,
-    type:1,
-    status: changePasswordModal?.data?.status==1?3:1,
-    language: "en",
+    type: JobType?.job,
+    status: changePasswordModal?.value,    language: "en",
   };
   dispatch(updateJob(data, setChangePasswordModal, "job"));
 };
@@ -435,29 +435,29 @@ const suspentAccount = () => {
                   <td>
                     <span
                       className={`badge ${
-                        item?.is_verified == 1
+                        item?.is_verified == jobVerifyStatus?.create
                           ? "bg-label-warning"
-                          : item?.is_verified == 2
+                          : item?.is_verified == jobVerifyStatus?.verify
                           ? "bg-label-success"
                           : "bg-label-danger"
                       } me-1`}
                     >
-                      {item?.is_verified == 1
+                      {item?.is_verified == jobVerifyStatus?.create
                         ? "pending"
-                        : item?.is_verified == 2
+                        : item?.is_verified == jobVerifyStatus?.verify
                         ? "verify"
-                        : item?.is_verified == 2?"suspend":"rejected"}
+                        : item?.is_verified == jobVerifyStatus?.suspended ?"suspend":"rejected"}
                     </span>
                   </td>
                   <td>
                     <span
                       className={`badge ${
-                        item?.status == 1
+                        item?.status == status?.active
                           ? "bg-label-success"
                           : "bg-label-danger"
                       } me-1`}
                     >
-                      {item?.status == 1 ? "Active" : "Deactive"}
+                      {item?.status ==  status?.active ? "Active" : "Deactive"}
                     </span>
                   </td>
                   <td>
@@ -471,7 +471,7 @@ const suspentAccount = () => {
                         <i className="bx bx-dots-vertical-rounded"></i>
                       </button>
                       <div className="dropdown-menu">
-                        {item?.is_verified == 1 || item?.is_verified == 3 ? (
+                        {item?.is_verified == jobVerifyStatus?.create || item?.is_verified == jobVerifyStatus?.reject|| item?.is_verified == jobVerifyStatus?.suspended ? (
                           <a
                             aria-label="dropdown action option"
                             className="dropdown-item"
@@ -503,7 +503,7 @@ const suspentAccount = () => {
                         ) : (
                           ""
                         )}
-                        {item?.is_verified == 1 || item?.is_verified==2  ? (
+                        {item?.is_verified == jobVerifyStatus?.create || item?.is_verified==jobVerifyStatus?.verify ? (
                           <a
                             aria-label="dropdown action option"
                             className="dropdown-item"
@@ -523,7 +523,7 @@ const suspentAccount = () => {
                           >
                             <Icon
                               icon={
-                                item?.is_verified == 1
+                                item?.is_verified == jobVerifyStatus?.create
                                   ? "lsicon:disable-outline"
                                   : "fontisto:radio-btn-active"
                               }
@@ -535,7 +535,7 @@ const suspentAccount = () => {
                         ) : (
                           ""
                         )}
-                          {item?.is_verified == 1 || item?.is_verified==2   ? (
+                          {item?.is_verified == jobVerifyStatus?.create || item?.is_verified==jobVerifyStatus?.verify   ? (
                           <a
                             aria-label="dropdown action option"
                             className="dropdown-item"
@@ -555,7 +555,7 @@ const suspentAccount = () => {
                           >
                             <Icon
                               icon={
-                                item?.is_verified == 1
+                                item?.is_verified == jobVerifyStatus?.create
                                   ? "lsicon:disable-outline"
                                   : "fontisto:radio-btn-active"
                               }
@@ -577,11 +577,11 @@ const suspentAccount = () => {
                               show: true,
                               id: item.job_id,
                               title: `${
-                                item?.status == 1 ? "Suspend" : "Enable"
+                                item?.status == status?.active ? "Suspend" : "Enable"
                               } Company`,
                               data: item,
                               message: `Are you sure you want to ${
-                                item?.status == 1 ? "suspend" : "enable"
+                                item?.status == status?.active ? "suspend" : "enable"
                               } this job?`,
                               type: "disable",
                             }));
@@ -589,14 +589,14 @@ const suspentAccount = () => {
                         >
                           <Icon
                             icon={
-                              item?.status == 1
+                              item?.status ==status?.active
                                 ? "lsicon:disable-outline"
                                 : "fontisto:radio-btn-active"
                             }
                             height={20}
                             className={"me-1"}
                           />{" "}
-                          {item?.status == 1 ? "Active" : "Deactive"} Job
+                          {item?.status !== status?.active ? "Active" : "Deactive"} Job
                         </a>
                       </div>
                     </div>

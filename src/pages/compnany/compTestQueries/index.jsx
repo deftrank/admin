@@ -46,25 +46,25 @@ export default function CompTestList() {
   const [detail,setDetail]=useState(null)
   const totalPages = Math.ceil(queriesTotalCount / itemsPerPage);
 
-  // useEffect(() => {
-  //   getTestList();
-  // }, [currentPage]);
+  useEffect(() => {
+    getTestList();
+  }, [currentPage]);
 
-  // useEffect(() => {
-  //   getTestList();
-  // }, [searchData]);
+  useEffect(() => {
+    getTestList();
+  }, [searchData]);
 
-  // useEffect(() => {
-  //   getTestList();
-  // }, [itemsPerPage]);
+  useEffect(() => {
+    getTestList();
+  }, [itemsPerPage]);
 
   // useEffect(() => {
   //   getTestList();
   // }, [dateRange]);
 
-  // useEffect(() => {
-  //   getJobList();
-  // }, [filter]);
+  useEffect(() => {
+    getTestList();1
+  }, [filter]);
   console.log(filter);
   useEffect(() => {
     fetchSkillList();
@@ -74,11 +74,11 @@ export default function CompTestList() {
 
   const getTestList = () => {
     let data = {
-      page: 1,
-      limit: 10,
-      search: "",
-      sort_by: "",
-      skills: [],
+      page: currentPage?currentPage:1,
+      limit:itemsPerPage?itemsPerPage:10 ,
+      search: searchData?searchData:"",
+      sort_by: filter?.sort_by?.value,
+      skills: filter?.skills,
       language: "en",
     };
     dispatch(getListOfQueriesTestByAdmin(data));
@@ -158,7 +158,7 @@ setDetail(data);
                 leftIcon={<i className="bx bx-search"></i>}
               />
             </div> */}
-            <div className="col-1">
+            {/* <div className="col-1">
               <button
                 class="btn btn-primary"
                 type="button"
@@ -179,13 +179,13 @@ setDetail(data);
                   title="Filter Job"
                   filter={filter}
                   skillListData={skillListData}
-                  cityListData={cityListData}
+                  // cityListData={cityListData}
                   setFilter={setFilter}
-                  fetchCitiesList={fetchCitiesList}
+                  // fetchCitiesList={fetchCitiesList}
                   // applyFilter={getTestList()}
                 />
               </div>
-            </div>
+            </div> */}
          
           </div>
         </div>
