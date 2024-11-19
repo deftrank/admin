@@ -402,7 +402,7 @@ export default function index() {
                 onchange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    company_name: val,
+                    company_name: val.trimStart(),
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
@@ -452,7 +452,7 @@ export default function index() {
                 onchange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    company_person_name: val,
+                    company_person_name: val.trimStart(),
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
@@ -538,7 +538,7 @@ export default function index() {
                 onchange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    linkedin_url: val,
+                    linkedin_url: val.trimStart(),
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
@@ -585,7 +585,7 @@ export default function index() {
                 onchange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    company_address: val,
+                    company_address: val.trimStart(),
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,

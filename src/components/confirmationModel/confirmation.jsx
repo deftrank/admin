@@ -15,7 +15,7 @@ export default function index(props) {
           <button
             onClick={handleClose}
             type="button"
-            className="btn-close"
+            className="btn-close p-3"
             data-bs-dismiss="modal"
             aria-label="Close"
           ></button>

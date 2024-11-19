@@ -70,7 +70,8 @@ export default function index() {
   // useEffect(() => {
   //   getJobList();
   // }, [filter]);
-  console.log(filter);
+
+ 
   useEffect(() => {
     fetchSkillList();
     fetchCitiesList("");
@@ -89,7 +90,7 @@ export default function index() {
     const data = {
       search: searchData,
       page: currentPage,
-      limit: itemsPerPage,
+      limit:parseInt( itemsPerPage),
       sort_by: filterData?.sort_by?.value,
       skills: filter?.skills,
       location: filter?.location,
@@ -146,7 +147,20 @@ export default function index() {
     };
     dispatch(updateJob(data, setChangePasswordModal, "job"));
   };
-
+  const clearFilters=()=>{
+    const data = {
+      search: "",
+      page: currentPage,
+      limit:parseInt( itemsPerPage),
+      sort_by: "",
+      skills: [],
+      location: [],
+      job_status: "",
+      verify_job: "",
+      language: "en",
+    };
+    dispatch(getListOfJobByAdmin(data, loadingBarRef));
+  }
   return (
     <>
       <div className="card">
@@ -155,7 +169,7 @@ export default function index() {
           <div className="row">
             <div className="col-3  input-group-merge">
               <DeftInput
-                placeholder="Search by name"
+                placeholder="Search by title"
                 type="text"
                 value={searchData}
                 onchange={(value) => {
@@ -214,6 +228,7 @@ export default function index() {
                   setFilter={setFilter}
                   fetchCitiesList={fetchCitiesList}
                   applyFilter={getJobList}
+                  clearFilter={clearFilters}
                 />
               </div>
             </div>

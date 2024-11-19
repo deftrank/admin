@@ -76,7 +76,7 @@ export const LoginPage = () => {
           onchange={(value) => {
             setLoginData((loginData) => ({
               ...loginData,
-              email: value,
+              email: value.trimStart(),
               emailErr: "",
             }));
           }}
@@ -102,18 +102,18 @@ export const LoginPage = () => {
           onchange={(value) => {
             setLoginData((loginData) => ({
               ...loginData,
-              password: value,
+              password: value.trimStart(),
               passwordErr: "",
             }));
           }}
           error={loginData.passwordErr}
-          inputGroupText={
+          rightIcon={
             <Icon
               icon={isShowPassword ? "ri:eye-line" : "mdi:eye-off-outline"}
               height={30}
             />
           }
-          inputGroupTextClick={() => setIsShowPassword(!isShowPassword)}
+          rightIconClick={() => setIsShowPassword(!isShowPassword)}
         />
       </div>
       <div className="mb-3">

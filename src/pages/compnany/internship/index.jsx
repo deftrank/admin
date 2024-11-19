@@ -82,7 +82,7 @@ export default function index() {
     const data = {
       search: searchData,
       page: currentPage,
-      limit: itemsPerPage,
+      limit: parseInt(itemsPerPage),
       sort_by: filterData?.sort_by?.value,
       skills: filter?.skills,
       location: filter?.location,
@@ -140,6 +140,20 @@ export default function index() {
     };
     dispatch(updateJob(data, setChangePasswordModal, "internship"));
   };
+  const clearFilters=()=>{
+    const data = {
+      search: "",
+      page: currentPage,
+      limit:parseInt( itemsPerPage),
+      sort_by: "",
+      skills: [],
+      location: [],
+      job_status: "",
+      verify_job: "",
+      language: "en",
+    };
+    dispatch(getListOfInternshipByAdmin(data, loadingBarRef));
+  }
 
   return (
     <>
@@ -149,7 +163,7 @@ export default function index() {
           <div className="row">
             <div className="col-3  input-group-merge">
               <DeftInput
-                placeholder="Search by name"
+                placeholder="Search by title"
                 type="text"
                 value={searchData}
                 onchange={(value) => {
@@ -208,6 +222,7 @@ export default function index() {
                   setFilter={setFilter}
                   fetchCitiesList={fetchCitiesList}
                   applyFilter={getJobList}
+                  clearFilter={clearFilters}
                 />
               </div>
             </div>
@@ -421,8 +436,8 @@ export default function index() {
                   </td>
                   <td>
                     <p className="mb-0">
-                      {item?.expected_joining_date
-                        ? changeDate(item?.expected_joining_date)
+                      {item?.start_date
+                        ? changeDate(item?.start_date)
                         : "-"}
                     </p>
                   </td>
@@ -649,7 +664,7 @@ export default function index() {
               Showing <b>
                 {currentPage * itemsPerPage - (itemsPerPage - 1)}
               </b>{" "}
-              to <b>{currentPage * itemsPerPage}</b> of <b>{jobTotalCount}</b>{" "}
+              to <b>{currentPage * itemsPerPage}</b> of <b>{listOfInternshipByAdmin?.length}</b>{" "}
               entries
             </div>
 

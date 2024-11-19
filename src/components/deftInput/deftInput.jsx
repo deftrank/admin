@@ -46,7 +46,7 @@ export default function DeftInput(props) {
           maxLength={maxLength}
         />
         {rightIcon && (
-          <span className="input-group-text" onClick={rightIconClick}>
+          <span className="input-group-text cursor-pointer" onClick={rightIconClick}>
             {rightIcon}
           </span>
         )}
