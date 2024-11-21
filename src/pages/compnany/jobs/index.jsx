@@ -71,7 +71,6 @@ export default function index() {
   //   getJobList();
   // }, [filter]);
 
- 
   useEffect(() => {
     fetchSkillList();
     fetchCitiesList("");
@@ -79,18 +78,16 @@ export default function index() {
   const getJobList = (filterData) => {
     const utcDateForStart = dateRange[0]?.startDate;
     const utcDateForEnd = dateRange[0]?.endDate;
-
     const forStartDate = utcDateForStart
       ? moment(utcDateForStart).tz("Asia/Kolkata").format("YYYY-MM-DD")
       : "";
     const forEndDate = utcDateForEnd
       ? moment(utcDateForEnd).tz("Asia/Kolkata").format("YYYY-MM-DD")
       : "";
-
     const data = {
       search: searchData,
       page: currentPage,
-      limit:parseInt( itemsPerPage),
+      limit: parseInt(itemsPerPage),
       sort_by: filterData?.sort_by?.value,
       skills: filter?.skills,
       location: filter?.location,
@@ -142,16 +139,19 @@ export default function index() {
     const data = {
       id: changePasswordModal?.data?._id,
       type: JobType?.job,
-      status: changePasswordModal?.data?.status == status?.active ? status?.suspend: status?.active,
+      status:
+        changePasswordModal?.data?.status == status?.active
+          ? status?.suspend
+          : status?.active,
       language: "en",
     };
     dispatch(updateJob(data, setChangePasswordModal, "job"));
   };
-  const clearFilters=()=>{
+  const clearFilters = () => {
     const data = {
       search: "",
       page: currentPage,
-      limit:parseInt( itemsPerPage),
+      limit: parseInt(itemsPerPage),
       sort_by: "",
       skills: [],
       location: [],
@@ -160,7 +160,7 @@ export default function index() {
       language: "en",
     };
     dispatch(getListOfJobByAdmin(data, loadingBarRef));
-  }
+  };
   return (
     <>
       <div className="card">
@@ -383,7 +383,11 @@ export default function index() {
                     <div
                       data-bs-toggle="tooltip"
                       data-bs-placement="top"
-                      title={item.office_location?.length != 0 ?item.office_location?.join(', ') || '':"Remote"}
+                      title={
+                        item.office_location?.length != 0
+                          ? item.office_location?.join(", ") || ""
+                          : "Remote"
+                      }
                       style={{
                         width: "10vw",
                         overflow: "hidden",
@@ -408,7 +412,11 @@ export default function index() {
                     <div
                       data-bs-toggle="tooltip"
                       data-bs-placement="top"
-                      title={item.title ? item.title : ""}
+                      title={
+                        item?.supporting_skills?.length != 0
+                          ? item?.supporting_skills?.join(", ") || ""
+                          : "-"
+                      }
                       style={{
                         width: "9vw",
                         overflow: "hidden",
@@ -634,6 +642,21 @@ export default function index() {
                             : "Deactive"}{" "}
                           Job
                         </a>
+                        <a
+                          aria-label="dropdown action option"
+                          className="dropdown-item"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => {
+                            navigate(`/job-details/${item?._id}`);
+                          }}
+                        >
+                          <Icon
+                            icon={"mdi:eye"}
+                            height={20}
+                            className={"me-1"}
+                          />{" "}
+                          View Details
+                        </a>
                       </div>
                     </div>
                   </td>
@@ -682,10 +705,7 @@ export default function index() {
             </div>
 
             <div className="col p-1">
-              {" "}
-              Showing <b>
-                {currentPage * itemsPerPage - (itemsPerPage - 1)}
-              </b>{" "}
+              Showing <b>{currentPage * itemsPerPage - (itemsPerPage - 1)}</b>{" "}
               to <b>{currentPage * itemsPerPage}</b> of <b>{jobTotalCount}</b>{" "}
               entries
             </div>

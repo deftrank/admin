@@ -38,6 +38,9 @@ export const DEFT_RANK_API = {
     verifyJob: "admin/verify-job-internship",
     updateJObStatus:"admin/update-job-internship-status",
     getListOfInternshipByAdmin: "admin/admin-internship-list",
+    getJobDetails:"/admin/get-job-detail",
+    getInternshipDetails:"/admin/get-internship-detail",
+    getCtcList: "constant/job-internship-ctc-list",
   },
   test:{
     queriesList:"admin/comp-test-listing"

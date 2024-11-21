@@ -27,9 +27,14 @@ import { JobType, jobVerifyStatus, status } from "../../../utils/statusEnums";
 import { PAGES_ENUM } from "../../../utils/appEnums";
 
 export default function index() {
-  const { listOfInternshipByAdmin, internshipTotalCount, jobCount,skillListData ,cityListData } = useSelector(
-    (state) => state.onBoarding
-  );
+  const {
+    listOfInternshipByAdmin,
+    internshipTotalCount,
+    jobCount,
+    skillListData,
+    cityListData,
+  } = useSelector((state) => state.onBoarding);
+  console.log("ddd0000000", listOfInternshipByAdmin);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchData, setSearchData] = useState("");
@@ -65,7 +70,6 @@ export default function index() {
     getJobList();
   }, [dateRange]);
 
-
   useEffect(() => {
     fetchSkillList();
     fetchCitiesList("");
@@ -78,11 +82,12 @@ export default function index() {
   const getJobList = (filterData) => {
     const utcDateForStart = dateRange[0]?.startDate;
     const utcDateForEnd = dateRange[0]?.endDate;
+    const limit = parseInt(itemsPerPage);
 
     const data = {
       search: searchData,
       page: currentPage,
-      limit: parseInt(itemsPerPage),
+      limit: limit ?? 10,
       sort_by: filterData?.sort_by?.value,
       skills: filter?.skills,
       location: filter?.location,
@@ -90,9 +95,9 @@ export default function index() {
       verify_job: filterData?.verify_job,
       language: "en",
     };
-    dispatch(getListOfInternshipByAdmin(data, loadingBarRef));
+    dispatch(getListOfInternshipByAdmin(data));
   };
- 
+
   const fetchSkillList = () => {
     let data = {
       page: PAGES_ENUM?.PAGE,
@@ -131,20 +136,22 @@ export default function index() {
   };
 
   const suspentAccount = () => {
-
     const data = {
       id: changePasswordModal?.data?._id,
       type: JobType?.internship,
-      status: changePasswordModal?.data?.status == status?.active ? status?.suspend: status?.active,
+      status:
+        changePasswordModal?.data?.status == status?.active
+          ? status?.suspend
+          : status?.active,
       language: "en",
     };
     dispatch(updateJob(data, setChangePasswordModal, "internship"));
   };
-  const clearFilters=()=>{
+  const clearFilters = () => {
     const data = {
       search: "",
       page: currentPage,
-      limit:parseInt( itemsPerPage),
+      limit: itemsPerPage,
       sort_by: "",
       skills: [],
       location: [],
@@ -153,7 +160,7 @@ export default function index() {
       language: "en",
     };
     dispatch(getListOfInternshipByAdmin(data, loadingBarRef));
-  }
+  };
 
   return (
     <>
@@ -210,7 +217,7 @@ export default function index() {
 
               <div
                 class="offcanvas offcanvas-end"
-                tabindex="-1"
+                tabIndex="-1"
                 id="offcanvasRight"
                 aria-labelledby="offcanvasRightLabel"
               >
@@ -328,7 +335,7 @@ export default function index() {
           <table className="table table-hover">
             <thead className="table-dark">
               <tr>
-              <th>Internship Title</th>
+                <th>Internship Title</th>
                 <th>Company Name</th>
                 <th>Office Locations</th>
                 <th>Skills</th>
@@ -347,35 +354,41 @@ export default function index() {
                     <div
                       data-bs-toggle="tooltip"
                       data-bs-placement="top"
-                      title={item.title ? item.title : ""}
+                      title={item?.title ? item?.title : ""}
                       style={{
                         width: "10vw",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                       }}
                     >
-                      {item.title ? item.title : "-"}
+                      {item?.title ? item?.title : "-"}
                     </div>
                   </td>
                   <td>
                     <div
                       data-bs-toggle="tooltip"
                       data-bs-placement="top"
-                      title={item.title ? item.title : ""}
+                      title={item?.title ? item?.title : ""}
                       style={{
                         width: "10vw",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                       }}
                     >
-                      {item?.companyData?.firstName ? item?.companyData?.firstName : "-"}
+                      {item?.companyData?.firstName
+                        ? item?.companyData?.firstName
+                        : "-"}
                     </div>
                   </td>
                   <td>
                     <div
                       data-bs-toggle="tooltip"
                       data-bs-placement="top"
-                      title={item.office_location?.length != 0 ?item.office_location?.join(', ') || '':"Remote"}
+                      title={
+                        item?.office_location?.length != 0
+                          ? item.office_location?.join(", ") || ""
+                          : "Remote"
+                      }
                       style={{
                         width: "10vw",
                         overflow: "hidden",
@@ -383,7 +396,7 @@ export default function index() {
                         WebkitBoxOrient: "vertical",
                       }}
                     >
-                      {item.office_location?.map((location, index) => (
+                      {item?.office_location?.map((location, index) => (
                         <>
                           {location}{" "}
                           {index < item.office_location?.length - 1 ? (
@@ -400,7 +413,11 @@ export default function index() {
                     <div
                       data-bs-toggle="tooltip"
                       data-bs-placement="top"
-                      title={item.supporting_skills?.length != 0 ?item.supporting_skills?.join(', ') || '':"-"}
+                      title={
+                        item?.supporting_skills?.length != 0
+                          ? item?.supporting_skills?.join(", ") || ""
+                          : "-"
+                      }
                       style={{
                         width: "9vw",
                         overflow: "hidden",
@@ -408,17 +425,17 @@ export default function index() {
                         WebkitBoxOrient: "vertical",
                       }}
                     >
-                      {item.supporting_skills?.map((location, index) => (
-                        <>
-                          {location}{" "}
-                          {index < item.supporting_skills?.length - 1 ? (
-                            <span>,</span>
-                          ) : (
-                            ""
-                          )}{" "}
-                        </>
-                      ))}
-                      {item.supporting_skills?.length == 0 ? "-" : ""}
+                      {item?.supporting_skills?.length > 0
+                        ? item?.supporting_skills?.map((location, index) => (
+                            <>
+                              {`${location} ${
+                                index != item?.supporting_skills?.length - 1
+                                  ? ","
+                                  : ""
+                              }`}
+                            </>
+                          ))
+                        : "-"}
                     </div>
                   </td>
 
@@ -436,9 +453,7 @@ export default function index() {
                   </td>
                   <td>
                     <p className="mb-0">
-                      {item?.start_date
-                        ? changeDate(item?.start_date)
-                        : "-"}
+                      {item?.start_date ? changeDate(item?.start_date) : "-"}
                     </p>
                   </td>
                   <td>
@@ -447,7 +462,7 @@ export default function index() {
                     </p>
                   </td>
                   <td>
-                  <span
+                    <span
                       className={`badge ${
                         item?.is_verified == jobVerifyStatus?.create
                           ? "bg-label-warning"
@@ -456,11 +471,13 @@ export default function index() {
                           : "bg-label-danger"
                       } me-1`}
                     >
-                      {item?.is_verified ===jobVerifyStatus?.create
+                      {item?.is_verified === jobVerifyStatus?.create
                         ? "pending"
                         : item?.is_verified === jobVerifyStatus?.verify
                         ? "verify"
-                        : item?.is_verified === jobVerifyStatus?.suspended ?"suspend":"rejected"}
+                        : item?.is_verified === jobVerifyStatus?.suspended
+                        ? "suspend"
+                        : "rejected"}
                     </span>
                   </td>
                   <td>
@@ -485,7 +502,9 @@ export default function index() {
                         <i className="bx bx-dots-vertical-rounded"></i>
                       </button>
                       <div className="dropdown-menu">
-                        {item?.is_verified ===jobVerifyStatus?.create || item?.is_verified === jobVerifyStatus?.reject || item?.is_verified == jobVerifyStatus?.suspended ? (
+                        {item?.is_verified === jobVerifyStatus?.create ||
+                        item?.is_verified === jobVerifyStatus?.reject ||
+                        item?.is_verified == jobVerifyStatus?.suspended ? (
                           <a
                             aria-label="dropdown action option"
                             className="dropdown-item"
@@ -517,7 +536,8 @@ export default function index() {
                         ) : (
                           ""
                         )}
-                        {item?.is_verified == jobVerifyStatus?.create || item?.is_verified==jobVerifyStatus?.verify ? (
+                        {item?.is_verified == jobVerifyStatus?.create ||
+                        item?.is_verified == jobVerifyStatus?.verify ? (
                           <a
                             aria-label="dropdown action option"
                             className="dropdown-item"
@@ -549,7 +569,9 @@ export default function index() {
                         ) : (
                           ""
                         )}
-                        {item?.is_verified == jobVerifyStatus?.reject || item?.is_verified == jobVerifyStatus?.suspended||item?.is_verified===jobVerifyStatus?.verify ? (
+                        {item?.is_verified == jobVerifyStatus?.reject ||
+                        item?.is_verified == jobVerifyStatus?.suspended ||
+                        item?.is_verified === jobVerifyStatus?.verify ? (
                           <a
                             aria-label="dropdown action option"
                             className="dropdown-item"
@@ -576,7 +598,7 @@ export default function index() {
                               height={20}
                               className={"me-1"}
                             />{" "}
-                           suspend Internship
+                            suspend Internship
                           </a>
                         ) : (
                           ""
@@ -591,11 +613,15 @@ export default function index() {
                               show: true,
                               id: item.job_id,
                               title: `${
-                                item?.status == status?.active ?"Active" : "Deactive"
+                                item?.status == status?.active
+                                  ? "Active"
+                                  : "Deactive"
                               } Company`,
                               data: item,
                               message: `Are you sure you want to ${
-                                item?.status == status?.active ? "Active" : "Deactive"
+                                item?.status == status?.active
+                                  ? "Active"
+                                  : "Deactive"
                               } this internship?`,
                               type: "disable",
                             }));
@@ -610,7 +636,25 @@ export default function index() {
                             height={20}
                             className={"me-1"}
                           />{" "}
-                          {item?.status !== status?.active ? "Active" : "Deactive"} Internship
+                          {item?.status !== status?.active
+                            ? "Active"
+                            : "Deactive"}{" "}
+                          Internship
+                        </a>
+                        <a
+                          aria-label="dropdown action option"
+                          className="dropdown-item"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => {
+                            navigate(`/internship-details/${item?._id}`);
+                          }}
+                        >
+                          <Icon
+                            icon={"mdi:eye"}
+                            height={20}
+                            className={"me-1"}
+                          />{" "}
+                          View Details
                         </a>
                       </div>
                     </div>
@@ -627,7 +671,7 @@ export default function index() {
                   }}
                 >
                   <td colSpan="12" className="text-center">
-                    {jobCount == 0
+                    {(listOfInternshipByAdmin?.length == 0) == 0
                       ? "No companies have been listed yet!"
                       : "No result available"}
                   </td>
@@ -647,13 +691,13 @@ export default function index() {
                   className="btn btn-outline-primary dropdown-toggle"
                   onChange={(e) => setItemsPerPage(e.target.value)}
                 >
-                  <option value="5">5</option>
-                  <option value="10" selected>
+                  <option value={5}>5</option>
+                  <option value={10} selected>
                     10
                   </option>
-                  <option value="25">25</option>
-                  <option value="50">50</option>
-                  <option value="100">100</option>
+                  <option value={25}>25</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
                 </select>
               </div>
               <span className="p-2">entries</span>
@@ -664,8 +708,8 @@ export default function index() {
               Showing <b>
                 {currentPage * itemsPerPage - (itemsPerPage - 1)}
               </b>{" "}
-              to <b>{currentPage * itemsPerPage}</b> of <b>{internshipTotalCount}</b>{" "}
-              entries
+              to <b>{currentPage * itemsPerPage}</b> of{" "}
+              <b>{internshipTotalCount}</b> entries
             </div>
 
             <div className="col">
