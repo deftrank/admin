@@ -17,7 +17,7 @@ export default function CompTestQuery(props) {
           <button
             onClick={handleClose}
             type="button"
-            className="btn-close"
+            className="btn-close shadow-none"
             data-bs-dismiss="modal"
             aria-label="Close"
           ></button>
@@ -101,7 +101,7 @@ export default function CompTestQuery(props) {
 
         <Modal.Footer className={"border-0"}>
           <div>
-            <Button variant="primary" className={"mx-1"} onClick={handleSubmit}>
+            <Button variant="primary" className={"mx-1"} onClick={handleClose}>
               Close
             </Button>
           </div>

@@ -27,7 +27,7 @@ import { JobType, jobVerifyStatus, status } from "../../../utils/statusEnums";
 import { PAGES_ENUM } from "../../../utils/appEnums";
 
 export default function index() {
-  const { listOfInternshipByAdmin, jobTotalCount, jobCount,skillListData ,cityListData } = useSelector(
+  const { listOfInternshipByAdmin, internshipTotalCount, jobCount,skillListData ,cityListData } = useSelector(
     (state) => state.onBoarding
   );
   const dispatch = useDispatch();
@@ -43,7 +43,7 @@ export default function index() {
 
   const loadingBarRef = useRef(null);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const totalPages = Math.ceil(jobTotalCount / itemsPerPage);
+  const totalPages = Math.ceil(internshipTotalCount / itemsPerPage);
 
   useEffect(() => {
     getJobList();
@@ -375,7 +375,7 @@ export default function index() {
                     <div
                       data-bs-toggle="tooltip"
                       data-bs-placement="top"
-                      title={item.title ? item.title : ""}
+                      title={item.office_location?.length != 0 ?item.office_location?.join(', ') || '':"Remote"}
                       style={{
                         width: "10vw",
                         overflow: "hidden",
@@ -400,7 +400,7 @@ export default function index() {
                     <div
                       data-bs-toggle="tooltip"
                       data-bs-placement="top"
-                      title={item.title ? item.title : ""}
+                      title={item.supporting_skills?.length != 0 ?item.supporting_skills?.join(', ') || '':"-"}
                       style={{
                         width: "9vw",
                         overflow: "hidden",
@@ -408,7 +408,7 @@ export default function index() {
                         WebkitBoxOrient: "vertical",
                       }}
                     >
-                      {/* {item.supporting_skills?.map((location, index) => (
+                      {item.supporting_skills?.map((location, index) => (
                         <>
                           {location}{" "}
                           {index < item.supporting_skills?.length - 1 ? (
@@ -417,7 +417,7 @@ export default function index() {
                             ""
                           )}{" "}
                         </>
-                      ))} */}
+                      ))}
                       {item.supporting_skills?.length == 0 ? "-" : ""}
                     </div>
                   </td>
@@ -664,7 +664,7 @@ export default function index() {
               Showing <b>
                 {currentPage * itemsPerPage - (itemsPerPage - 1)}
               </b>{" "}
-              to <b>{currentPage * itemsPerPage}</b> of <b>{listOfInternshipByAdmin?.length}</b>{" "}
+              to <b>{currentPage * itemsPerPage}</b> of <b>{internshipTotalCount}</b>{" "}
               entries
             </div>
 

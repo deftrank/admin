@@ -1,4 +1,4 @@
-:root {
+/* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -65,4 +65,16 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+} */
+.modal .btn-close {
+  background-color: transparent !important;
+  border-radius: 0.5rem;
+  opacity: 1;
+  padding: 0.635rem;
+  /* box-shadow: 0 0.125rem 0.25rem rgba(161, 172, 184, 0.4); */
+  transition: all 0.23s ease 0.1s !important;
+  transform: translate(1px, -4px) !important;
+}
+.modal .btn-close:hover{
+  transform: translate(1px, -4px) !important;
 }

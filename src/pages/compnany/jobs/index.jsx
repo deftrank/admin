@@ -383,7 +383,7 @@ export default function index() {
                     <div
                       data-bs-toggle="tooltip"
                       data-bs-placement="top"
-                      title={item.title ? item.title : ""}
+                      title={item.office_location?.length != 0 ?item.office_location?.join(', ') || '':"Remote"}
                       style={{
                         width: "10vw",
                         overflow: "hidden",
