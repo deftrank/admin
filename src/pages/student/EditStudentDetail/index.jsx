@@ -174,7 +174,7 @@ export default function index() {
                 onchange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    first_name: val,
+                    first_name: val.trimStart(),
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
@@ -193,7 +193,7 @@ export default function index() {
                 onchange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    last_name: val,
+                    last_name: val.trimStart(),
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
@@ -215,7 +215,7 @@ export default function index() {
                 onchange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    email: val,
+                    email: val.trimStart(),
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
@@ -235,7 +235,7 @@ export default function index() {
                 setPhoneData={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    ...val,
+                    ...valval.trimStart(),
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,

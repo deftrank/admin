@@ -28,3 +28,12 @@ export const PAGES_ENUM = {
   ORDERS: "ORDERS",
   PAYMENT_OPTIONS: "PAYMENT_OPTIONS",
 };
+export const STATUS_TYPE = {
+  active: 1,
+  Deactive: 2,
+};
+export const JOB_STATUS={
+  verified :2,
+  unverified:1,
+  
+}

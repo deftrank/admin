@@ -1,10 +1,33 @@
 // @ts-nocheck
 import { jobTypes } from "../jobInternshipConfig";
 import DeftMultiselect from "../../../components/deftMultiselect/index";
-import Select from 'react-select'
+import Select from "react-select";
+import { color } from "../../../themes/color/color";
 export default function CommonComponent({ ...props }) {
-  const { title, applyFilter, filter, setFilter ,skillListData,cityListData,fetchCitiesList} = props;
+  const {
+    title,
+    applyFilter,
+    filter,
+    setFilter,
+    skillListData,
+    cityListData,
+    fetchCitiesList,
+    clearFilter,
+  } = props;
+  const colourStyles = {
+    // Style for the selected chips (multiValue)
+    multiValue: (base, state) => ({
+      ...base,
+      backgroundColor: color.primary, // Optional: padding around chip
+    }),
 
+    // Style for the label inside the selected chips
+    multiValueLabel: (base) => ({
+      ...base,
+      color: "white", // Text color inside the chip
+      fontWeight: "bold", // Optional: text style
+    }),
+  };
   return (
     <>
       <div class="offcanvas-header">
@@ -19,45 +42,74 @@ export default function CommonComponent({ ...props }) {
       <div class="offcanvas-body">
         <div className="mt-4">
           <span className="menu-header-text">Primary Skill</span>
-          <DeftMultiselect
+          <Select
+            placeholder="Primary skills"
+            className={"w-100"}
+            options={skillListData?.map((item) => ({
+              label: item.name,
+              value: item._id,
+            }))}
+            styles={colourStyles}
+            value={filter?.selectLabel}
+            onChange={(selectedOptions) => {
+              // Ensure we limit the selection to a maximum of 3 locations
+              const limitedSelection = selectedOptions;
+
+              const limitedSelectionLabels = selectedOptions?.map(
+                (option) => option.label
+              );
+
+              setFilter({
+                ...filter,
+                skills: limitedSelectionLabels,
+                selectLabel: limitedSelection,
+              });
+            }}
+            // onInputChange={(e) => fetchCitiesList(e)}
+            isMulti
+          />
+          {/* <DeftMultiselect
             options={skillListData?.map((item) => ({
               label: item?.name,
               value: item?._id,
             }))}
             value={filter?.skills}
             onChange={(val) => {
-              setFilter({ ...filter, skills: val?.map((item)=>item?.label) });
+              setFilter({ ...filter, skills: val?.map((item) => item?.label) });
             }}
             placeholder="Search"
             dropdownHeight="200px"
             multi={true}
-          />
+          /> */}
         </div>
         <div className="mt-4">
           <span className="menu-header-text">Location</span>
-           <Select
-              placeholder="Job Location"
-              className={"w-100"}
-              options={cityListData?.map((item) => ({
-                label: item.name,
-                value: item._id,
-              }))}
-              value={filter?.maxValue}
-              onChange={(selectedOptions) => {
-                // Ensure we limit the selection to a maximum of 3 locations
-                const limitedSelection = selectedOptions.slice(0, 3);
+          <Select
+            placeholder="Job Location"
+            className={"w-100"}
+            options={cityListData?.map((item) => ({
+              label: item.name,
+              value: item._id,
+            }))}
+            styles={colourStyles}
+            value={filter?.maxValue}
+            onChange={(selectedOptions) => {
+              // Ensure we limit the selection to a maximum of 3 locations
+              const limitedSelection = selectedOptions.slice(0, 3);
 
-                const limitedSelectionLabels = selectedOptions?.map((option) => option.label);
+              const limitedSelectionLabels = selectedOptions?.map(
+                (option) => option.label
+              );
 
-                  setFilter({
-                  ...filter,
-                  location: limitedSelectionLabels,
-                  maxValue: limitedSelection,
-                });
-              }}
-              onInputChange={(e) => fetchCitiesList(e)}
-              isMulti
-            />
+              setFilter({
+                ...filter,
+                location: limitedSelectionLabels,
+                maxValue: limitedSelection,
+              });
+            }}
+            onInputChange={(e) => fetchCitiesList(e)}
+            isMulti
+          />
           {/* <DeftMultiselect
             options={cityListData?.map((item) => ({
               label: item?.name,
@@ -208,8 +260,14 @@ export default function CommonComponent({ ...props }) {
               data-bs-dismiss="offcanvas"
               aria-label="Close"
               onClick={() => {
-                setFilter({});
-                applyFilter({});
+                // Reset the filter state with default values (or clear everything)
+                setFilter({
+                  skills: [],
+                  selectLabel: [], // Reset skills (make it an empty array or the appropriate default)
+                  location: [], // Reset location
+                  maxValue: [], // Reset maxValue (if needed)
+                });
+                clearFilter(); // Apply the "empty" filter to reset the view
               }}
             >
               Clear All

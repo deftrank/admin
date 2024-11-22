@@ -31,7 +31,7 @@ export const ModalPage = () => {
                                                 <h5 className="modal-title" id="exampleModalLabel1">Modal title</h5>
                                                 <button 
                                                     type="button"
-                                                    className="btn-close"
+                                                    className="btn-close shadow-none"
                                                     data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                             </div>
@@ -90,7 +90,7 @@ export const ModalPage = () => {
                                                 <h5 className="modal-title" id="modalCenterTitle">Modal title</h5>
                                                 <button
                                                     type="button"
-                                                    className="btn-close"
+                                                    className="btn-close shadow-none"
                                                     data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                             </div>
@@ -149,7 +149,7 @@ export const ModalPage = () => {
                                                 <h5 className="modal-title" id="modalTopTitle">Modal title</h5>
                                                 <button
                                                     type="button"
-                                                    className="btn-close"
+                                                    className="btn-close shadow-none"
                                                     data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                             </div>
@@ -245,14 +245,15 @@ export const ModalPage = () => {
                                                 <h5 className="modal-title" id="modalToggleLabel">Modal 1</h5>
                                                 <button
                                                     type="button"
-                                                    className="btn-close"
+                                                    className="btn-close shadow-none"
+
                                                     data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                             </div>
                                             <div className="modal-body">Show a second modal and hide this one with the button below.</div>
                                             <div className="modal-footer">
                                                 <button aria-label='Click me'
-                                                    className="btn btn-primary"
+                                                    className="btn btn-primary shadow-none"
                                                     data-bs-target="#modalToggle2"
                                                     data-bs-toggle="modal"
                                                     data-bs-dismiss="modal">
@@ -315,8 +316,9 @@ export const ModalPage = () => {
                                                 <h5 className="modal-title" id="modalFullTitle">Modal title</h5>
                                                 <button 
                                                     type="button"
-                                                    className="btn-close"
-                                                    data-bs-dismiss="modal"
+                                                    className="btn-close shadow-none"
+
+                                                
                                                     aria-label="Close"></button>
                                             </div>
                                             <div className="modal-body">
@@ -432,7 +434,8 @@ export const ModalPage = () => {
                                             <h5 className="modal-title" id="exampleModalLabel2">Modal title</h5>
                                             <button
                                                 type="button"
-                                                className="btn-close"
+                                                className="btn-close shadow-none"
+
                                                 data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
@@ -510,7 +513,8 @@ export const ModalPage = () => {
                                             <h5 className="modal-title" id="exampleModalLabel4">Modal title</h5>
                                             <button 
                                                 type="button"
-                                                className="btn-close"
+                                                className="btn-close shadow-none"
+
                                                 data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
@@ -684,7 +688,8 @@ export const ModalPage = () => {
                                             <h5 className="modal-title" id="modalScrollableTitle">Modal title</h5>
                                             <button
                                                 type="button"
-                                                className="btn-close"
+                                                className="btn-close shadow-none"
+
                                                 data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
@@ -819,7 +824,8 @@ export const ModalPage = () => {
                                                 <h5 className="modal-title" id="backDropModalTitle">Modal title</h5>
                                                 <button 
                                                     type="button"
-                                                    className="btn-close"
+                                                    className="btn-close shadow-none"
+
                                                     data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                             </div>

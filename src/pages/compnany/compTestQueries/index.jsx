@@ -43,7 +43,7 @@ export default function CompTestList() {
   const loadingBarRef = useRef(null);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [queryDetailModal, setQueryDetailModal] = useState(false);
-  const [detail,setDetail]=useState(null)
+  const [detail, setDetail] = useState(null);
   const totalPages = Math.ceil(queriesTotalCount / itemsPerPage);
 
   useEffect(() => {
@@ -63,7 +63,8 @@ export default function CompTestList() {
   // }, [dateRange]);
 
   useEffect(() => {
-    getTestList();1
+    getTestList();
+    1;
   }, [filter]);
   console.log(filter);
   useEffect(() => {
@@ -74,9 +75,9 @@ export default function CompTestList() {
 
   const getTestList = () => {
     let data = {
-      page: currentPage?currentPage:1,
-      limit:itemsPerPage?itemsPerPage:10 ,
-      search: searchData?searchData:"",
+      page: currentPage ? currentPage : 1,
+      limit: itemsPerPage ? parseInt(itemsPerPage) : 10,
+      search: searchData ? searchData : "",
       sort_by: filter?.sort_by?.value,
       skills: filter?.skills,
       language: "en",
@@ -110,21 +111,20 @@ export default function CompTestList() {
     }
   };
 
-
-const handleDetail=(data)=>{
-setQueryDetailModal(true)
-setDetail(data);
-}
+  const handleDetail = (data) => {
+    setQueryDetailModal(true);
+    setDetail(data);
+  };
 
   return (
     <>
       <div className="card">
         <div className="p-3">
-          <h4>Jobs</h4>
+          <h4>Comp Test Queries</h4>
           <div className="row">
             <div className="col-3  input-group-merge">
               <DeftInput
-                placeholder="Search by name"
+                placeholder="Search by title "
                 type="text"
                 value={searchData}
                 onchange={(value) => {
@@ -186,7 +186,6 @@ setDetail(data);
                 />
               </div>
             </div> */}
-         
           </div>
         </div>
         <div className="table-responsive text-nowrap">
@@ -383,7 +382,13 @@ setDetail(data);
         </div>
       </div>
 
-     {queryDetailModal && (<CompTestQuery data={detail} open={queryDetailModal} handleClose={()=>setQueryDetailModal(false)}/>)}
+      {queryDetailModal && (
+        <CompTestQuery
+          data={detail}
+          open={queryDetailModal}
+          handleClose={() => setQueryDetailModal(false)}
+        />
+      )}
       <LoadingBar color={"#0b0b7c"} height="0.5rem" ref={loadingBarRef} />
     </>
   );

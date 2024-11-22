@@ -218,6 +218,7 @@ export default function index() {
             <thead className="table-dark">
               <tr>
                 <th>Name</th>
+                <th>Company Name</th>
                 <th>Category</th>
                 <th>Website</th>
                 <th>Address</th>
@@ -229,6 +230,20 @@ export default function index() {
             <tbody className="table-border-bottom-0">
               {listOfCompanyByAdmin?.map((item) => (
                 <tr key={item?.id}>
+                   <td>
+                    <div
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title={item.contact_person_name ? item.contact_person_name : ""}
+                      style={{
+                        width: "10vw",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {item.contact_person_name ? item.contact_person_name : "-"}
+                    </div>
+                  </td>
                   <td>
                     <div
                       data-bs-toggle="tooltip"
