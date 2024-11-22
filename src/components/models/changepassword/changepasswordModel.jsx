@@ -91,8 +91,15 @@ console.log("login",loginData,loginData?.newPassword !== loginData?.confirmPassw
         backdrop="static"
         className="otp-radius "
       >
-        <Modal.Header className={"border-0 p-3"} closeButton>
+        <Modal.Header className={"border-0 p-3"}>
           <Modal.Title>Change password</Modal.Title>
+          <button
+            onClick={handleClose}
+            type="button"
+            className="btn-close  shadow-none"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
         </Modal.Header>
         <Modal.Body className={"container"}>
           <div className="my-3 ">
