@@ -1,13 +1,13 @@
 export const isEmailValid = (/** @type {any} */ email) => {
-  var valid = true;
-  var regex =
-    /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  // Regular expression to check for a valid email format
+  var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  if (!regex.test(email.replace(/\s/g, ""))) {
-    valid = false;
+  // Check if the email is valid and does not belong to Gmail
+  if (regex.test(email.replace(/\s/g, "")) && !email.toLowerCase().endsWith('@gmail.com')) {
+    return true;
   }
-
-  return valid;
+  
+  return false;
 };
 
 export const isWebsiteValid = (/** @type {any} */ url) => {

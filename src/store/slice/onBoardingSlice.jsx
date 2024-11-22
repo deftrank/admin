@@ -29,13 +29,22 @@ const slice = createSlice({
     companyCategoryList: [],
     skillListData: [],
     countryListData: [],
-    cityListData: [],
-    stateListData: [],
+    cityListData: null,
+    stateListData: null,
     userCount: 0,
     companyCount: 0,
     jobTotalCount: 0,
     jobCount: 0,
+    queriesTotalCount: 0,
+    queriesCount: 0,
     listOfCompanyByAdmin: [],
+    internshipTotalCount: 0,
+    listOfJobByAdmin: [],
+    listOfInternshipByAdmin: [],
+    listOfQueriesTestByAdmin: [],
+    adminJobDetails: null,
+    jobCtcList: null,
+    internshipCtcList: null,
   },
   reducers: {
     onBoardingSuccess: (state, action) => {
@@ -143,6 +152,83 @@ const slice = createSlice({
       state.listOfJobByAdmin =
         action.payload.flag == "empty" ? [] : action.payload.data;
     },
+    listOfInternshipByAdminSuccess(state, action) {
+      console.log("action.payload", action.payload);
+      state.internshipTotalCount =
+        action.payload?.flag == "empty" ? 0 : action.payload.total_count;
+      // state.internshipcompanyCount =
+      //   action.payload?.flag == "empty" ? 0 : action.payload.count;
+      // console.log("ddd", action.payload.data);
+      state.listOfInternshipByAdmin = action.payload.data;
+    },
+    verifyJobSuccess(state, action) {
+      const newObjId = action.payload.data.id;
+
+      if (action.payload.suspendType == "job") {
+        const suspendIndex = state.listOfJobByAdmin?.findIndex(
+          (item) => item._id === newObjId
+        );
+        state.listOfJobByAdmin[suspendIndex].is_verified =
+          action.payload.data.status;
+      }
+    },
+    verifyInternShipSuccess(state, action) {
+      console.log("action ", action.payload);
+      const newObjId = action.payload.data.id;
+
+      if (action.payload.suspendType == "internship") {
+        const suspendIndex = state.listOfInternshipByAdmin?.findIndex(
+          (item) => item._id === newObjId
+        );
+        state.listOfInternshipByAdmin[suspendIndex].is_verified =
+          action.payload.data.status;
+      } else {
+        const suspendIndex = state.listOfUserByAdmin?.findIndex(
+          (item) => item.auth_id._id === newObjId
+        );
+        state.listOfUserByAdmin[suspendIndex].auth_id.suspend_status =
+          action.payload.data.status;
+      }
+    },
+    updateJobStatusSuccess(state, action) {
+      const newObjId = action.payload.data.id;
+
+      if (action.payload.suspendType == "internship") {
+        const suspendIndex = state.listOfInternshipByAdmin?.findIndex(
+          (item) => item._id === newObjId
+        );
+
+        state.listOfInternshipByAdmin[suspendIndex].status =
+          action.payload.data.status;
+      }
+      if (action.payload.suspendType == "job") {
+        const suspendIndex = state.listOfJobByAdmin?.findIndex(
+          (item) => item._id === newObjId
+        );
+
+        state.listOfJobByAdmin[suspendIndex].status =
+          action.payload.data.status;
+      }
+    },
+    listOfQueriesTestByAdminSuccess(state, action) {
+      state.queriesTotalCount =
+        action.payload.flag == "empty" ? 0 : action.payload.total_count;
+      state.queriesCount =
+        action.payload.flag == "empty" ? 0 : action.payload.count;
+      state.listOfQueriesTestByAdmin =
+        action.payload.flag == "empty" ? [] : action.payload.data;
+    },
+    jobDetailSuccess(state, action) {
+      console.log(action.payload?.data);
+      state.adminJobDetails = action.payload?.data
+    },
+    getJobCtcLiSuccess: (state, action) => {
+      state.jobCtcList = action.payload?.data;
+    },
+    getInternshipCtcListSuccess: (state, action) => {
+
+      state.internshipCtcList = action.payload?.data;
+    },
   },
 });
 
@@ -169,6 +255,14 @@ const {
   getCityListSuccess,
   clearStateSuccess,
   listOfJobByAdminSuccess,
+  listOfInternshipByAdminSuccess,
+  verifyJobSuccess,
+  verifyInternShipSuccess,
+  updateJobStatusSuccess,
+  listOfQueriesTestByAdminSuccess,
+  jobDetailSuccess,
+  getJobCtcLiSuccess,
+  getInternshipCtcListSuccess
 } = slice.actions;
 
 //  stepper currentIndex
@@ -544,6 +638,140 @@ export const getListOfJobByAdmin =
           loadingBarRef.current.complete();
         });
     } catch (e) {
-      loadingBarRef.current.complete();
+      // loadingBarRef.current.complete();
     }
   };
+
+export const verifyJob =
+  (data, setChangePasswordModal, suspendType) => async (dispatch) => {
+    // dispatch(apiFetching());
+    try {
+      await api.post(DEFT_RANK_API.jobs.verifyJob, data).then((response) => {
+        let result = response.data;
+        if (result.status) {
+          setChangePasswordModal((changePasswordModal) => ({
+            ...changePasswordModal,
+            show: false,
+          }));
+          if (data?.type == 1) {
+            dispatch(
+              verifyJobSuccess({ data: data, suspendType: suspendType })
+            );
+          }
+          if (data?.type == 2) {
+            dispatch(
+              verifyInternShipSuccess({ data: data, suspendType: suspendType })
+            );
+          }
+        } else {
+          // toast.error(result.message);
+        }
+      });
+    } catch (e) {
+      // return toast.error(e.message);
+    }
+  };
+export const updateJob =
+  (data, setChangePasswordModal, suspendType) => async (dispatch) => {
+    // dispatch(apiFetching());
+    try {
+      await api
+        .post(DEFT_RANK_API.jobs.updateJObStatus, data)
+        .then((response) => {
+          let result = response.data;
+          if (result.status) {
+            setChangePasswordModal((changePasswordModal) => ({
+              ...changePasswordModal,
+              show: false,
+            }));
+            dispatch(
+              updateJobStatusSuccess({ data: data, suspendType: suspendType })
+            );
+          } else {
+            // toast.error(result.message);
+          }
+        });
+    } catch (e) {
+      // return toast.error(e.message);
+    }
+  };
+export const getListOfInternshipByAdmin = (data) => async (dispatch) => {
+  try {
+    await api
+      .post(DEFT_RANK_API.jobs.getListOfInternshipByAdmin, data)
+      .then((response) => {
+        let result = response.data;
+        if (result.status) {
+          dispatch(listOfInternshipByAdminSuccess(result));
+        } else {
+          dispatch(listOfInternshipByAdminSuccess({ flag: "empty" }));
+        }
+        // loadingBarRef.current.complete();
+      });
+  } catch (e) {
+    // loadingBarRef.current.complete();
+  }
+};
+export const getListOfQueriesTestByAdmin =
+  (data, loadingBarRef) => async (dispatch) => {
+    // loadingBarRef.current.continuousStart();
+    try {
+      await api.post(DEFT_RANK_API.test.queriesList, data).then((response) => {
+        let result = response.data;
+        if (result.status) {
+          dispatch(listOfQueriesTestByAdminSuccess(result));
+        } else {
+          dispatch(listOfQueriesTestByAdminSuccess({ flag: "empty" }));
+        }
+        // loadingBarRef.current.complete();
+      });
+    } catch (e) {
+      // loadingBarRef.current.complete();
+    }
+  };
+export const getAdminJobDetails = (data) => async (dispatch) => {
+  try {
+    const response = await api.get(
+      `${DEFT_RANK_API.jobs.getJobDetails}/en/${data}`
+    );
+    if (response?.status) {
+      dispatch(jobDetailSuccess(response?.data));
+    } else {
+      // toast.error(response?.message);
+    }
+  } catch (e) {
+    console.error(e.message);
+  }
+};
+export const getAdminInternShipDetails = (data) => async (dispatch) => {
+  try {
+    const response = await api.get(
+      `${DEFT_RANK_API.jobs.getInternshipDetails}/en/${data}`
+    );
+    if (response?.status) {
+      dispatch(jobDetailSuccess(response?.data));
+    } else {
+      // toast.error(response?.message);
+    }
+  } catch (e) {
+    console.error(e.message);
+  }
+};
+export const getCtcList = (data) => async (dispatch) => {
+  try {
+    const response = await api.post(
+      `${DEFT_RANK_API.jobs.getCtcList}`,
+      data
+    );
+
+    if (response?.status) {
+      data.type == 1
+        ? dispatch(getJobCtcLiSuccess(response?.data))
+        : dispatch(getInternshipCtcListSuccess(response?.data));
+    } else {
+      toast.error(response?.message);
+    }
+  } catch (e) {
+    console.error(e.message);
+  }
+};

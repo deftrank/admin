@@ -45,6 +45,17 @@
         ]
     },
     {
+        "header": "Comp Test Queries",
+        "items": [
+            {
+                "text": "List",
+                "icon": "bx bx-box",
+                "available": true,
+                "link": "/query-test-list "
+            }
+        ]
+    },
+    {
         "header": "SUBSCRIPTIONS",
         "items": [
             {
@@ -55,4 +66,6 @@
             }
         ]
     }
+    
+
 ]

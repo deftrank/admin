@@ -8,6 +8,7 @@ import {
   clearAllState,
   deleteUser,
   getCityList,
+  getListOfInternshipByAdmin,
   getListOfJobByAdmin,
   getSkillList,
   suspendUser,
@@ -27,12 +28,13 @@ import { PAGES_ENUM } from "../../../utils/appEnums";
 
 export default function index() {
   const {
-    listOfJobByAdmin,
-    jobTotalCount,
+    listOfInternshipByAdmin,
+    internshipTotalCount,
     jobCount,
     skillListData,
     cityListData,
   } = useSelector((state) => state.onBoarding);
+  console.log("ddd0000000", listOfInternshipByAdmin);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchData, setSearchData] = useState("");
@@ -43,9 +45,10 @@ export default function index() {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
   const loadingBarRef = useRef(null);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const totalPages = Math.ceil(jobTotalCount / itemsPerPage);
+  const totalPages = Math.ceil(internshipTotalCount / itemsPerPage);
 
   useEffect(() => {
     getJobList();
@@ -67,27 +70,24 @@ export default function index() {
     getJobList();
   }, [dateRange]);
 
-  // useEffect(() => {
-  //   getJobList();
-  // }, [filter]);
-
   useEffect(() => {
     fetchSkillList();
     fetchCitiesList("");
   }, []);
+
+  // useEffect(() => {
+  //   getJobList();
+  // }, [filter]);
+
   const getJobList = (filterData) => {
     const utcDateForStart = dateRange[0]?.startDate;
     const utcDateForEnd = dateRange[0]?.endDate;
-    const forStartDate = utcDateForStart
-      ? moment(utcDateForStart).tz("Asia/Kolkata").format("YYYY-MM-DD")
-      : "";
-    const forEndDate = utcDateForEnd
-      ? moment(utcDateForEnd).tz("Asia/Kolkata").format("YYYY-MM-DD")
-      : "";
+    const limit = parseInt(itemsPerPage);
+
     const data = {
       search: searchData,
       page: currentPage,
-      limit: parseInt(itemsPerPage),
+      limit: limit ?? 10,
       sort_by: filterData?.sort_by?.value,
       skills: filter?.skills,
       location: filter?.location,
@@ -95,7 +95,7 @@ export default function index() {
       verify_job: filterData?.verify_job,
       language: "en",
     };
-    dispatch(getListOfJobByAdmin(data, loadingBarRef));
+    dispatch(getListOfInternshipByAdmin(data));
   };
 
   const fetchSkillList = () => {
@@ -129,29 +129,29 @@ export default function index() {
     const data = {
       id: changePasswordModal?.id,
       status: changePasswordModal?.value,
-      type: JobType?.job,
+      type: JobType?.internship,
       language: "en",
     };
-    dispatch(verifyJob(data, setChangePasswordModal, "job"));
+    dispatch(verifyJob(data, setChangePasswordModal, "internship"));
   };
 
   const suspentAccount = () => {
     const data = {
       id: changePasswordModal?.data?._id,
-      type: JobType?.job,
+      type: JobType?.internship,
       status:
         changePasswordModal?.data?.status == status?.active
           ? status?.suspend
           : status?.active,
       language: "en",
     };
-    dispatch(updateJob(data, setChangePasswordModal, "job"));
+    dispatch(updateJob(data, setChangePasswordModal, "internship"));
   };
   const clearFilters = () => {
     const data = {
       search: "",
       page: currentPage,
-      limit: parseInt(itemsPerPage),
+      limit: itemsPerPage,
       sort_by: "",
       skills: [],
       location: [],
@@ -159,13 +159,14 @@ export default function index() {
       verify_job: "",
       language: "en",
     };
-    dispatch(getListOfJobByAdmin(data, loadingBarRef));
+    dispatch(getListOfInternshipByAdmin(data, loadingBarRef));
   };
+
   return (
     <>
       <div className="card">
         <div className="p-3">
-          <h4>Jobs</h4>
+          <h4>Internship</h4>
           <div className="row">
             <div className="col-3  input-group-merge">
               <DeftInput
@@ -216,7 +217,7 @@ export default function index() {
 
               <div
                 class="offcanvas offcanvas-end"
-                tabindex="-1"
+                tabIndex="-1"
                 id="offcanvasRight"
                 aria-labelledby="offcanvasRightLabel"
               >
@@ -334,7 +335,7 @@ export default function index() {
           <table className="table table-hover">
             <thead className="table-dark">
               <tr>
-                <th>Job Title</th>
+                <th>Internship Title</th>
                 <th>Company Name</th>
                 <th>Office Locations</th>
                 <th>Skills</th>
@@ -347,27 +348,27 @@ export default function index() {
               </tr>
             </thead>
             <tbody className="table-border-bottom-0">
-              {listOfJobByAdmin?.map((item) => (
+              {listOfInternshipByAdmin?.map((item) => (
                 <tr key={item?.id}>
                   <td>
                     <div
                       data-bs-toggle="tooltip"
                       data-bs-placement="top"
-                      title={item.title ? item.title : ""}
+                      title={item?.title ? item?.title : ""}
                       style={{
                         width: "10vw",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                       }}
                     >
-                      {item.title ? item.title : "-"}
+                      {item?.title ? item?.title : "-"}
                     </div>
                   </td>
                   <td>
                     <div
                       data-bs-toggle="tooltip"
                       data-bs-placement="top"
-                      title={item.title ? item.title : ""}
+                      title={item?.title ? item?.title : ""}
                       style={{
                         width: "10vw",
                         overflow: "hidden",
@@ -384,7 +385,7 @@ export default function index() {
                       data-bs-toggle="tooltip"
                       data-bs-placement="top"
                       title={
-                        item.office_location?.length != 0
+                        item?.office_location?.length != 0
                           ? item.office_location?.join(", ") || ""
                           : "Remote"
                       }
@@ -395,11 +396,11 @@ export default function index() {
                         WebkitBoxOrient: "vertical",
                       }}
                     >
-                      {item.office_location?.map((location, index) => (
+                      {item?.office_location?.map((location, index) => (
                         <>
                           {location}{" "}
                           {index < item.office_location?.length - 1 ? (
-                            <span>,</span>
+                            <span key={index}>,</span>
                           ) : (
                             ""
                           )}{" "}
@@ -424,18 +425,17 @@ export default function index() {
                         WebkitBoxOrient: "vertical",
                       }}
                     >
-                      {/* {item.primary_skills[0]} */}
-                      {item.supporting_skills?.map((location, index) => (
-                        <>
-                          {location}{" "}
-                          {index < item.office_location?.length - 1 ? (
-                            <span>,</span>
-                          ) : (
-                            ""
-                          )}{" "}
-                        </>
-                      ))}
-                      {item.supporting_skills?.length == 0 ? "-" : ""}
+                      {item?.supporting_skills?.length > 0
+                        ? item?.supporting_skills?.map((location, index) => (
+                            <>
+                              {`${location} ${
+                                index != item?.supporting_skills?.length - 1
+                                  ? ","
+                                  : ""
+                              }`}
+                            </>
+                          ))
+                        : "-"}
                     </div>
                   </td>
 
@@ -453,9 +453,7 @@ export default function index() {
                   </td>
                   <td>
                     <p className="mb-0">
-                      {item?.expected_joining_date
-                        ? changeDate(item?.expected_joining_date)
-                        : "-"}
+                      {item?.start_date ? changeDate(item?.start_date) : "-"}
                     </p>
                   </td>
                   <td>
@@ -473,11 +471,11 @@ export default function index() {
                           : "bg-label-danger"
                       } me-1`}
                     >
-                      {item?.is_verified == jobVerifyStatus?.create
+                      {item?.is_verified === jobVerifyStatus?.create
                         ? "pending"
-                        : item?.is_verified == jobVerifyStatus?.verify
+                        : item?.is_verified === jobVerifyStatus?.verify
                         ? "verify"
-                        : item?.is_verified == jobVerifyStatus?.suspended
+                        : item?.is_verified === jobVerifyStatus?.suspended
                         ? "suspend"
                         : "rejected"}
                     </span>
@@ -490,7 +488,7 @@ export default function index() {
                           : "bg-label-danger"
                       } me-1`}
                     >
-                      {item?.status == status?.active ? "Active" : "Deactive"}
+                      {item?.status == 1 ? "Active" : "Deactive"}
                     </span>
                   </td>
                   <td>
@@ -504,8 +502,8 @@ export default function index() {
                         <i className="bx bx-dots-vertical-rounded"></i>
                       </button>
                       <div className="dropdown-menu">
-                        {item?.is_verified == jobVerifyStatus?.create ||
-                        item?.is_verified == jobVerifyStatus?.reject ||
+                        {item?.is_verified === jobVerifyStatus?.create ||
+                        item?.is_verified === jobVerifyStatus?.reject ||
                         item?.is_verified == jobVerifyStatus?.suspended ? (
                           <a
                             aria-label="dropdown action option"
@@ -518,7 +516,7 @@ export default function index() {
                                 id: item._id,
                                 title: `Accept Job`,
                                 data: item,
-                                message: `Are you sure you want to accept this job?`,
+                                message: `Are you sure you want to accept this internship?`,
                                 type: "verify",
                                 value: 2,
                               }));
@@ -533,7 +531,7 @@ export default function index() {
                               height={20}
                               className={"me-1"}
                             />{" "}
-                            Accept Job
+                            Accept Internship
                           </a>
                         ) : (
                           ""
@@ -551,7 +549,7 @@ export default function index() {
                                 id: item._id,
                                 title: `Reject Company`,
                                 data: item,
-                                message: `Are you sure you want to reject this job?`,
+                                message: `Are you sure you want to reject this internship?`,
                                 type: "verify",
                                 value: 3,
                               }));
@@ -566,13 +564,14 @@ export default function index() {
                               height={20}
                               className={"me-1"}
                             />{" "}
-                            Reject Job
+                            Reject Internship
                           </a>
                         ) : (
                           ""
                         )}
-                        {item?.is_verified == jobVerifyStatus?.create ||
-                        item?.is_verified == jobVerifyStatus?.verify ? (
+                        {item?.is_verified == jobVerifyStatus?.reject ||
+                        item?.is_verified == jobVerifyStatus?.suspended ||
+                        item?.is_verified === jobVerifyStatus?.verify ? (
                           <a
                             aria-label="dropdown action option"
                             className="dropdown-item"
@@ -584,8 +583,8 @@ export default function index() {
                                 id: item._id,
                                 title: `Reject Company`,
                                 data: item,
-                                message: `Are you sure you want to reject this job?`,
-                                type: "suspend",
+                                message: `Are you sure you want to suspend this internship?`,
+                                type: "verify",
                                 value: 4,
                               }));
                             }}
@@ -599,7 +598,7 @@ export default function index() {
                               height={20}
                               className={"me-1"}
                             />{" "}
-                            suspend Job
+                            suspend Internship
                           </a>
                         ) : (
                           ""
@@ -615,15 +614,15 @@ export default function index() {
                               id: item.job_id,
                               title: `${
                                 item?.status == status?.active
-                                  ? "Suspend"
-                                  : "Enable"
+                                  ? "Active"
+                                  : "Deactive"
                               } Company`,
                               data: item,
                               message: `Are you sure you want to ${
                                 item?.status == status?.active
-                                  ? "suspend"
-                                  : "enable"
-                              } this job?`,
+                                  ? "Active"
+                                  : "Deactive"
+                              } this internship?`,
                               type: "disable",
                             }));
                           }}
@@ -640,14 +639,14 @@ export default function index() {
                           {item?.status !== status?.active
                             ? "Active"
                             : "Deactive"}{" "}
-                          Job
+                          Internship
                         </a>
                         <a
                           aria-label="dropdown action option"
                           className="dropdown-item"
                           style={{ cursor: "pointer" }}
                           onClick={() => {
-                            navigate(`/job-details/${item?._id}`);
+                            navigate(`/internship-details/${item?._id}`);
                           }}
                         >
                           <Icon
@@ -663,7 +662,7 @@ export default function index() {
                 </tr>
               ))}
 
-              {listOfJobByAdmin?.length == 0 && (
+              {listOfInternshipByAdmin?.length == 0 && (
                 <tr
                   style={{
                     height: "20rem",
@@ -672,7 +671,7 @@ export default function index() {
                   }}
                 >
                   <td colSpan="12" className="text-center">
-                    {jobCount == 0
+                    {(listOfInternshipByAdmin?.length == 0) == 0
                       ? "No companies have been listed yet!"
                       : "No result available"}
                   </td>
@@ -692,22 +691,25 @@ export default function index() {
                   className="btn btn-outline-primary dropdown-toggle"
                   onChange={(e) => setItemsPerPage(e.target.value)}
                 >
-                  <option value="5">5</option>
-                  <option value="10" selected>
+                  <option value={5}>5</option>
+                  <option value={10} selected>
                     10
                   </option>
-                  <option value="25">25</option>
-                  <option value="50">50</option>
-                  <option value="100">100</option>
+                  <option value={25}>25</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
                 </select>
               </div>
               <span className="p-2">entries</span>
             </div>
 
             <div className="col p-1">
-              Showing <b>{currentPage * itemsPerPage - (itemsPerPage - 1)}</b>{" "}
-              to <b>{currentPage * itemsPerPage}</b> of <b>{jobTotalCount}</b>{" "}
-              entries
+              {" "}
+              Showing <b>
+                {currentPage * itemsPerPage - (itemsPerPage - 1)}
+              </b>{" "}
+              to <b>{currentPage * itemsPerPage}</b> of{" "}
+              <b>{internshipTotalCount}</b> entries
             </div>
 
             <div className="col">

@@ -158,7 +158,7 @@ export default function index() {
       auth_id: id,
       language: "en",
     };
-    dispatch(accountDetails(data,loadingBarRef));
+    dispatch(accountDetails(data, loadingBarRef));
   };
 
   const handleSubmit = () => {
@@ -328,6 +328,7 @@ export default function index() {
       dispatch(registerCompany(data, navigate));
     }
   };
+  console.log("here is most id0", formData?.skill_ids);
   return (
     <>
       <h5 className="mb-4">
@@ -402,7 +403,7 @@ export default function index() {
                 onchange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    company_name: val,
+                    company_name: val.trimStart(),
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
@@ -452,7 +453,7 @@ export default function index() {
                 onchange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    company_person_name: val,
+                    company_person_name: val.trimStart(),
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
@@ -538,7 +539,7 @@ export default function index() {
                 onchange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    linkedin_url: val,
+                    linkedin_url: val.trimStart(),
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,
@@ -548,6 +549,7 @@ export default function index() {
               />
             </div>
             <div className="mb-3 col-md-6">
+ 
               <DeftSelect
                 label="Most Hired Skills"
                 error={formDataError?.skill_ids}
@@ -555,7 +557,7 @@ export default function index() {
                   label: item?.name,
                   value: item?._id,
                 }))}
-                value={formData?.skill_ids}
+              value={formData?.skill_ids?._id}
                 onChange={(val) => {
                   const index = skillListData?.findIndex(
                     (item) => item._id === val
@@ -585,7 +587,7 @@ export default function index() {
                 onchange={(val) => {
                   setFormData((formData) => ({
                     ...formData,
-                    company_address: val,
+                    company_address: val.trimStart(),
                   }));
                   setFormDataError((formDataError) => ({
                     ...formDataError,

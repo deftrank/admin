@@ -2017,3 +2017,16 @@ button .focus-change:focus {
   text-align: center;
   justify-content: center;
 }
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.css-1p3m7a8-multiValue {
+  background-color: #0B0B7C !important;
+}
+
+.react-dropdown-select-option .css-9ma7ck-OptionComponent {
+  background: #0B0B7C !important
+}
+

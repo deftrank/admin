@@ -66,6 +66,7 @@ export const login = (data, navigate) => async (dispatch) => {
     const result = response?.data;
 
     if (result?.status) {
+      toast.success(result?.message)
       secureLocalStorage.setItem(
         import.meta.env.VITE_TOKEN_STORAGE_KEY,
         result.token

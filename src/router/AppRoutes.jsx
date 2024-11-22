@@ -13,6 +13,9 @@ import StudentProfile from "../pages/student/studentProfile/index";
 import EditCompnany from "../pages/compnany/EditCompnanyDetail/index";
 import CompnanyProfile from "../pages/compnany/CompnanyProfile/index";
 import Job from "../pages/compnany/jobs/index";
+import Internship from "../pages/compnany/internship/index";
+import CompTestList from "../pages/compnany/compTestQueries";
+import ViewDetails from "../pages/compnany/viewDetails";
 
 const AppRoutes = () => {
   const loginData = secureLocalStorage.getItem(
@@ -34,8 +37,11 @@ const AppRoutes = () => {
         { path: "company-edit/:id", element: <EditCompnany /> },
         { path: "company-details/:id", element: <CompnanyProfile /> },
         { path: "job", element: <Job /> },
-        { path: "internship", element: <DashboardPage /> },
+        { path: "job-details/:id", element: <ViewDetails /> },
+        { path: "internship-details/:id", element: <ViewDetails /> },
+        { path: "internship", element: <Internship /> },
         { path: "transaction", element: <DashboardPage /> },
+        { path: "query-test-list", element: <CompTestList /> },
       ],
     },
     {

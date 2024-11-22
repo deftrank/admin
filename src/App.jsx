@@ -7,6 +7,7 @@ import store from "./store";
 import 'react-toastify/dist/ReactToastify.css';
 import { Provider } from "react-redux";
 import { AxiosInterceptor } from "./service";
+import "./index.css"
 
 function App() {
   // const location = useLocation();

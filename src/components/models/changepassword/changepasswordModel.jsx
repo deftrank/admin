@@ -60,6 +60,7 @@ export default function index(props) {
       }));
       return;
     }
+    console.log(loginData?.newPassword,"here is new pass",loginData?.confirmPassword);
     if (loginData?.newPassword != loginData?.confirmPassword) {
       setLoginData((loginData) => ({
         ...loginData,
@@ -78,7 +79,9 @@ export default function index(props) {
 
     // handleOpenModal();
   };
-
+  console.log("type of new ",typeof(loginData?.newPassword) );
+  console.log("type of old ",typeof(loginData?.confirmPassword ));
+console.log("login",loginData,loginData?.newPassword !== loginData?.confirmPassword);
   return (
     <>
       <Modal
@@ -88,8 +91,15 @@ export default function index(props) {
         backdrop="static"
         className="otp-radius "
       >
-        <Modal.Header className={"border-0"} closeButton>
+        <Modal.Header className={"border-0 p-3"}>
           <Modal.Title>Change password</Modal.Title>
+          <button
+            onClick={handleClose}
+            type="button"
+            className="btn-close  shadow-none"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
         </Modal.Header>
         <Modal.Body className={"container"}>
           <div className="my-3 ">
@@ -100,12 +110,12 @@ export default function index(props) {
               onchange={(value) => {
                 setLoginData((loginData) => ({
                   ...loginData,
-                  oldPassword: value,
+                  oldPassword: value.trimStart(),
                   oldPasswordErr: "",
                 }));
               }}
               error={loginData.oldPasswordErr}
-              inputGroupText={
+              rightIcon={
                 <Icon
                   icon={
                     isShownewPassword ? "ri:eye-line" : "mdi:eye-off-outline"
@@ -113,7 +123,7 @@ export default function index(props) {
                   height={30}
                 />
               }
-              inputGroupTextClick={() =>
+              rightIconClick={() =>
                 setIsShownewPassword(!isShownewPassword)
               }
             />
@@ -126,12 +136,12 @@ export default function index(props) {
               onchange={(value) => {
                 setLoginData((loginData) => ({
                   ...loginData,
-                  newPassword: value,
+                  newPassword: value.trimStart(),
                   newPasswordErr: "",
                 }));
               }}
               error={loginData.newPasswordErr}
-              inputGroupText={
+              rightIcon={
                 <Icon
                   icon={
                     isShowOldPassword ? "ri:eye-line" : "mdi:eye-off-outline"
@@ -139,7 +149,7 @@ export default function index(props) {
                   height={30}
                 />
               }
-              inputGroupTextClick={() =>
+              rightIconClick={() =>
                 setIsShowOldPassword(!isShowOldPassword)
               }
             />
@@ -147,16 +157,17 @@ export default function index(props) {
           <div className="my-3 ">
             <DeftInput
               placeholder="Enter confirm password"
+              value={loginData?.confirmPassword}
               type={isShowConPassword ? "text" : "password"}
               onchange={(value) => {
                 setLoginData((loginData) => ({
                   ...loginData,
-                  confirmPassword: value,
+                  confirmPassword: value.trimStart(),
                   confirmPasswordErr: "",
                 }));
               }}
               error={loginData.confirmPasswordErr}
-              inputGroupText={
+              rightIcon={
                 <Icon
                   icon={
                     isShowConPassword ? "ri:eye-line" : "mdi:eye-off-outline"
@@ -164,7 +175,7 @@ export default function index(props) {
                   height={30}
                 />
               }
-              inputGroupTextClick={() =>
+              rightIconClick={() =>
                 setIsShowConPassword(!isShowConPassword)
               }
             />
