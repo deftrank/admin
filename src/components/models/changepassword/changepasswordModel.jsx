@@ -60,7 +60,11 @@ export default function index(props) {
       }));
       return;
     }
-    console.log(loginData?.newPassword,"here is new pass",loginData?.confirmPassword);
+    console.log(
+      loginData?.newPassword,
+      "here is new pass",
+      loginData?.confirmPassword
+    );
     if (loginData?.newPassword != loginData?.confirmPassword) {
       setLoginData((loginData) => ({
         ...loginData,
@@ -79,9 +83,13 @@ export default function index(props) {
 
     // handleOpenModal();
   };
-  console.log("type of new ",typeof(loginData?.newPassword) );
-  console.log("type of old ",typeof(loginData?.confirmPassword ));
-console.log("login",loginData,loginData?.newPassword !== loginData?.confirmPassword);
+  console.log("type of new ", typeof loginData?.newPassword);
+  console.log("type of old ", typeof loginData?.confirmPassword);
+  console.log(
+    "login",
+    loginData,
+    loginData?.newPassword !== loginData?.confirmPassword
+  );
   return (
     <>
       <Modal
@@ -123,9 +131,7 @@ console.log("login",loginData,loginData?.newPassword !== loginData?.confirmPassw
                   height={30}
                 />
               }
-              rightIconClick={() =>
-                setIsShownewPassword(!isShownewPassword)
-              }
+              rightIconClick={() => setIsShownewPassword(!isShownewPassword)}
             />
           </div>
           <div className="my-3 ">
@@ -149,9 +155,7 @@ console.log("login",loginData,loginData?.newPassword !== loginData?.confirmPassw
                   height={30}
                 />
               }
-              rightIconClick={() =>
-                setIsShowOldPassword(!isShowOldPassword)
-              }
+              rightIconClick={() => setIsShowOldPassword(!isShowOldPassword)}
             />
           </div>
           <div className="my-3 ">
@@ -175,9 +179,7 @@ console.log("login",loginData,loginData?.newPassword !== loginData?.confirmPassw
                   height={30}
                 />
               }
-              rightIconClick={() =>
-                setIsShowConPassword(!isShowConPassword)
-              }
+              rightIconClick={() => setIsShowConPassword(!isShowConPassword)}
             />
           </div>
         </Modal.Body>
