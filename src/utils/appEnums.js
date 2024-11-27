@@ -37,3 +37,19 @@ export const JOB_STATUS={
   unverified:1,
   
 }
+export class ApplicationStatus {
+  static apply = 1;
+  static shortlist = 2;
+  static reject = 3;
+  static notApplied=0;
+}
+export const APPLICANT_FILTERS = [
+  { title: "Default", value: 0 },
+  { title: "New First ", value: 1 },
+  { title: "Old First ", value: 3 },
+  { title: "Location A-Z", value: 5},
+  { title: "Location  Z-A", value: 6 },
+  { title: "Shortlisted", value: 9 },
+  { title: "Applied", value: 10 },
+  { title: "Rejected", value: 11 },
+];

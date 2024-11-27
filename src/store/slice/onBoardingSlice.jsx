@@ -45,6 +45,7 @@ const slice = createSlice({
     adminJobDetails: null,
     jobCtcList: null,
     internshipCtcList: null,
+    JobApplicantList: [],
   },
   reducers: {
     onBoardingSuccess: (state, action) => {
@@ -220,14 +221,16 @@ const slice = createSlice({
     },
     jobDetailSuccess(state, action) {
       console.log(action.payload?.data);
-      state.adminJobDetails = action.payload?.data
+      state.adminJobDetails = action.payload?.data;
     },
     getJobCtcLiSuccess: (state, action) => {
       state.jobCtcList = action.payload?.data;
     },
     getInternshipCtcListSuccess: (state, action) => {
-
       state.internshipCtcList = action.payload?.data;
+    },
+    getApplicantSuccess: (state, action) => {
+      state.JobApplicantList = action.payload?.data;
     },
   },
 });
@@ -262,7 +265,8 @@ const {
   listOfQueriesTestByAdminSuccess,
   jobDetailSuccess,
   getJobCtcLiSuccess,
-  getInternshipCtcListSuccess
+  getInternshipCtcListSuccess,
+  getApplicantSuccess,
 } = slice.actions;
 
 //  stepper currentIndex
@@ -759,15 +763,44 @@ export const getAdminInternShipDetails = (data) => async (dispatch) => {
 };
 export const getCtcList = (data) => async (dispatch) => {
   try {
-    const response = await api.post(
-      `${DEFT_RANK_API.jobs.getCtcList}`,
-      data
-    );
+    const response = await api.post(`${DEFT_RANK_API.jobs.getCtcList}`, data);
 
     if (response?.status) {
       data.type == 1
         ? dispatch(getJobCtcLiSuccess(response?.data))
         : dispatch(getInternshipCtcListSuccess(response?.data));
+    } else {
+      toast.error(response?.message);
+    }
+  } catch (e) {
+    console.error(e.message);
+  }
+};
+export const getApplicantsByAdmin = (data) => async (dispatch) => {
+  try {
+    const response = await api.post(
+      `${DEFT_RANK_API.jobs.getApplicantListByAdmin}`,
+      data
+    );
+
+    if (response?.status) {
+      dispatch(getApplicantSuccess(response?.data));
+    } else {
+      toast.error(response?.message);
+    }
+  } catch (e) {
+    console.error(e.message);
+  }
+};
+export const getInternshipApplicantsByAdmin = (data) => async (dispatch) => {
+  try {
+    const response = await api.post(
+      `${DEFT_RANK_API.jobs.getInternshipApplicantListByAdmin}`,
+      data
+    );
+
+    if (response?.status) {
+      dispatch(getApplicantSuccess(response?.data));
     } else {
       toast.error(response?.message);
     }

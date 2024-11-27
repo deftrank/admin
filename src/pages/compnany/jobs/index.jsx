@@ -7,6 +7,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import {
   clearAllState,
   deleteUser,
+  getApplicantsByAdmin,
   getCityList,
   getListOfJobByAdmin,
   getSkillList,
@@ -24,6 +25,8 @@ import { jobTypes } from "../jobInternshipConfig";
 import CommonComponent from "../commonComponent";
 import { JobType, jobVerifyStatus, status } from "../../../utils/statusEnums";
 import { PAGES_ENUM } from "../../../utils/appEnums";
+import Applicants from "../applicantList";
+import { Applicant } from "../../../components/jsonData";
 
 export default function index() {
   const {
@@ -32,13 +35,16 @@ export default function index() {
     jobCount,
     skillListData,
     cityListData,
+    JobApplicantList,
   } = useSelector((state) => state.onBoarding);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [applicantList, setApplicantList] = useState(false);
   const [searchData, setSearchData] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [changePasswordModal, setChangePasswordModal] = useState({});
   const [dateRange, setDateRange] = useState({});
+  const [sort, setSort] = useState("");
   const [filter, setFilter] = useState({});
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -46,7 +52,10 @@ export default function index() {
   const loadingBarRef = useRef(null);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const totalPages = Math.ceil(jobTotalCount / itemsPerPage);
-
+  const [currentApplicantPage, setCurrentApplicantPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [jobId, setJobId] = useState(null);
   useEffect(() => {
     getJobList();
   }, []);
@@ -161,6 +170,37 @@ export default function index() {
     };
     dispatch(getListOfJobByAdmin(data, loadingBarRef));
   };
+  const handleApplicantList = (id) => {
+    setJobId(id)
+    fetchApplicantList();
+    setApplicantList(true);
+  };
+  const fetchApplicantList = (s) => {
+    let data = {
+      language: "en",
+      page: currentApplicantPage,
+      limit: PAGES_ENUM?.PER_PAGE,
+      job_id: jobId,
+      sort_by: sort?.value,
+    };
+    dispatch(getApplicantsByAdmin(data));
+   
+
+  };
+
+  const loadMoreApplicants = () => {
+    if (hasMore) {
+      fetchApplicantList();
+      setCurrentApplicantPage((prev) => prev + 1);
+    }
+  };
+  useEffect(() => {
+    // Trigger fetch when jobId or currentApplicantPage changes
+    if (jobId && currentApplicantPage === 1) {
+      fetchApplicantList(1); // Fetch first page when jobId changes
+    }
+  }, [sort,jobId]);
+  
   return (
     <>
       <div className="card">
@@ -179,30 +219,7 @@ export default function index() {
                 leftIcon={<i className="bx bx-search"></i>}
               />
             </div>
-            {/* <div className="col-2  input-group-merge">
-              <DeftInput
-                placeholder="Search by name"
-                type="text"
-                value={searchData}
-                onchange={(value) => {
-                  setCurrentPage(1);
-                  setSearchData(value);
-                }}
-                leftIcon={<i className="bx bx-search"></i>}
-              />
-            </div>
-            <div className="col-2  input-group-merge">
-              <DeftInput
-                placeholder="Search by name"
-                type="text"
-                value={searchData}
-                onchange={(value) => {
-                  setCurrentPage(1);
-                  setSearchData(value);
-                }}
-                leftIcon={<i className="bx bx-search"></i>}
-              />
-            </div> */}
+
             <div className="col-1">
               <button
                 class="btn btn-primary"
@@ -232,102 +249,6 @@ export default function index() {
                 />
               </div>
             </div>
-            {/* <div className="col-1">
-              <div className="btn-group">
-                <button
-                  aria-label="Click me"
-                  type="button"
-                  className="btn btn-outline-primary dropdown-toggle text-capitalize"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Short By
-                </button>
-                <ul className="dropdown-menu">
-                  {jobTypes?.map((item) => (
-                    <li>
-                      <a
-                        style={{ cursor: "pointer" }}
-                        aria-label="dropdown action link"
-                        className="dropdown-item"
-                        onClick={() => {
-                          setFilter((filter) => ({
-                            ...filter,
-                            sort_by: item,
-                          }));
-                        }}
-                      >
-                        {item?.title}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-            <div className="col-1">
-              <div className="btn-group">
-                <button
-                  aria-label="Click me"
-                  type="button"
-                  className="btn btn-outline-primary dropdown-toggle text-capitalize"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Verified
-                </button>
-                <ul className="dropdown-menu">
-                  {jobTypes?.map((item) => (
-                    <li>
-                      <a
-                        style={{ cursor: "pointer" }}
-                        aria-label="dropdown action link"
-                        className="dropdown-item"
-                        onClick={() => {
-                          setFilter((filter) => ({
-                            ...filter,
-                            sort_by: item,
-                          }));
-                        }}
-                      >
-                        {item?.title}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-            <div className="col-1">
-              <div className="btn-group">
-                <button
-                  aria-label="Click me"
-                  type="button"
-                  className="btn btn-outline-primary dropdown-toggle text-capitalize"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Job Status
-                </button>
-                <ul className="dropdown-menu">
-                  {jobTypes?.map((item) => (
-                    <li>
-                      <a
-                        style={{ cursor: "pointer" }}
-                        aria-label="dropdown action link"
-                        className="dropdown-item"
-                        onClick={() => {
-                          setFilter((filter) => ({
-                            ...filter,
-                            sort_by: item,
-                          }));
-                        }}
-                      >
-                        {item?.title}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div> */}
           </div>
         </div>
         <div className="table-responsive text-nowrap">
@@ -348,7 +269,7 @@ export default function index() {
             </thead>
             <tbody className="table-border-bottom-0">
               {listOfJobByAdmin?.map((item) => (
-                <tr key={item?.id}>
+                <tr key={item?._id}>
                   <td>
                     <div
                       data-bs-toggle="tooltip"
@@ -661,12 +582,10 @@ export default function index() {
                           aria-label="dropdown action option"
                           className="dropdown-item"
                           style={{ cursor: "pointer" }}
-                          onClick={() => {
-                            navigate(`/job-details/${item?._id}`);
-                          }}
+                          onClick={() => handleApplicantList(item?._id)}
                         >
                           <Icon
-                            icon={"mdi:eye"}
+                            icon={"qlementine-icons:resume-16"}
                             height={20}
                             className={"me-1"}
                           />{" "}
@@ -751,7 +670,23 @@ export default function index() {
           </div>
         </div>
       </div>
+      {applicantList && (
+        <Applicants
+          open={applicantList}
+          title="Job"
+          data={JobApplicantList}
+          handleClose={() => {
+            setApplicantList(false);
 
+            setCurrentApplicantPage(1);
+          }}
+          sort={sort}
+          setSort={setSort}
+          hasMore={hasMore}
+          isLoading={loading}
+          loadMoreApplicants={loadMoreApplicants}
+        />
+      )}
       {changePasswordModal && (
         <Confirmation
           dialogData={changePasswordModal}

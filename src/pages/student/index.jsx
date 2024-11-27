@@ -24,6 +24,7 @@ export default function index() {
   );
   const [currentPage, setCurrentPage] = useState(1);
   const [searchData, setSearchData] = useState("");
+  const [sort, setSort] = useState({});
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const totalPages = Math.ceil(userTotalCount / itemsPerPage);
   const [changePasswordModal, setChangePasswordModal] = useState([]);

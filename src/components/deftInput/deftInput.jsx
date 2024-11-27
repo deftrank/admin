@@ -16,7 +16,8 @@ export default function DeftInput(props) {
     id,
     label,
     onClick,
-    maxLength
+    maxLength,
+    className
   } = props;
 
   return (
@@ -26,7 +27,7 @@ export default function DeftInput(props) {
           {label}
         </label>
       )}
-      <div className="input-group">
+      <div className={`input-group `}>
         {leftIcon && (
           <span className="input-group-text" onClick={leftIconClick}>
             {leftIcon}
@@ -34,7 +35,7 @@ export default function DeftInput(props) {
         )}
         <input
           type={type}
-          className="form-control"
+          className={`form-control`}
           id={id}
           value={value} // Value is always controlled
           onChange={(e) => onchange(e.target.value)}

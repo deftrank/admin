@@ -32,7 +32,7 @@ export const sem = [
 
   {
     value: 8,
-    label: 8
+    label: 8,
   },
 ];
 
@@ -491,9 +491,46 @@ export const dashBoardData = [
   },
 ];
 
-
 export const skillData = [
   { id: 1, skill: "java", level: "Beginner", rank: "200/300" },
   { id: 2, skill: "Cloud", level: "Medium", rank: "10/3000" },
   { id: 3, skill: "Angular", level: "Advanced", rank: "3/300" },
+];
+export const Applicant = [
+  {
+    first_name: "Amit",
+    last_name: "Sharma",
+    current_location: "Delhi",
+    state: "Delhi",
+    type: "job",
+    profile_picture: "https://example.com/profiles/amit_sharma.jpg",
+    available_from: "May 2024",
+  },
+  {
+    first_name: "Priya",
+    last_name: "Patel",
+    current_location: "Mumbai",
+    state: "Maharashtra",
+    type: "internship",
+    profile_picture: "https://example.com/profiles/priya_patel.jpg",
+    available_from: "June 2024",
+  },
+  {
+    first_name: "Ravi",
+    last_name: "Kumar",
+    current_location: "Bengaluru",
+    state: "Karnataka",
+    type: "job",
+    profile_picture: "https://example.com/profiles/ravi_kumar.jpg",
+    available_from: "July 2024",
+  },
+  {
+    first_name: "Neha",
+    last_name: "Reddy",
+    current_location: "Hyderabad",
+    state: "Telangana",
+    type: "internship",
+    profile_picture: "https://example.com/profiles/neha_reddy.jpg",
+    available_from: "August 2024",
+  },
 ];
