@@ -560,8 +560,8 @@ export default function index() {
                             <Icon
                               icon={
                                 item?.is_verified == jobVerifyStatus?.create
-                                  ? "lsicon:disable-outline"
-                                  : "fontisto:radio-btn-active"
+                                  ? "entypo:circle-with-cross"
+                                  : "entypo:circle-with-cross"
                               }
                               height={20}
                               className={"me-1"}
@@ -656,6 +656,21 @@ export default function index() {
                             className={"me-1"}
                           />{" "}
                           View Details
+                        </a>
+                        <a
+                          aria-label="dropdown action option"
+                          className="dropdown-item"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => {
+                            navigate(`/job-details/${item?._id}`);
+                          }}
+                        >
+                          <Icon
+                            icon={"mdi:eye"}
+                            height={20}
+                            className={"me-1"}
+                          />{" "}
+                          View Applicants List
                         </a>
                       </div>
                     </div>
