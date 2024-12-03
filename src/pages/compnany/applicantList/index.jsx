@@ -102,7 +102,10 @@ export default function Applicants(props) {
             scrollThreshold={1} // Start loading when the user is 90% down
             scrollableTarget="applicant-list-container" // Set the scrollable container
           >
-            <div className="applicant-list-container" style={{height:"25rem"}}>
+            <div
+              className="applicant-list-container"
+              style={{ height: "25rem" }}
+            >
               {data?.map((item, index) => (
                 <div
                   className="row mt-3 align-items-center applicant-card cursor-pointer"
@@ -157,7 +160,7 @@ export default function Applicants(props) {
                               : item?.application_status ===
                                 ApplicationStatus.shortlist
                               ? "ShortListed"
-                              : ""}
+                              : "Joined"}
                           </span>
                         </div>
                         <p className="text-muted text-start">

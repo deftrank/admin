@@ -51,7 +51,7 @@ export default function index() {
   const loadingBarRef = useRef(null);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const totalPages = Math.ceil(internshipTotalCount / itemsPerPage);
-  const [currentApplicantPage, setCurrentApplicantPage] = useState(1);
+  const [currentApplicantPage, setCurrentApplicantPage] = useState(10);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
@@ -172,14 +172,14 @@ export default function index() {
   const fetchApplicantList = (id) => {
     let data = {
       language: "en",
-      page: currentApplicantPage,
-      limit: PAGES_ENUM?.PER_PAGE,
+      page:PAGES_ENUM?.PAGE ,
+      limit: currentApplicantPage,
       internship_id: id,
       sort_by: "",
     };
     dispatch(getInternshipApplicantsByAdmin(data));
     if (JobApplicantList?.length > 0) {
-      setCurrentApplicantPage((prev) => prev + 1);
+      setCurrentApplicantPage((prev) => prev + 10);
     } else {
       setHasMore(false); // No more applicants to load
     }

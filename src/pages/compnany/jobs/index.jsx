@@ -178,8 +178,8 @@ export default function index() {
   const fetchApplicantList = (s) => {
     let data = {
       language: "en",
-      page: currentApplicantPage,
-      limit: PAGES_ENUM?.PER_PAGE,
+      page: PAGES_ENUM?.PAGE,
+      limit:currentApplicantPage,
       job_id: jobId,
       sort_by: sort?.value,
     };
@@ -191,12 +191,12 @@ export default function index() {
   const loadMoreApplicants = () => {
     if (hasMore) {
       fetchApplicantList();
-      setCurrentApplicantPage((prev) => prev + 1);
+      setCurrentApplicantPage((prev) => prev + 10);
     }
   };
   useEffect(() => {
     // Trigger fetch when jobId or currentApplicantPage changes
-    if (jobId && currentApplicantPage === 1) {
+    if (jobId && currentApplicantPage === 10) {
       fetchApplicantList(1); // Fetch first page when jobId changes
     }
   }, [sort,jobId]);
