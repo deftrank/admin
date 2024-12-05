@@ -53,3 +53,7 @@ export const APPLICANT_FILTERS = [
   { title: "Applied", value: 10 },
   { title: "Rejected", value: 11 },
 ];
+export const user_Type={
+  student:1,
+  company:2,
+}

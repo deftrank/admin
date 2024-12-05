@@ -11,18 +11,20 @@ import DeftDaterange from "../../components/deftDaterange/index";
 import moment from "moment-timezone"; // Import moment-timezone
 import { changeDate } from "../../utils/appConstant";
 import LoadingBar from "react-top-loading-bar";
+import { user_Type } from "../../utils/appEnums";
+import { JobType } from "../../utils/statusEnums";
 
 export default function index() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { listOfUserByAdmin, userTotalCount, userCount } = useSelector(
+  const { ticketList, ticketCount, userCount } = useSelector(
     (state) => state.onBoarding
   );
   const [currentPage, setCurrentPage] = useState(1);
   const [searchData, setSearchData] = useState("");
   const [sort, setSort] = useState({});
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const totalPages = Math.ceil(userTotalCount / itemsPerPage);
+  const totalPages = Math.ceil(ticketCount / itemsPerPage);
   const [changePasswordModal, setChangePasswordModal] = useState([]);
   const [dateRange, setDateRange] = useState({});
   const [status, setStatus] = useState("");
@@ -71,8 +73,8 @@ export default function index() {
       sort_by: "",
       language: "en",
       search: searchData,
-      page: currentPage,
-      limit: itemsPerPage,
+      page: parseInt(currentPage),
+      limit: parseInt(itemsPerPage),
     };
     dispatch(getTicketListByAdmin(data, loadingBarRef));
   };
@@ -169,27 +171,41 @@ export default function index() {
           <table className="table table-hover">
             <thead className="table-dark">
               <tr>
+                <th>Ticket id</th>
                 <th>Name</th>
-                <th>Email</th>
-                <th>Phone Number</th>
-                <th>Course</th>
-                <th>College</th>
-                <th>Joined On</th>
+        
+                <th>User Type</th>
+                <th>Job Type</th>
+                <th>Create Date</th>
                 <th>Status</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody className="table-border-bottom-0">
-              {listOfUserByAdmin?.map((item) => (
+              {ticketList?.map((item) => (
                 <tr key={item?.id}>
                   <td>
                     <div
                       data-bs-toggle="tooltip"
                       data-bs-placement="top"
+                      title={item?.ticket_id}
+                      style={{
+                        width: "8vw",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {item?.ticket_id}
+                    </div>
+                  </td>
+                  <td>
+                    <div
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
                       title={
-                        item?.first_name
-                          ? item?.first_name + " " + item?.last_name
-                          : ""
+                        item?.role_type == user_Type?.student
+                          ? item?.user_data?.first_name
+                          : item?.company_data?.registered_name
                       }
                       style={{
                         width: "8vw",
@@ -197,56 +213,38 @@ export default function index() {
                         textOverflow: "ellipsis",
                       }}
                     >
-                      {item?.first_name
-                        ? item?.first_name + " " + item?.last_name
-                        : "-"}
+                      {item?.role_type == user_Type?.student
+                        ? item?.user_data?.first_name
+                        : item?.company_data?.registered_name}
                     </div>
                   </td>
+                 
                   <td>
                     <div
                       data-bs-toggle="tooltip"
                       data-bs-placement="top"
-                      title={item?.auth_id?.email ? item?.auth_id?.email : ""}
+                      title={item?.role_type == user_Type?.student ? "Student" : "Company"}
                       style={{
                         width: "8vw",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                       }}
                     >
-                      {item?.auth_id?.email ? item?.auth_id?.email : "-"}
-                    </div>
-                  </td>
-                  <td>
-                    {item?.auth_id?.phone
-                      ? item?.auth_id?.country_code + item?.auth_id?.phone
-                      : "-"}
-                  </td>
-                  <td>
-                    <div
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
-                      title={item?.current_course ? item?.current_course : ""}
-                      style={{
-                        width: "8vw",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {item?.current_course ? item?.current_course : "-"}
+                     {item?.role_type == user_Type?.student ? "Student" : "Company"}
                     </div>
                   </td>
                   <td>
                     <div
                       data-bs-toggle="tooltip"
                       data-bs-placement="top"
-                      title={item?.college_name ? item?.college_name : ""}
+                      title={item?.category ===JobType?.job? "Job " : "Internship"}
                       style={{
                         width: "8vw",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                       }}
                     >
-                      {item?.college_name ? item?.college_name : "-"}
+                     {item?.category ===JobType?.job? "Job " : "Internship"}
                     </div>
                   </td>
                   <td>
@@ -371,7 +369,7 @@ export default function index() {
                 </tr>
               ))}
 
-              {listOfUserByAdmin?.length == 0 && (
+              {ticketList?.length == 0 && (
                 <tr
                   style={{
                     height: "20rem",
@@ -416,7 +414,7 @@ export default function index() {
               Showing <b>
                 {currentPage * itemsPerPage - (itemsPerPage - 1)}
               </b>{" "}
-              to <b>{currentPage * itemsPerPage}</b> of <b>{userTotalCount}</b>{" "}
+              to <b>{currentPage * itemsPerPage}</b> of <b>{ticketCount}</b>{" "}
               entries
             </div>
 
