@@ -46,6 +46,8 @@ const slice = createSlice({
     jobCtcList: null,
     internshipCtcList: null,
     JobApplicantList: [],
+    ticketList: [],
+    ticketCount: 0,
   },
   reducers: {
     onBoardingSuccess: (state, action) => {
@@ -232,6 +234,10 @@ const slice = createSlice({
     getApplicantSuccess: (state, action) => {
       state.JobApplicantList = action.payload?.data;
     },
+    getTicketListSuccess: (state, action) => {
+      state.ticketList = action.payload?.data;
+      state.ticketCount = action.payload?.total_count;
+    },
   },
 });
 
@@ -267,6 +273,7 @@ const {
   getJobCtcLiSuccess,
   getInternshipCtcListSuccess,
   getApplicantSuccess,
+  getTicketListSuccess,
 } = slice.actions;
 
 //  stepper currentIndex
@@ -801,6 +808,19 @@ export const getInternshipApplicantsByAdmin = (data) => async (dispatch) => {
 
     if (response?.status) {
       dispatch(getApplicantSuccess(response?.data));
+    } else {
+      toast.error(response?.message);
+    }
+  } catch (e) {
+    console.error(e.message);
+  }
+};
+export const getTicketListByAdmin = (data) => async (dispatch) => {
+  try {
+    const response = await api.post(`${DEFT_RANK_API.ticket.ticketList}`, data);
+
+    if (response?.status) {
+      dispatch(getTicketListSuccess(response?.data));
     } else {
       toast.error(response?.message);
     }

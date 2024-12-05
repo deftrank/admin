@@ -16,6 +16,7 @@ import Job from "../pages/compnany/jobs/index";
 import Internship from "../pages/compnany/internship/index";
 import CompTestList from "../pages/compnany/compTestQueries";
 import ViewDetails from "../pages/compnany/viewDetails";
+import RaisedTicket from "../pages/raisedTicket/index"
 
 const AppRoutes = () => {
   const loginData = secureLocalStorage.getItem(
@@ -42,6 +43,7 @@ const AppRoutes = () => {
         { path: "internship", element: <Internship /> },
         { path: "transaction", element: <DashboardPage /> },
         { path: "query-test-list", element: <CompTestList /> },
+        { path: "raised-tickets", element: <RaisedTicket /> },
       ],
     },
     {

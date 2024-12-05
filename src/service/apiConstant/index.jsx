@@ -46,7 +46,11 @@ export const DEFT_RANK_API = {
   },
   test:{
     queriesList:"admin/comp-test-listing"
+  },
+  ticket:{
+    ticketList:"/admin/ticketList"
   }
+
 };
 
 export const API_RESPONSE = {
