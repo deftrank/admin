@@ -20,6 +20,7 @@ import LoadingBar from "react-top-loading-bar";
 
 import CommonComponent from "../commonComponent";
 import CompTestQuery from "./compTestQueryDetail";
+import CompTestID from "./compTestIDModal";
 
 export default function CompTestList() {
   const {
@@ -45,6 +46,7 @@ export default function CompTestList() {
   const [queryDetailModal, setQueryDetailModal] = useState(false);
   const [detail, setDetail] = useState(null);
   const totalPages = Math.ceil(queriesTotalCount / itemsPerPage);
+  const [showInputModal,setShowInputModal]=useState(false)
 
   useEffect(() => {
     getTestList();
@@ -198,7 +200,7 @@ export default function CompTestList() {
                 <th>Contact Person </th>
 
                 <th>Create Date </th>
-
+                <th>Status</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -250,6 +252,7 @@ export default function CompTestList() {
                       {item?.authData?.email ? item?.authData?.email : "-"}
                     </div>
                   </td>
+                  
                   <td>
                     <div
                       data-bs-toggle="tooltip"
@@ -274,7 +277,19 @@ export default function CompTestList() {
                       {item?.createdAt ? changeDate(item?.createdAt) : "-"}
                     </p>
                   </td>
-
+                  <td>
+                    <span
+                      className={`badge ${
+                        item?.auth_id?.suspend_status == "active"
+                          ? "bg-label-success"
+                          : item?.auth_id?.suspend_status == "pending"
+                          ? "bg-label-warning"
+                          : "bg-label-danger"
+                      } me-1 text-capitalize`}
+                    >
+                      {"Pending"}
+                    </span>
+                  </td>
                   <td>
                     <div className="dropdown">
                       <button
@@ -298,6 +313,45 @@ export default function CompTestList() {
                             className={"me-1"}
                           />{" "}
                           View Detail
+                        </a>
+                        <a
+                          aria-label="dropdown action option"
+                          className="dropdown-item"
+                          style={{ cursor: "pointer" }}
+
+                        >
+                          <Icon
+                            icon={"streamline:discussion-converstion-reply-solid"}
+                            height={20}
+                            className={"me-1"}
+                          />{" "}
+                       Under Discussion 
+                        </a>
+                        <a
+                          aria-label="dropdown action option"
+                          className="dropdown-item"
+                          style={{ cursor: "pointer" }}
+            
+                        >
+                          <Icon
+                            icon={"fluent:notepad-edit-20-filled"}
+                            height={20}
+                            className={"me-1"}
+                          />{" "}
+                    Under Review
+                        </a>
+                        <a
+                          aria-label="dropdown action option"
+                          className="dropdown-item"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => setShowInputModal(true)}
+                        >
+                          <Icon
+                            icon={"carbon:task-complete"}
+                            height={20}
+                            className={"me-1"}
+                          />{" "}
+                          Complete
                         </a>
                       </div>
                     </div>
@@ -390,6 +444,7 @@ export default function CompTestList() {
         />
       )}
       <LoadingBar color={"#0b0b7c"} height="0.5rem" ref={loadingBarRef} />
+      {showInputModal && (<CompTestID open={showInputModal} handleClose={() => setShowInputModal(false)}  title="Comp Test ID"/>)}
     </>
   );
 }

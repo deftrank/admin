@@ -54,6 +54,7 @@ export default function index() {
   const [currentApplicantPage, setCurrentApplicantPage] = useState(10);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
+  const applicantContent=useRef(null);
   useEffect(() => {
     getJobList();
   }, []);
@@ -178,16 +179,22 @@ export default function index() {
       sort_by: "",
     };
     dispatch(getInternshipApplicantsByAdmin(data));
-    if (JobApplicantList?.length > 0) {
-      setCurrentApplicantPage((prev) => prev + 10);
-    } else {
-      setHasMore(false); // No more applicants to load
-    }
-    setLoading(false);
+   
   };
-  const loadMoreApplicants = () => {
-    if (hasMore) {
-      fetchApplicantList();
+  const handleScroll = () => {
+    const applicantContainer = applicantContent?.current;
+
+    if (!offcanvas || loading) return; // Ensure offcanvas is defined and not already loading
+
+    const { scrollHeight, scrollTop, clientHeight } = applicantContainer;
+
+    const isAtBottom = scrollHeight - scrollTop <= clientHeight + 1; // Adding 1px tolerance for precision
+    const hasMoreData = JobApplicantList?.length >= currentApplicantPage;
+
+    if (isAtBottom && hasMoreData) {
+      console.log("Loading next page:", perPages);
+      
+      currentApplicantPage((prevPage) => prevPage + 5);
     }
   };
   return (
@@ -787,11 +794,11 @@ export default function index() {
           handleClose={() => {
             setApplicantList(false);
 
-            setCurrentApplicantPage(1);
+
           }}
-          hasMore={hasMore}
+          hasMore={applicantContent}
           isLoading={loading}
-          loadMoreApplicants={loadMoreApplicants}
+          handleScroll={handleScroll}
         />
       )}
 

@@ -6,7 +6,7 @@ import { color } from "../../../themes/color/color";
 import { useResponsive } from "../../../hooks/useResponsive";
 import { APPLICANT_FILTERS, ApplicationStatus } from "../../../utils/appEnums";
 import moment from "moment";
-import InfiniteScroll from "react-infinite-scroll-component";
+
 
 export default function Applicants(props) {
   const {
@@ -16,7 +16,7 @@ export default function Applicants(props) {
     data,
     hasMore,
     isLoading,
-    loadMoreApplicants,
+    handleScroll,
     sort,
     setSort,
   } = props;
@@ -67,7 +67,7 @@ export default function Applicants(props) {
                 {APPLICANT_FILTERS?.map((item, index) => {
                   return (
                     <>
-                      <li>
+                      <li key={index}>
                         <a
                           style={{ cursor: "pointer" }}
                           aria-label="dropdown action link"
@@ -89,22 +89,11 @@ export default function Applicants(props) {
               </ul>
             </div>
           </div>
-          <InfiniteScroll
-            dataLength={data?.length || 0} // Number of items currently loaded
-            next={loadMoreApplicants} // Function to call when scrolled to the bottom
-            hasMore={hasMore} // Flag to indicate if there are more items to load
-            loader={<div className="text-center">Loading...</div>} // Loading spinner
-            endMessage={
-              <div className="text-center">
-                You have reached the end of the list.
-              </div>
-            } // End message when no more items are left
-            scrollThreshold={1} // Start loading when the user is 90% down
-            scrollableTarget="applicant-list-container" // Set the scrollable container
-          >
-            <div
+          <div ref={hasMore}
+            onScroll={handleScroll}
+
               className="applicant-list-container"
-              style={{ height: "25rem" }}
+              style={{ height: "25rem",maxHeight: "100%", overflowY: "auto"  }}
             >
               {data?.map((item, index) => (
                 <div
@@ -180,7 +169,6 @@ export default function Applicants(props) {
                 </div>
               )}
             </div>
-          </InfiniteScroll>
         </Modal.Body>
       </Modal>
     </>
