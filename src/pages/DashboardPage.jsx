@@ -1,14 +1,347 @@
 import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getDashboardByAdmin } from "../store/slice/onBoardingSlice";
+import { Icon } from "@iconify/react";
+import { color } from "../themes/color/color";
 
 export const DashboardPage = () => {
+  const dispatch = useDispatch();
+  const {dashboardCount}=useSelector((state)=>state.onBoarding)
+  const fetchDashboardCount = () => {
+    let data = {
+      language: "en",
+    };
+    dispatch(getDashboardByAdmin(data))
+  };
+ 
   useEffect(() => {
-    dashboardAnalitics();
+    fetchDashboardCount();
   }, []);
   return (
     <>
-      <div className="comingSoon">
-        <h3>Launching soon! Stay tuned for more information</h3>
+      <div className="row">
+        <div className="col-lg-3 col-md-4 col-12 mb-4">
+          <div className="card">
+            <div className="card-body">
+              <div className="card-title d-flex align-items-start justify-content-between">
+                <div className="avatar flex-shrink-0">
+                 <Icon icon="mdi:company" class={"fs-1 "} style={{color:color?.primary}}/>
+                </div>
+                <div className="dropdown">
+                  <button
+                    aria-label="Click me"
+                    className="btn p-0"
+                    type="button"
+                    id="cardOpt3"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    <i className="bx bx-dots-vertical-rounded"></i>
+                  </button>
+                  <div
+                    className="dropdown-menu dropdown-menu-end"
+                    aria-labelledby="cardOpt3"
+                  >
+                    <a
+                      aria-label="view more"
+                      className="dropdown-item"
+                      href="#"
+                    >
+                      View More
+                    </a>
+                  
+                  </div>
+                </div>
+              </div>
+              <span className="fw-medium d-block mb-1">Total Companies</span>
+              <h3 className="card-title mb-2">{dashboardCount?.company_count}</h3>
+              
+            </div>
+          </div>
+        </div>
+        <div className="col-lg-3 col-md-4 col-12 mb-4">
+          <div className="card">
+            <div className="card-body">
+              <div className="card-title d-flex align-items-start justify-content-between">
+                <div className="avatar flex-shrink-0">
+                 <Icon icon="ph:student" class={"fs-1"} style={{color:color?.primary}}/>
+                </div>
+                <div className="dropdown">
+                  <button
+                    aria-label="Click me"
+                    className="btn p-0"
+                    type="button"
+                    id="cardOpt3"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    <i className="bx bx-dots-vertical-rounded"></i>
+                  </button>
+                  <div
+                    className="dropdown-menu dropdown-menu-end"
+                    aria-labelledby="cardOpt3"
+                  >
+                    <a
+                      aria-label="view more"
+                      className="dropdown-item"
+                      href="#"
+                    >
+                      View More
+                    </a>
+                  
+                  </div>
+                </div>
+              </div>
+              <span className="fw-medium d-block mb-1">Total Students</span>
+              <h3 className="card-title mb-2">{dashboardCount?.student_count}</h3>
+              
+            </div>
+          </div>
+        </div>
+        <div className="col-lg-3 col-md-4 col-12 mb-4">
+          <div className="card">
+            <div className="card-body">
+              <div className="card-title d-flex align-items-start justify-content-between">
+                <div className="avatar flex-shrink-0">
+                 <Icon icon="marketeq:job" class={"fs-1"} style={{color:color?.primary}}/>
+                </div>
+                <div className="dropdown">
+                  <button
+                    aria-label="Click me"
+                    className="btn p-0"
+                    type="button"
+                    id="cardOpt3"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    <i className="bx bx-dots-vertical-rounded"></i>
+                  </button>
+                  <div
+                    className="dropdown-menu dropdown-menu-end"
+                    aria-labelledby="cardOpt3"
+                  >
+                    <a
+                      aria-label="view more"
+                      className="dropdown-item"
+                      href="#"
+                    >
+                      View More
+                    </a>
+                  
+                  </div>
+                </div>
+              </div>
+              <span className="fw-medium d-block mb-1">Total Jobs</span>
+              <h3 className="card-title mb-2">{dashboardCount?.job_count}</h3>
+              
+            </div>
+          </div>
+        </div>
+        <div className="col-lg-3 col-md-4 col-12 mb-4">
+          <div className="card">
+            <div className="card-body">
+              <div className="card-title d-flex align-items-start justify-content-between">
+                <div className="avatar flex-shrink-0">
+                 <Icon icon="clarity:id-badge-line" class={"fs-1"} style={{color:color?.primary}}/>
+                </div>
+                <div className="dropdown">
+                  <button
+                    aria-label="Click me"
+                    className="btn p-0"
+                    type="button"
+                    id="cardOpt3"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    <i className="bx bx-dots-vertical-rounded"></i>
+                  </button>
+                  <div
+                    className="dropdown-menu dropdown-menu-end"
+                    aria-labelledby="cardOpt3"
+                  >
+                    <a
+                      aria-label="view more"
+                      className="dropdown-item"
+                      href="#"
+                    >
+                      View More
+                    </a>
+                  
+                  </div>
+                </div>
+              </div>
+              <span className="fw-medium d-block mb-1">Total Internship</span>
+              <h3 className="card-title mb-2">{dashboardCount?.internship_count}</h3>
+              
+            </div>
+          </div>
+        </div>
+        <div className="col-lg-3 col-md-4 col-12 mb-4">
+          <div className="card">
+            <div className="card-body">
+              <div className="card-title d-flex align-items-start justify-content-between">
+                <div className="avatar flex-shrink-0">
+                 <Icon icon="fluent:notepad-edit-16-regular" class={"fs-1"} style={{color:color?.primary}}/>
+                </div>
+                <div className="dropdown">
+                  <button
+                    aria-label="Click me"
+                    className="btn p-0"
+                    type="button"
+                    id="cardOpt3"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    <i className="bx bx-dots-vertical-rounded"></i>
+                  </button>
+                  <div
+                    className="dropdown-menu dropdown-menu-end"
+                    aria-labelledby="cardOpt3"
+                  >
+                    <a
+                      aria-label="view more"
+                      className="dropdown-item"
+                      href="#"
+                    >
+                      View More
+                    </a>
+                  
+                  </div>
+                </div>
+              </div>
+              <span className="fw-medium d-block mb-1">Total Assessment</span>
+              <h3 className="card-title mb-2">{dashboardCount?.assessment_count}</h3>
+              
+            </div>
+          </div>
+        </div>
+        <div className="col-lg-3 col-md-4 col-12 mb-4">
+          <div className="card">
+            <div className="card-body">
+              <div className="card-title d-flex align-items-start justify-content-between">
+                <div className="avatar flex-shrink-0">
+                 <Icon icon="fluent:clipboard-code-16-filled" class={"fs-1"} style={{color:color?.primary}}/>
+                </div>
+                <div className="dropdown">
+                  <button
+                    aria-label="Click me"
+                    className="btn p-0"
+                    type="button"
+                    id="cardOpt3"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    <i className="bx bx-dots-vertical-rounded"></i>
+                  </button>
+                  <div
+                    className="dropdown-menu dropdown-menu-end"
+                    aria-labelledby="cardOpt3"
+                  >
+                    <a
+                      aria-label="view more"
+                      className="dropdown-item"
+                      href="#"
+                    >
+                      View More
+                    </a>
+                  
+                  </div>
+                </div>
+              </div>
+              <span className="fw-medium d-block mb-1">Total Comp Test </span>
+              <h3 className="card-title mb-2">{dashboardCount?.compt_test_count}</h3>
+              
+            </div>
+          </div>
+        </div>
+        <div className="col-lg-3 col-md-4 col-12 mb-4">
+          <div className="card">
+            <div className="card-body">
+              <div className="card-title d-flex align-items-start justify-content-between">
+                <div className="avatar flex-shrink-0">
+                 <Icon icon="hugeicons:permanent-job" class={"fs-1"} style={{color:color?.primary}}/>
+                </div>
+                <div className="dropdown">
+                  <button
+                    aria-label="Click me"
+                    className="btn p-0"
+                    type="button"
+                    id="cardOpt3"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    <i className="bx bx-dots-vertical-rounded"></i>
+                  </button>
+                  <div
+                    className="dropdown-menu dropdown-menu-end"
+                    aria-labelledby="cardOpt3"
+                  >
+                    <a
+                      aria-label="view more"
+                      className="dropdown-item"
+                      href="#"
+                    >
+                      View More
+                    </a>
+                  
+                  </div>
+                </div>
+              </div>
+              <span className="fw-medium d-block mb-1">Total Active Job </span>
+              <h3 className="card-title mb-2">{dashboardCount?.active_job_count}</h3>
+              
+            </div>
+          </div>
+        </div>
+        <div className="col-lg-3 col-md-4 col-12 mb-4">
+          <div className="card">
+            <div className="card-body">
+              <div className="card-title d-flex align-items-start justify-content-between">
+                <div className="avatar flex-shrink-0">
+                 <Icon icon="fluent-emoji-high-contrast:man-student" class={"fs-1"} style={{color:color?.primary}}/>
+                </div>
+                <div className="dropdown">
+                  <button
+                    aria-label="Click me"
+                    className="btn p-0"
+                    type="button"
+                    id="cardOpt3"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    <i className="bx bx-dots-vertical-rounded"></i>
+                  </button>
+                  <div
+                    className="dropdown-menu dropdown-menu-end"
+                    aria-labelledby="cardOpt3"
+                  >
+                    <a
+                      aria-label="view more"
+                      className="dropdown-item"
+                      href="#"
+                    >
+                      View More
+                    </a>
+                  
+                  </div>
+                </div>
+              </div>
+              <span className="fw-medium d-block mb-1">Total Active Internship </span>
+              <h3 className="card-title mb-2">{dashboardCount?.active_internship_count}</h3>
+              
+            </div>
+          </div>
+        </div>
       </div>
+
       {/* <div className="row">
                 <div className="col-lg-8 mb-4 order-0">
                     <div className="card">

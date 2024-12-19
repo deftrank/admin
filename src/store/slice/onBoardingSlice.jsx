@@ -48,6 +48,9 @@ const slice = createSlice({
     JobApplicantList: [],
     ticketList: [],
     ticketCount: 0,
+    dashboardCount: null,
+    badgeListByAdmin: [],
+    badgeCountByAdmin: 0,
   },
   reducers: {
     onBoardingSuccess: (state, action) => {
@@ -238,6 +241,15 @@ const slice = createSlice({
       state.ticketList = action.payload?.data;
       state.ticketCount = action.payload?.total_count;
     },
+    getDashboardCountSuccess: (state, action) => {
+      state.dashboardCount = action.payload.data;
+    },
+    getBadgeListSuccess: (state, action) => {
+      console.log(action.payload);
+      state.badgeListByAdmin = action.payload.data;
+      state.badgeCountByAdmin = action.payload.total_count; // Corrected this line
+    }
+    
   },
 });
 
@@ -274,6 +286,8 @@ const {
   getInternshipCtcListSuccess,
   getApplicantSuccess,
   getTicketListSuccess,
+  getDashboardCountSuccess,
+  getBadgeListSuccess,
 } = slice.actions;
 
 //  stepper currentIndex
@@ -821,6 +835,38 @@ export const getTicketListByAdmin = (data) => async (dispatch) => {
 
     if (response?.status) {
       dispatch(getTicketListSuccess(response?.data));
+    } else {
+      toast.error(response?.message);
+    }
+  } catch (e) {
+    console.error(e.message);
+  }
+};
+export const getDashboardByAdmin = (data) => async (dispatch) => {
+  try {
+    const response = await api.post(
+      `${DEFT_RANK_API.dashboard.dashboardCount}`,
+      data
+    );
+
+    if (response?.status) {
+      dispatch(getDashboardCountSuccess(response?.data));
+    } else {
+      toast.error(response?.message);
+    }
+  } catch (e) {
+    console.error(e.message);
+  }
+};
+export const getBadgeListByAdmin = (data) => async (dispatch) => {
+  try {
+    const response = await api.post(
+      `${DEFT_RANK_API.badges.badgeList}`,
+      data
+    );
+
+    if (response?.status) {
+      dispatch(getBadgeListSuccess(response?.data));
     } else {
       toast.error(response?.message);
     }

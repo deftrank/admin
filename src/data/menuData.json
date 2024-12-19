@@ -76,6 +76,17 @@
                 "link": "/raised-tickets"
             }
         ]
+    },
+    {
+        "header": "Achievements ",
+        "items": [
+            {
+                "text": "List",
+                "icon": "bx bx-box",
+                "available": true,
+                "link": "/badges"
+            }
+        ]
     }
     
 

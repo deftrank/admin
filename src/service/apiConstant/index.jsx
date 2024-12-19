@@ -15,6 +15,9 @@ export const DEFT_RANK_API = {
     registerCompany: "admin/registerCompany",
     updateCompanyProfile: "admin/updateCompanyProfile",
   },
+  dashboard: {
+    dashboardCount: "/admin/count",
+  },
   //  listing
   list: {
     getCourseList: "constant/courseList",
@@ -36,21 +39,24 @@ export const DEFT_RANK_API = {
   jobs: {
     getListOfJobByAdmin: "admin/admin-job-list",
     verifyJob: "admin/verify-job-internship",
-    updateJObStatus:"admin/update-job-internship-status",
+    updateJObStatus: "admin/update-job-internship-status",
     getListOfInternshipByAdmin: "admin/admin-internship-list",
-    getJobDetails:"/admin/get-job-detail",
-    getInternshipDetails:"/admin/get-internship-detail",
+    getJobDetails: "/admin/get-job-detail",
+    getInternshipDetails: "/admin/get-internship-detail",
     getCtcList: "constant/job-internship-ctc-list",
-    getApplicantListByAdmin:"/admin/job-applicant-listByAdmin",
-    getInternshipApplicantListByAdmin:"/admin/internship-applicant-listByAdmin"
+    getApplicantListByAdmin: "/admin/job-applicant-listByAdmin",
+    getInternshipApplicantListByAdmin:
+      "/admin/internship-applicant-listByAdmin",
   },
-  test:{
-    queriesList:"admin/comp-test-listing"
+  test: {
+    queriesList: "admin/comp-test-listing",
   },
-  ticket:{
-    ticketList:"/admin/ticketList"
+  ticket: {
+    ticketList: "/admin/ticketList",
+  },
+  badges:{
+    badgeList:"/admin/badgeList"
   }
-
 };
 
 export const API_RESPONSE = {

@@ -16,8 +16,8 @@ import Job from "../pages/compnany/jobs/index";
 import Internship from "../pages/compnany/internship/index";
 import CompTestList from "../pages/compnany/compTestQueries";
 import ViewDetails from "../pages/compnany/viewDetails";
-import RaisedTicket from "../pages/raisedTicket/index"
-
+import RaisedTicket from "../pages/raisedTicket/index";
+import Badges from "../pages/student/Badges/index"
 const AppRoutes = () => {
   const loginData = secureLocalStorage.getItem(
     import.meta.env.VITE_TOKEN_STORAGE_KEY
@@ -44,6 +44,7 @@ const AppRoutes = () => {
         { path: "transaction", element: <DashboardPage /> },
         { path: "query-test-list", element: <CompTestList /> },
         { path: "raised-tickets", element: <RaisedTicket /> },
+        { path: "badges", element: <Badges/> },
       ],
     },
     {
