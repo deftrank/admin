@@ -87,6 +87,17 @@
                 "link": "/badges"
             }
         ]
+    },
+    {
+        "header": "Subscription ",
+        "items": [
+            {
+                "text": "Plans",
+                "icon": "bx bx-box",
+                "available": true,
+                "link": "/subscription-plans"
+            }
+        ]
     }
     
 

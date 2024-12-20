@@ -51,6 +51,8 @@ const slice = createSlice({
     dashboardCount: null,
     badgeListByAdmin: [],
     badgeCountByAdmin: 0,
+    planListByAdmin:null,
+    planListCount:0
   },
   reducers: {
     onBoardingSuccess: (state, action) => {
@@ -248,6 +250,11 @@ const slice = createSlice({
       console.log(action.payload);
       state.badgeListByAdmin = action.payload.data;
       state.badgeCountByAdmin = action.payload.total_count; // Corrected this line
+    },
+    getPlanListSuccess: (state, action) => {
+      console.log(action.payload);
+      state.badgeListByAdmin = action.payload.data;
+      state.badgeCountByAdmin = action.payload.total_count; // Corrected this line
     }
     
   },
@@ -288,6 +295,7 @@ const {
   getTicketListSuccess,
   getDashboardCountSuccess,
   getBadgeListSuccess,
+  getPlanListSuccess,
 } = slice.actions;
 
 //  stepper currentIndex
@@ -869,6 +877,18 @@ export const getBadgeListByAdmin = (data) => async (dispatch) => {
       dispatch(getBadgeListSuccess(response?.data));
     } else {
       toast.error(response?.message);
+    }
+  } catch (e) {
+    console.error(e.message);
+  }
+};
+export const getPlanListByAdmin = () => async (dispatch) => {
+  try {
+    const response = await api.get(`${DEFT_RANK_API.plans.planList}/en`);
+    if (response?.status) {
+console.log("result",response?.data);
+    } else {
+      // toast.error(response?.message);
     }
   } catch (e) {
     console.error(e.message);

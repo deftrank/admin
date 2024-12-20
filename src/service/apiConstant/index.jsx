@@ -56,6 +56,9 @@ export const DEFT_RANK_API = {
   },
   badges:{
     badgeList:"/admin/badgeList"
+  },
+  plans:{
+    planList:"/plan/getplan-list-all"
   }
 };
 
