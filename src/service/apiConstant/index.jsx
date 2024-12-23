@@ -50,6 +50,7 @@ export const DEFT_RANK_API = {
   },
   test: {
     queriesList: "admin/comp-test-listing",
+    changeStatus:"/test/update-status"
   },
   ticket: {
     ticketList: "/admin/ticketList",

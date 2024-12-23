@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import axios from "axios"; // Assuming you're using axios for fetching data
 import DeftInput from "../../../../components/deftInput/deftInput";
+import { COMP_TEST_STATUS } from "../../../../utils/appEnums";
 
 export default function CompTestID(props) {
-  const { open, handleClose, title, handleSubmit } = props;
+  const { open, handleClose, title, data ,setFormData ,handleSubmit} = props;
 
   // Function to fetch the data (simulated API call)
 
@@ -27,7 +28,13 @@ export default function CompTestID(props) {
         <Modal.Body className={"container px-5"}>
           <div className="d-flex align-items-center gap-2 ">
 
-          <DeftInput type="text" placeholder="Please Enter Test ID"/>
+          <DeftInput type="text" placeholder="Please Enter Test ID" 
+          value={data?.xobin_id}
+          onchange={(e)=>setFormData((prev)=>({
+            ...prev,
+            xobin_id:e
+          }))}
+        />
           </div>
         
       
@@ -38,7 +45,7 @@ export default function CompTestID(props) {
             <Button variant="primary" className={"mx-1"} onClick={handleClose}>
               Close
             </Button>
-            <Button variant="primary" className={"mx-1"} onClick={handleClose}>
+            <Button variant="primary" className={"mx-1"} onClick={()=>handleSubmit(data?.item,COMP_TEST_STATUS?.COMPLETE)}>
              Submit
             </Button>
           </div>

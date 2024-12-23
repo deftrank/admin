@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Pagination } from "react-bootstrap";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import {
+  getChangeStatusOfCompQueryByAdmin,
   getCityList,
   getListOfQueriesTestByAdmin,
   getSkillList,
@@ -21,6 +22,7 @@ import LoadingBar from "react-top-loading-bar";
 import CommonComponent from "../commonComponent";
 import CompTestQuery from "./compTestQueryDetail";
 import CompTestID from "./compTestIDModal";
+import { COMP_TEST_STATUS } from "../../../utils/appEnums";
 
 export default function CompTestList() {
   const {
@@ -46,8 +48,8 @@ export default function CompTestList() {
   const [queryDetailModal, setQueryDetailModal] = useState(false);
   const [detail, setDetail] = useState(null);
   const totalPages = Math.ceil(queriesTotalCount / itemsPerPage);
-  const [showInputModal,setShowInputModal]=useState(false)
-
+  const [showInputModal, setShowInputModal] = useState(false);
+  const [xobinTestId, setXobinTestID] = useState(null);
   useEffect(() => {
     getTestList();
   }, [currentPage]);
@@ -116,6 +118,17 @@ export default function CompTestList() {
   const handleDetail = (data) => {
     setQueryDetailModal(true);
     setDetail(data);
+  };
+
+  const handleChangeStatus = (item, currentStatus) => {
+    let data = {
+      inquiry_id: item?.id,
+      xobin_assessment_id: xobinTestId?.xobin_id,
+      status: currentStatus,
+    };
+
+
+    dispatch(getChangeStatusOfCompQueryByAdmin(data));
   };
 
   return (
@@ -252,7 +265,7 @@ export default function CompTestList() {
                       {item?.authData?.email ? item?.authData?.email : "-"}
                     </div>
                   </td>
-                  
+
                   <td>
                     <div
                       data-bs-toggle="tooltip"
@@ -279,15 +292,18 @@ export default function CompTestList() {
                   </td>
                   <td>
                     <span
-                      className={`badge ${
-                        item?.auth_id?.suspend_status == "active"
-                          ? "bg-label-success"
-                          : item?.auth_id?.suspend_status == "pending"
-                          ? "bg-label-warning"
-                          : "bg-label-danger"
-                      } me-1 text-capitalize`}
+                   className={`badge ${
+                    item?.status === COMP_TEST_STATUS?.UNDER_DISCUSSION
+                      ? 'text-bg-info'
+                      : item?.status === COMP_TEST_STATUS?.UNDER_REVIEW
+                      ? 'text-bg-primary'
+                      : item?.status === COMP_TEST_STATUS?.COMPLETE
+                      ? 'bg-label-success'
+                      : 'bg-label-warning'
+                  } me-1 text-capitalize`}
+                  
                     >
-                      {"Pending"}
+                      {item?.status===COMP_TEST_STATUS?.UNDER_DISCUSSION ?"Under Discussion ":item?.status===COMP_TEST_STATUS?.UNDER_REVIEW?"Under review ":item?.status===COMP_TEST_STATUS?.COMPLETE?"Completed":"Pending"}
                     </span>
                   </td>
                   <td>
@@ -318,33 +334,50 @@ export default function CompTestList() {
                           aria-label="dropdown action option"
                           className="dropdown-item"
                           style={{ cursor: "pointer" }}
-
+                          onClick={() =>
+                            handleChangeStatus(
+                              item,
+                              COMP_TEST_STATUS?.UNDER_DISCUSSION
+                            )
+                          }
                         >
                           <Icon
-                            icon={"streamline:discussion-converstion-reply-solid"}
+                            icon={
+                              "streamline:discussion-converstion-reply-solid"
+                            }
                             height={20}
                             className={"me-1"}
                           />{" "}
-                       Under Discussion 
+                          Under Discussion
                         </a>
                         <a
                           aria-label="dropdown action option"
                           className="dropdown-item"
                           style={{ cursor: "pointer" }}
-            
+                          onClick={() =>
+                            handleChangeStatus(
+                              item,
+                              COMP_TEST_STATUS?.UNDER_REVIEW
+                            )
+                          }
                         >
                           <Icon
                             icon={"fluent:notepad-edit-20-filled"}
                             height={20}
                             className={"me-1"}
                           />{" "}
-                    Under Review
+                          Under Review
                         </a>
                         <a
                           aria-label="dropdown action option"
                           className="dropdown-item"
                           style={{ cursor: "pointer" }}
-                          onClick={() => setShowInputModal(true)}
+                          onClick={() => {
+                            setShowInputModal(true);
+                            setXobinTestID((prev) => ({
+                              item: item,
+                            }));
+                          }}
                         >
                           <Icon
                             icon={"carbon:task-complete"}
@@ -444,7 +477,16 @@ export default function CompTestList() {
         />
       )}
       <LoadingBar color={"#0b0b7c"} height="0.5rem" ref={loadingBarRef} />
-      {showInputModal && (<CompTestID open={showInputModal} handleClose={() => setShowInputModal(false)}  title="Comp Test ID"/>)}
+      {showInputModal && (
+        <CompTestID
+          open={showInputModal}
+          handleClose={() => setShowInputModal(false)}
+          setFormData={setXobinTestID}
+          data={xobinTestId}
+          handleSubmit={handleChangeStatus}
+          title="Comp Test ID"
+        />
+      )}
     </>
   );
 }

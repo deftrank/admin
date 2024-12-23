@@ -894,3 +894,15 @@ console.log("result",response?.data);
     console.error(e.message);
   }
 };
+export const getChangeStatusOfCompQueryByAdmin = (data) => async (dispatch) => {
+  try {
+    const response = await api.put(`${DEFT_RANK_API.test.changeStatus}/${data.inquiry_id}/${data.xobin_assessment_id}/${data.status}/en`);
+    if (response?.status) {
+console.log("result",response?.data);
+    } else {
+      // toast.error(response?.message);
+    }
+  } catch (e) {
+    console.error(e.message);
+  }
+};
