@@ -19,6 +19,7 @@ import ViewDetails from "../pages/compnany/viewDetails";
 import RaisedTicket from "../pages/raisedTicket/index";
 import Badges from "../pages/student/Badges/index";
 import Plans from "../pages/subscription/index";
+import { Transactions } from "../pages/transaction";
 
 const AppRoutes = () => {
   const loginData = secureLocalStorage.getItem(
@@ -43,7 +44,7 @@ const AppRoutes = () => {
         { path: "job-details/:id", element: <ViewDetails /> },
         { path: "internship-details/:id", element: <ViewDetails /> },
         { path: "internship", element: <Internship /> },
-        { path: "transaction", element: <DashboardPage /> },
+        { path: "transaction", element: <Transactions /> },
         { path: "query-test-list", element: <CompTestList /> },
         { path: "raised-tickets", element: <RaisedTicket /> },
         { path: "badges", element: <Badges/> },
