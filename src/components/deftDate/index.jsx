@@ -6,6 +6,7 @@ export default function index(props) {
   const {
     value,
     onchange,
+    className,
     error,
     placeholder,
     type,
@@ -27,19 +28,17 @@ export default function index(props) {
         </label>
       )} */}
       {label && (
-        <label htmlFor="html5-date-input" className="col-md-2 col-form-label">
+        <label htmlFor="html5-date-input" className="form-label">
           {label}
         </label>
       )}
-      <div className="col-md-10">
+      <div className={`${className?className:"col-md-10"}`}>
         <input
           className="form-control"
           type="date"
           value={value}
           id="html5-date-input"
-          onchange={(e) => {
-            console.log("e == ", e);
-          }}
+          onchange={onchange}
         />
       </div>
       {error && (

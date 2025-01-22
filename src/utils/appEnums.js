@@ -63,3 +63,10 @@ export const COMP_TEST_STATUS={
   COMPLETE:4
 
 }
+export const USER_TYPE=[{
+  label:"Student",
+  value:1
+},
+{
+label:"Company",
+value:2}]

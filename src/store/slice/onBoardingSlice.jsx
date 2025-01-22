@@ -52,7 +52,8 @@ const slice = createSlice({
     badgeListByAdmin: [],
     badgeCountByAdmin: 0,
     planListByAdmin:null,
-    planListCount:0
+    planListCount:0,
+    planDetailsByAdmin:null
   },
   reducers: {
     onBoardingSuccess: (state, action) => {
@@ -252,10 +253,16 @@ const slice = createSlice({
       state.badgeCountByAdmin = action.payload.total_count; // Corrected this line
     },
     getPlanListSuccess: (state, action) => {
-      console.log(action.payload);
-      state.badgeListByAdmin = action.payload.data;
-      state.badgeCountByAdmin = action.payload.total_count; // Corrected this line
-    }
+      state.planListByAdmin = action.payload.data;
+      state.planListCount = action.payload.total_count; // Corrected this line
+    },
+    getPlanDetailsSuccess: (state, action) => {
+         state.planDetailsByAdmin = action.payload.data;
+       },
+       getUpdatePlanDetailsSuccess: (state, action) => {
+        console.log("here is plan  payload====",action.payload);
+           state.planDetailsByAdmin = action.payload.data;
+         }
     
   },
 });
@@ -296,6 +303,8 @@ const {
   getDashboardCountSuccess,
   getBadgeListSuccess,
   getPlanListSuccess,
+  getPlanDetailsSuccess,
+  getUpdatePlanDetailsSuccess
 } = slice.actions;
 
 //  stepper currentIndex
@@ -886,7 +895,7 @@ export const getPlanListByAdmin = () => async (dispatch) => {
   try {
     const response = await api.get(`${DEFT_RANK_API.plans.planList}/en`);
     if (response?.status) {
-console.log("result",response?.data);
+      dispatch(getPlanListSuccess(response?.data))
     } else {
       // toast.error(response?.message);
     }
@@ -896,9 +905,36 @@ console.log("result",response?.data);
 };
 export const getChangeStatusOfCompQueryByAdmin = (data) => async (dispatch) => {
   try {
-    const response = await api.put(`${DEFT_RANK_API.test.changeStatus}/${data.inquiry_id}/${data.xobin_assessment_id}/${data.status}/en`);
+    const response = await api.post( `${DEFT_RANK_API.test.changeStatus}`,
+      data);
     if (response?.status) {
-console.log("result",response?.data);
+console.log("result",response?.data)
+    } else {
+      // toast.error(response?.message);
+    }
+  } catch (e) {
+    console.error(e.message);
+  }
+};
+getUpdatePlanDetailsSuccess
+export const getPlanDetailsByAdmin = (data) => async (dispatch) => {
+  try {
+    const response = await api.get(`${DEFT_RANK_API.plans.planDetails}/${data?.id}/${data?.language}`);
+    if (response?.status) {
+      dispatch(getPlanDetailsSuccess(response?.data))
+    } else {
+      // toast.error(response?.message);
+    }
+  } catch (e) {
+    console.error(e.message);
+  }
+};
+export const getUpdatePlanDetailsByAdmin = (data,requestBody) => async (dispatch) => {
+  try {
+    const response = await api.put(`${DEFT_RANK_API.plans.updatePlan}/${data?.id}/${data?.language}`,requestBody);
+    if (response?.status) {
+      toast.success("Plan Updated Successfully ")
+      dispatch(getUpdatePlanDetailsSuccess(response?.data))
     } else {
       // toast.error(response?.message);
     }

@@ -20,6 +20,7 @@ import RaisedTicket from "../pages/raisedTicket/index";
 import Badges from "../pages/student/Badges/index";
 import Plans from "../pages/subscription/index";
 import { Transactions } from "../pages/transaction";
+import UpdatePlan from "../pages/subscription/updatePlan";
 
 const AppRoutes = () => {
   const loginData = secureLocalStorage.getItem(
@@ -49,6 +50,7 @@ const AppRoutes = () => {
         { path: "raised-tickets", element: <RaisedTicket /> },
         { path: "badges", element: <Badges/> },
         { path: "subscription-plans", element: <Plans/> },
+        { path: "subscription-plan/:id", element: <UpdatePlan/> },
       ],
     },
     {

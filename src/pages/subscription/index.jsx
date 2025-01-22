@@ -13,20 +13,20 @@ import LoadingBar from "react-top-loading-bar";
 
 
 import DeftInput from "../../components/deftInput/deftInput";
-import { getBadgeListByAdmin, getPlanListByAdmin } from "../../store/slice/onBoardingSlice";
+import { getPlanListByAdmin } from "../../store/slice/onBoardingSlice";
 import { changeDate } from "../../utils/appConstant";
 
 export default function index() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { badgeListByAdmin,badgeCountByAdmin, } = useSelector(
+  const { planListByAdmin,planListCount, } = useSelector(
     (state) => state.onBoarding
   );
   const [currentPage, setCurrentPage] = useState(1);
   const [searchData, setSearchData] = useState("");
   const [sort, setSort] = useState({});
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const totalPages = Math.ceil(badgeCountByAdmin / itemsPerPage);
+  // const totalPages = Math.ceil(planListByAdmin.length/ itemsPerPage);
   const [changePasswordModal, setChangePasswordModal] = useState([]);
   const [dateRange, setDateRange] = useState({});
   const [status, setStatus] = useState("");
@@ -37,38 +37,19 @@ export default function index() {
   };
 
   useEffect(() => {
-    getBadgeList()
+
     dispatch(getPlanListByAdmin())
   }, []);
 
-  useEffect(() => {getBadgeList();}, [currentPage,searchData,itemsPerPage,dateRange,status]);
+  useEffect(() => {getPlanListByAdmin();}, [currentPage,searchData,itemsPerPage,dateRange,status]);
 
 
 
-  const getBadgeList = () => {
-    const utcDateForStart = dateRange[0]?.startDate;
-    const utcDateForEnd = dateRange[0]?.endDate;
 
-    const forStartDate = utcDateForStart
-      ? moment(utcDateForStart).tz("Asia/Kolkata").format("YYYY-MM-DD")
-      : "";
-    const forEndDate = utcDateForEnd
-      ? moment(utcDateForEnd).tz("Asia/Kolkata").format("YYYY-MM-DD")
-      : "";
-
- 
-    let data = {
-      language: "en",
-      page: currentPage,
-      limit: itemsPerPage,
-      search: searchData,
-    };
-    dispatch(getBadgeListByAdmin(data, loadingBarRef));
-  };
 
   const handleClose = (id, flag) => {
     if (flag == "edit") {
-      navigate(`/student-edit/${id}`);
+      navigate(`/subscription-plan/${id}`);
     } else {
       navigate(`/student-details/${id}`);
     }
@@ -78,7 +59,7 @@ export default function index() {
     <>
       <div className="card">
         <div class="p-3">
-          <h4>Students</h4>
+          <h4>Subscription Plans</h4>
           <div class="d-flex justify-content-between">
             <div class="row">
               <div class=" input-group-merge">
@@ -104,100 +85,104 @@ export default function index() {
             <thead className="table-dark">
               <tr>
                 <th>Name</th>
-                <th>Email</th>
-                <th>Phone Number</th>
-                <th>Course</th>
-                <th>College</th>
-                <th>Joined On</th>
-                <th>Status</th>
+                <th>title</th>
+                <th>Description</th>
+                <th>Discount</th>
+                <th>Create</th>
+                <th>Amount</th>
+              
                 <th>Action</th>
               </tr>
             </thead>
             <tbody className="table-border-bottom-0">
-              {badgeListByAdmin?.map((item) => (
-                <tr key={item?.id}>
+              {planListByAdmin?.map((item) => (
+                <tr key={item?._id}>
+                  {console.log(item?.name)}
                   <td>
                     <div
                       data-bs-toggle="tooltip"
+                    
                       data-bs-placement="top"
                       title={
-                        item?.first_name
-                          ? item?.first_name + " " + item?.last_name
+                        item?.name
+                          ?     item?.name
                           : ""
                       }
                       style={{
                         width: "8vw",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
+                        
                       }}
                     >
-                      {item?.first_name
-                        ? item?.first_name + " " + item?.last_name
+                      {item?.name
+                        ? item?.name
                         : "-"}
                     </div>
                   </td>
                   <td>
-                    <div
+                  <div
                       data-bs-toggle="tooltip"
                       data-bs-placement="top"
-                      title={item?.auth_id?.email ? item?.auth_id?.email : ""}
+                      title={item?.title ? item?.title : ""}
                       style={{
                         width: "8vw",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                       }}
                     >
-                      {item?.auth_id?.email ? item?.auth_id?.email : "-"}
+                      {item?.title ? item?.title : "-"}
                     </div>
-                  </td>
-                  <td>
-                    {item?.auth_id?.phone
-                      ? item?.auth_id?.country_code + item?.auth_id?.phone
-                      : "-"}
+                   
                   </td>
                   <td>
                     <div
                       data-bs-toggle="tooltip"
                       data-bs-placement="top"
-                      title={item?.current_course ? item?.current_course : ""}
+                      title={item?.description ? item?.description : ""}
                       style={{
                         width: "8vw",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                       }}
                     >
-                      {item?.current_course ? item?.current_course : "-"}
+                      {item?.description ? item?.description : "-"}
                     </div>
                   </td>
+                 
                   <td>
                     <div
                       data-bs-toggle="tooltip"
                       data-bs-placement="top"
-                      title={item?.college_name ? item?.college_name : ""}
+                      title={item?.discount ? item?.discount : ""}
                       style={{
                         width: "8vw",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                       }}
                     >
-                      {item?.college_name ? item?.college_name : "-"}
+                      {item?.discount ? item?.discount : "-"}
                     </div>
                   </td>
+                  
                   <td>
                     <p className="mb-0">
                       {item?.createdAt ? changeDate(item?.createdAt) : "-"}
                     </p>
                   </td>
                   <td>
-                    <span
-                      className={`badge ${
-                        item?.auth_id?.suspend_status == "active"
-                          ? "bg-label-success"
-                          : "bg-label-danger"
-                      } me-1 text-capitalize`}
+                    <div
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title={item?.amount ? item?.amount : ""}
+                      style={{
+                        width: "8vw",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
                     >
-                      {item?.auth_id?.suspend_status}
-                    </span>
+                      {item?.amount ? item?.amount : "-"}
+                    </div>
                   </td>
                   <td>
                     <div className="dropdown">
@@ -214,16 +199,16 @@ export default function index() {
                           aria-label="dropdown action option"
                           className="dropdown-item"
                           style={{ cursor: "pointer" }}
-                          onClick={() => handleClose(item.auth_id._id, "edit")}
+                          onClick={() => handleClose(item?._id, "edit")}
                         >
                           <Icon
                             icon="iconamoon:edit-thin"
                             height={20}
                             className={"me-1"}
                           />{" "}
-                          Edit User
+                          Edit Plan
                         </a>
-                        <a
+                        {/* <a
                           aria-label="dropdown action option"
                           className="dropdown-item"
                           style={{ cursor: "pointer" }}
@@ -298,14 +283,14 @@ export default function index() {
                             className={"me-1"}
                           />{" "}
                           Delete User
-                        </a>
+                        </a> */}
                       </div>
                     </div>
                   </td>
                 </tr>
               ))}
 
-              {badgeListByAdmin?.length == 0 && (
+              {planListByAdmin?.length == 0 && (
                 <tr
                   style={{
                     height: "20rem",
@@ -314,7 +299,7 @@ export default function index() {
                   }}
                 >
                   <td colSpan="12" className="text-center">
-                    {badgeCountByAdmin == 0
+                    { planListCount== 0
                       ? "No Students listed yet!"
                       : "No result available"}
                   </td>
@@ -325,7 +310,7 @@ export default function index() {
         </div>
      </div>
 
-        <div class="container mt-4">
+        {/* <div class="container mt-4">
           <div class="row justify-content-center">
             <div class="col">
               <span className="p-2">Show</span>
@@ -351,7 +336,7 @@ export default function index() {
               Showing <b>
                 {currentPage * itemsPerPage - (itemsPerPage - 1)}
               </b>{" "}
-              to <b>{currentPage * itemsPerPage}</b> of <b>{badgeCountByAdmin}</b>{" "}
+              to <b>{currentPage * itemsPerPage}</b> of <b>{planListCount}</b>{" "}
               entries
             </div>
 
@@ -362,7 +347,7 @@ export default function index() {
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
                   />
-                  {[...Array(totalPages).keys()].map((page) => (
+                  {[...Array(totalPages).keys()]?.map((page) => (
                     <Pagination.Item
                       key={page + 1}
                       active={page + 1 === currentPage}
@@ -379,7 +364,7 @@ export default function index() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
       {/* 
       {changePasswordModal && (

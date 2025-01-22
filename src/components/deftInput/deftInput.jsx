@@ -5,7 +5,7 @@ export default function DeftInput(props) {
     onchange,
     error,
     placeholder,
-    type = "text", // Default type to 'text' if not provided
+    type, // Default type to 'text' if not provided
     readOnly,
     leftIcon,
     leftIconClick,
