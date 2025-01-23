@@ -63,7 +63,15 @@
                 "icon": "bx bx-box",
                 "available": true,
                 "link": "/transaction"
-            }
+            },
+            
+                {
+                    "text": "Plans",
+                    "icon": "bx bx-box",
+                    "available": true,
+                    "link": "/subscription-plans"
+                }
+            
         ]
     },
     {
@@ -76,19 +84,9 @@
                 "link": "/raised-tickets"
             }
         ]
-    },
-
-    {
-        "header": "Subscription ",
-        "items": [
-            {
-                "text": "Plans",
-                "icon": "bx bx-box",
-                "available": true,
-                "link": "/subscription-plans"
-            }
-        ]
     }
+
+
     
 
 ]

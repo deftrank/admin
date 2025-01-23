@@ -908,8 +908,7 @@ export const getChangeStatusOfCompQueryByAdmin = (data) => async (dispatch) => {
     const response = await api.post( `${DEFT_RANK_API.test.changeStatus}`,
       data);
     if (response?.status) {
-console.log("result",response?.data)
-    } else {
+console.log("her is the test===",response?.data );    } else {
       // toast.error(response?.message);
     }
   } catch (e) {
