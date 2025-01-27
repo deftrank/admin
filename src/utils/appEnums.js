@@ -57,12 +57,8 @@ export const user_Type={
   student:1,
   company:2,
 }
-export const COMP_TEST_STATUS={
-  UNDER_REVIEW:2,
-  UNDER_DISCUSSION:3,
-  COMPLETE:4
 
-}
+
 export const USER_TYPE=[{
   label:"Student",
   value:1
