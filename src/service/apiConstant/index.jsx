@@ -62,6 +62,19 @@ export const DEFT_RANK_API = {
     planList:"/plan/getplan-list-all",
     planDetails:"/plan/getplan-by-id",
     updatePlan:"/plan/update-plan-byId"
+  },
+  marketingContent:{
+    getMarketingList:"/admin/getListBanner",
+    deleteMarketingContent:"/admin/delete-banner",
+    addContent:"/admin/add-banner",
+    DetailContent:"/admin/get-banner",
+    updateContent:"/admin/update-banner"
+
+  }
+  ,docUpload:{
+
+      imagesUpload:"/admin/userImageUpload"
+   
   }
 };
 

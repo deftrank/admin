@@ -38,7 +38,7 @@ export default function DeftInput(props) {
           className={`form-control`}
           id={id}
           value={value} // Value is always controlled
-          onChange={(e) => onchange(e.target.value)}
+          onChange={(e) => onchange(e.target.value.trimStart())}
           name={name}
           placeholder={placeholder}
           autoFocus={autoFocus}

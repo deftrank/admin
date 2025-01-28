@@ -51,9 +51,12 @@ const slice = createSlice({
     dashboardCount: null,
     badgeListByAdmin: [],
     badgeCountByAdmin: 0,
-    planListByAdmin:null,
-    planListCount:0,
-    planDetailsByAdmin:null
+    planListByAdmin: null,
+    planListCount: 0,
+    planDetailsByAdmin: null,
+    marketingContentList: [],
+    marketingContentCount: 0,
+    marketingContentDetails: null,
   },
   reducers: {
     onBoardingSuccess: (state, action) => {
@@ -257,12 +260,35 @@ const slice = createSlice({
       state.planListCount = action.payload.total_count; // Corrected this line
     },
     getPlanDetailsSuccess: (state, action) => {
-         state.planDetailsByAdmin = action.payload.data;
-       },
-       getUpdatePlanDetailsSuccess: (state, action) => {
-        console.log("here is plan  payload====",action.payload);
-           state.planDetailsByAdmin = action.payload.data;
-         }
+      state.planDetailsByAdmin = action.payload.data;
+    },
+    getUpdatePlanDetailsSuccess: (state, action) => {
+      console.log("here is plan  payload====", action.payload);
+      state.planDetailsByAdmin = action.payload.data;
+    },
+    getMarketingListSuccess: (state, action) => {
+      state.marketingContentList = action.payload?.data;
+      state.marketingContentCount=action.payload?.totalCount
+    },
+    getMarketingDetailSuccess:(state, action) => {
+      state.marketingContentDetails = action.payload?.data;
+   
+    },
+    getDeleteContentSuccess: (state, action) => {
+      const index = state.marketingContentList?.findIndex((item) => item?.id === action.payload.bannerId);
+      
+      if (index !== -1) {
+
+        state.marketingContentList = [
+          ...state.marketingContentList.slice(0, index),
+          ...state.marketingContentList.slice(index + 1),
+        ];
+     
+      } else {
+  
+      }
+    },
+    
     
   },
 });
@@ -304,7 +330,10 @@ const {
   getBadgeListSuccess,
   getPlanListSuccess,
   getPlanDetailsSuccess,
-  getUpdatePlanDetailsSuccess
+  getUpdatePlanDetailsSuccess,
+  getMarketingListSuccess,
+  getDeleteContentSuccess,
+  getMarketingDetailSuccess
 } = slice.actions;
 
 //  stepper currentIndex
@@ -877,10 +906,7 @@ export const getDashboardByAdmin = (data) => async (dispatch) => {
 };
 export const getBadgeListByAdmin = (data) => async (dispatch) => {
   try {
-    const response = await api.post(
-      `${DEFT_RANK_API.badges.badgeList}`,
-      data
-    );
+    const response = await api.post(`${DEFT_RANK_API.badges.badgeList}`, data);
 
     if (response?.status) {
       dispatch(getBadgeListSuccess(response?.data));
@@ -895,7 +921,7 @@ export const getPlanListByAdmin = () => async (dispatch) => {
   try {
     const response = await api.get(`${DEFT_RANK_API.plans.planList}/en`);
     if (response?.status) {
-      dispatch(getPlanListSuccess(response?.data))
+      dispatch(getPlanListSuccess(response?.data));
     } else {
       // toast.error(response?.message);
     }
@@ -905,22 +931,24 @@ export const getPlanListByAdmin = () => async (dispatch) => {
 };
 export const getChangeStatusOfCompQueryByAdmin = (data) => async (dispatch) => {
   try {
-    const response = await api.post( `${DEFT_RANK_API.test.changeStatus}`,
-      data);
+    const response = await api.post(`${DEFT_RANK_API.test.changeStatus}`, data);
     if (response?.status) {
-console.log("her is the test===",response?.data );    } else {
+      console.log("her is the test===", response?.data);
+    } else {
       // toast.error(response?.message);
     }
   } catch (e) {
     console.error(e.message);
   }
 };
-getUpdatePlanDetailsSuccess
+getUpdatePlanDetailsSuccess;
 export const getPlanDetailsByAdmin = (data) => async (dispatch) => {
   try {
-    const response = await api.get(`${DEFT_RANK_API.plans.planDetails}/${data?.id}/${data?.language}`);
+    const response = await api.get(
+      `${DEFT_RANK_API.plans.planDetails}/${data?.id}/${data?.language}`
+    );
     if (response?.status) {
-      dispatch(getPlanDetailsSuccess(response?.data))
+      dispatch(getPlanDetailsSuccess(response?.data));
     } else {
       // toast.error(response?.message);
     }
@@ -928,16 +956,168 @@ export const getPlanDetailsByAdmin = (data) => async (dispatch) => {
     console.error(e.message);
   }
 };
-export const getUpdatePlanDetailsByAdmin = (data,requestBody) => async (dispatch) => {
+export const getUpdatePlanDetailsByAdmin =
+  (data, requestBody) => async (dispatch) => {
+    try {
+      const response = await api.put(
+        `${DEFT_RANK_API.plans.updatePlan}/${data?.id}/${data?.language}`,
+        requestBody
+      );
+      if (response?.status) {
+        toast.success("Plan Updated Successfully ");
+        dispatch(getUpdatePlanDetailsSuccess(response?.data));
+      } else {
+        // toast.error(response?.message);
+      }
+    } catch (e) {
+      console.error(e.message);
+    }
+  };
+export const getMarketingListByAdmin = (data) => async (dispatch) => {
   try {
-    const response = await api.put(`${DEFT_RANK_API.plans.updatePlan}/${data?.id}/${data?.language}`,requestBody);
+    const response = await api.post(
+      `${DEFT_RANK_API.marketingContent.getMarketingList}`,
+      data
+    );
     if (response?.status) {
-      toast.success("Plan Updated Successfully ")
-      dispatch(getUpdatePlanDetailsSuccess(response?.data))
+      dispatch(getMarketingListSuccess(response?.data));
     } else {
       // toast.error(response?.message);
     }
   } catch (e) {
     console.error(e.message);
+  }
+};
+export const getMarketingContentDeleteByAdmin =
+  (data, setModal) => async (dispatch) => {
+    try {
+      const response = await api.post(
+        `${DEFT_RANK_API.marketingContent.deleteMarketingContent}`,
+        data
+      );
+      if (response?.status) {
+        dispatch(getDeleteContentSuccess(data));
+        setModal(false);
+
+        toast.success(response?.data?.message);
+      } else {
+        // toast.error(response?.message);
+      }
+    } catch (e) {
+      console.error(e.message);
+    }
+  };
+export const getMarketingContentAddByAdmin =
+  (data, navigation) => async (dispatch) => {
+    try {
+      const response = await api.post(
+        `${DEFT_RANK_API.marketingContent.addContent}`,
+        data
+      );
+      if (response?.status) {
+        toast.success(response?.data?.message);
+        navigation("/marketing-banner");
+      } else {
+        // toast.error(response?.message);
+      }
+    } catch (e) {
+      console.error(e.message);
+    }
+  };
+  export const getMarketingContentEditByAdmin =
+  (data, navigation) => async (dispatch) => {
+    try {
+      const response = await api.post(
+        `${DEFT_RANK_API.marketingContent.updateContent}`,
+        data
+      );
+      if (response?.status) {
+        toast.success(response?.data?.message);
+        navigation("/marketing-banner");
+      } else {
+        // toast.error(response?.message);
+      }
+    } catch (e) {
+      console.error(e.message);
+    }
+  };
+  export const getMarketingContentDetailByAdmin =
+  (data) => async (dispatch) => {
+    try {
+      const response = await api.post(
+        `${DEFT_RANK_API.marketingContent.DetailContent}`,
+        data
+      );
+      if (response?.status) {
+        console.log(response?.data?.data);
+        dispatch(getMarketingDetailSuccess(response?.data))
+        // toast.success(response?.data?.message);
+        // navigation("/marketing-banner");
+      } else {
+        // toast.error(response?.message);
+      }
+    } catch (e) {
+      console.error(e.message);
+    }
+  };
+export const getImageUpload = (data, file, setFormData,setData) => async (dispatch) => {
+  const formData = new FormData();
+  formData.append("file", file, file.name);
+
+  const headers = {
+    "Content-Type": "multipart/form-data", // Important for file uploads
+    // 'Authorization': 'Bearer YOUR_TOKEN'  // Uncomment if needed
+  };
+
+  try {
+    // Send the request via ApiClient (assuming you have a configured axios instance or ApiClient)
+    const response = await api.post(
+      `${DEFT_RANK_API.docUpload.imagesUpload}/${data.foldername}/${data.type}`,
+      formData,
+      { headers }
+    );
+
+    // Check for a successful response
+    if (response?.status === 200) {
+      if (data?.foldername === "marketingBannerImage") {
+        setFormData((prev) => ({
+          ...prev,
+          image: response?.data?.data[0].fileName,
+        }));
+        setData(response?.data?.data[0].profileImageUrl)
+      }
+
+      // Dispatch success action (optional)
+      dispatch({
+        type: "IMAGE_UPLOAD_SUCCESS", // Customize the action type
+        payload: response?.data,
+      });
+
+      // Optional: Show a success toast message
+      toast.success("Image uploaded successfully!");
+    } else {
+      // Handle if response is not successful
+      console.error(
+        "Image upload failed:",
+        response?.message || "Unknown error"
+      );
+      // Optional: Dispatch failure action (if needed)
+      dispatch({
+        type: "IMAGE_UPLOAD_FAILURE", // Customize the action type
+        payload: response?.message || "Unknown error",
+      });
+      // Optional: Show an error toast message
+      toast.error(response?.message || "Failed to upload image.");
+    }
+  } catch (e) {
+    // Catch any network or API errors
+    console.error("Error uploading image:", e.message);
+    // Dispatch failure action (optional)
+    dispatch({
+      type: "IMAGE_UPLOAD_FAILURE",
+      payload: e.message || "An unexpected error occurred.",
+    });
+    // Optional: Show an error toast message
+    toast.error("An error occurred while uploading the image.");
   }
 };

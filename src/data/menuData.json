@@ -84,6 +84,17 @@
                 "link": "/raised-tickets"
             }
         ]
+    },
+    {
+        "header": "Marketing Banner",
+        "items": [
+            {
+                "text": "List",
+                "icon": "bx bx-box",
+                "available": true,
+                "link": "/marketing-banner"
+            }
+        ]
     }
 
 

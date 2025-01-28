@@ -21,6 +21,9 @@ import Badges from "../pages/student/Badges/index";
 import Plans from "../pages/subscription/index";
 import { Transactions } from "../pages/transaction";
 import UpdatePlan from "../pages/subscription/updatePlan";
+import MarketingBanner from "../pages/marketing-content/index";
+import AddContent from "../pages/marketing-content/addContent/index"
+
 
 const AppRoutes = () => {
   const loginData = secureLocalStorage.getItem(
@@ -50,7 +53,10 @@ const AppRoutes = () => {
         { path: "raised-tickets", element: <RaisedTicket /> },
         { path: "badges", element: <Badges/> },
         { path: "subscription-plans", element: <Plans/> },
+        { path: "marketing-banner", element: <MarketingBanner/> },
         { path: "subscription-plan/:id", element: <UpdatePlan/> },
+        { path: "add-content", element: <AddContent/> },
+        { path: "marketing-banner/edit-content/:id", element: <AddContent/> },
       ],
     },
     {
