@@ -94,7 +94,7 @@ export default function index() {
           <h4>Tickets</h4>
           <div class="d-flex justify-content-between">
             <div class="row">
-              <div class="col-5 input-group-merge">
+              <div class="col-12 input-group-merge">
                 <DeftInput
                   placeholder="Search by name"
                   type="text"
@@ -106,7 +106,7 @@ export default function index() {
                   leftIcon={<i className="bx bx-search"></i>}
                 />
               </div>
-              <div class="col-4 p-0 input-group-merge">
+              <div class="col-4 p-0 input-group-merge d-none">
                 <DeftDaterange
                   placeholder="Filter by Date"
                   type="text"
@@ -117,7 +117,7 @@ export default function index() {
                   leftIcon={<i className="bx bx-search"></i>}
                 />
               </div>
-              <div class="col-3">
+              <div class="col-3 d-none">
                 <div className="btn-group">
                   <button
                     style={{ minWidth: 120 }}
@@ -177,8 +177,8 @@ export default function index() {
                 <th>User Type</th>
                 <th>Job Type</th>
                 <th>Create Date</th>
-                <th>Status</th>
-                <th>Action</th>
+                {/* <th>Status</th> */}
+                {/* <th>Action</th> */}
               </tr>
             </thead>
             <tbody className="table-border-bottom-0">
@@ -252,7 +252,7 @@ export default function index() {
                       {item?.createdAt ? changeDate(item?.createdAt) : "-"}
                     </p>
                   </td>
-                  <td>
+                  {/* <td>
                     <span
                       className={`badge ${
                         item?.auth_id?.suspend_status == "active"
@@ -262,8 +262,8 @@ export default function index() {
                     >
                       {item?.auth_id?.suspend_status}
                     </span>
-                  </td>
-                  <td>
+                  </td> */}
+                  <td className={"d-none"}>
                     <div className="dropdown">
                       <button
                         aria-label="Click me"
@@ -379,8 +379,8 @@ export default function index() {
                 >
                   <td colSpan="12" className="text-center">
                     {userCount == 0
-                      ? "No Students listed yet!"
-                      : "No result available"}
+                      ? "No Tickets have been listed yet!"
+                      : "No Tickets have been listed yet!"}
                   </td>
                 </tr>
               )}

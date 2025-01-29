@@ -957,7 +957,7 @@ export const getPlanDetailsByAdmin = (data) => async (dispatch) => {
   }
 };
 export const getUpdatePlanDetailsByAdmin =
-  (data, requestBody) => async (dispatch) => {
+  (data, requestBody,navigate) => async (dispatch) => {
     try {
       const response = await api.put(
         `${DEFT_RANK_API.plans.updatePlan}/${data?.id}/${data?.language}`,
@@ -965,6 +965,7 @@ export const getUpdatePlanDetailsByAdmin =
       );
       if (response?.status) {
         toast.success("Plan Updated Successfully ");
+        navigate("/subscription-plans")
         dispatch(getUpdatePlanDetailsSuccess(response?.data));
       } else {
         // toast.error(response?.message);
@@ -1080,6 +1081,13 @@ export const getImageUpload = (data, file, setFormData,setData) => async (dispat
     // Check for a successful response
     if (response?.status === 200) {
       if (data?.foldername === "marketingBannerImage") {
+        setFormData((prev) => ({
+          ...prev,
+          image: response?.data?.data[0].fileName,
+        }));
+        setData(response?.data?.data[0].profileImageUrl)
+      }
+      if (data?.foldername === "companyProfileImage") {
         setFormData((prev) => ({
           ...prev,
           image: response?.data?.data[0].fileName,

@@ -64,7 +64,7 @@ export default function index() {
             <div class="row">
               <div class=" input-group-merge">
                 <DeftInput
-                  placeholder="Search by name"
+                  placeholder="Search by title"
                   type="text"
                   value={searchData}
                   onchange={(value) => {
@@ -276,8 +276,8 @@ export default function index() {
                   >
                     <td colSpan="12" className="text-center">
                       {marketingContentCount == 0
-                        ? "No banner listed yet!"
-                        : "No result available"}
+                        ? "Marketing Content have been listed yet!"
+                        : "Marketing Content have been listed yet!"}
                     </td>
                   </tr>
                 )}

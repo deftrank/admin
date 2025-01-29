@@ -3,17 +3,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { getDashboardByAdmin } from "../store/slice/onBoardingSlice";
 import { Icon } from "@iconify/react";
 import { color } from "../themes/color/color";
+import { NavLink } from "react-router-dom";
 
 export const DashboardPage = () => {
   const dispatch = useDispatch();
-  const {dashboardCount}=useSelector((state)=>state.onBoarding)
+  const { dashboardCount } = useSelector((state) => state.onBoarding);
   const fetchDashboardCount = () => {
     let data = {
       language: "en",
     };
-    dispatch(getDashboardByAdmin(data))
+    dispatch(getDashboardByAdmin(data));
   };
- 
+
   useEffect(() => {
     fetchDashboardCount();
   }, []);
@@ -25,7 +26,11 @@ export const DashboardPage = () => {
             <div className="card-body">
               <div className="card-title d-flex align-items-start justify-content-between">
                 <div className="avatar flex-shrink-0">
-                 <Icon icon="mdi:company" class={"fs-1 "} style={{color:color?.primary}}/>
+                  <Icon
+                    icon="mdi:company"
+                    class={"fs-1 "}
+                    style={{ color: color?.primary }}
+                  />
                 </div>
                 <div className="dropdown">
                   <button
@@ -43,20 +48,23 @@ export const DashboardPage = () => {
                     className="dropdown-menu dropdown-menu-end"
                     aria-labelledby="cardOpt3"
                   >
-                    <a
+                    <NavLink aria-label="view more" className="dropdown-item" to ="/company">
+                      View More
+                    </NavLink>
+                    {/* <a
                       aria-label="view more"
                       className="dropdown-item"
                       href="#"
                     >
                       View More
-                    </a>
-                  
+                    </a> */}
                   </div>
                 </div>
               </div>
               <span className="fw-medium d-block mb-1">Total Companies</span>
-              <h3 className="card-title mb-2">{dashboardCount?.company_count}</h3>
-              
+              <h3 className="card-title mb-2">
+                {dashboardCount?.company_count}
+              </h3>
             </div>
           </div>
         </div>
@@ -65,7 +73,11 @@ export const DashboardPage = () => {
             <div className="card-body">
               <div className="card-title d-flex align-items-start justify-content-between">
                 <div className="avatar flex-shrink-0">
-                 <Icon icon="ph:student" class={"fs-1"} style={{color:color?.primary}}/>
+                  <Icon
+                    icon="ph:student"
+                    class={"fs-1"}
+                    style={{ color: color?.primary }}
+                  />
                 </div>
                 <div className="dropdown">
                   <button
@@ -83,20 +95,16 @@ export const DashboardPage = () => {
                     className="dropdown-menu dropdown-menu-end"
                     aria-labelledby="cardOpt3"
                   >
-                    <a
-                      aria-label="view more"
-                      className="dropdown-item"
-                      href="#"
-                    >
+                     <NavLink aria-label="view more" className="dropdown-item" to ="/students">
                       View More
-                    </a>
-                  
+                    </NavLink>
                   </div>
                 </div>
               </div>
               <span className="fw-medium d-block mb-1">Total Students</span>
-              <h3 className="card-title mb-2">{dashboardCount?.student_count}</h3>
-              
+              <h3 className="card-title mb-2">
+                {dashboardCount?.student_count}
+              </h3>
             </div>
           </div>
         </div>
@@ -105,7 +113,11 @@ export const DashboardPage = () => {
             <div className="card-body">
               <div className="card-title d-flex align-items-start justify-content-between">
                 <div className="avatar flex-shrink-0">
-                 <Icon icon="marketeq:job" class={"fs-1"} style={{color:color?.primary}}/>
+                  <Icon
+                    icon="marketeq:job"
+                    class={"fs-1"}
+                    style={{ color: color?.primary }}
+                  />
                 </div>
                 <div className="dropdown">
                   <button
@@ -123,20 +135,14 @@ export const DashboardPage = () => {
                     className="dropdown-menu dropdown-menu-end"
                     aria-labelledby="cardOpt3"
                   >
-                    <a
-                      aria-label="view more"
-                      className="dropdown-item"
-                      href="#"
-                    >
+                    <NavLink aria-label="view more" className="dropdown-item" to ="/job">
                       View More
-                    </a>
-                  
+                    </NavLink>
                   </div>
                 </div>
               </div>
               <span className="fw-medium d-block mb-1">Total Jobs</span>
               <h3 className="card-title mb-2">{dashboardCount?.job_count}</h3>
-              
             </div>
           </div>
         </div>
@@ -145,7 +151,11 @@ export const DashboardPage = () => {
             <div className="card-body">
               <div className="card-title d-flex align-items-start justify-content-between">
                 <div className="avatar flex-shrink-0">
-                 <Icon icon="clarity:id-badge-line" class={"fs-1"} style={{color:color?.primary}}/>
+                  <Icon
+                    icon="clarity:id-badge-line"
+                    class={"fs-1"}
+                    style={{ color: color?.primary }}
+                  />
                 </div>
                 <div className="dropdown">
                   <button
@@ -163,20 +173,16 @@ export const DashboardPage = () => {
                     className="dropdown-menu dropdown-menu-end"
                     aria-labelledby="cardOpt3"
                   >
-                    <a
-                      aria-label="view more"
-                      className="dropdown-item"
-                      href="#"
-                    >
+                         <NavLink aria-label="view more" className="dropdown-item" to ="/internship">
                       View More
-                    </a>
-                  
+                    </NavLink>
                   </div>
                 </div>
               </div>
               <span className="fw-medium d-block mb-1">Total Internship</span>
-              <h3 className="card-title mb-2">{dashboardCount?.internship_count}</h3>
-              
+              <h3 className="card-title mb-2">
+                {dashboardCount?.internship_count}
+              </h3>
             </div>
           </div>
         </div>
@@ -185,9 +191,13 @@ export const DashboardPage = () => {
             <div className="card-body">
               <div className="card-title d-flex align-items-start justify-content-between">
                 <div className="avatar flex-shrink-0">
-                 <Icon icon="fluent:notepad-edit-16-regular" class={"fs-1"} style={{color:color?.primary}}/>
+                  <Icon
+                    icon="fluent:notepad-edit-16-regular"
+                    class={"fs-1"}
+                    style={{ color: color?.primary }}
+                  />
                 </div>
-                <div className="dropdown">
+                {/* <div className="dropdown">
                   <button
                     aria-label="Click me"
                     className="btn p-0"
@@ -210,13 +220,13 @@ export const DashboardPage = () => {
                     >
                       View More
                     </a>
-                  
                   </div>
-                </div>
+                </div> */}
               </div>
               <span className="fw-medium d-block mb-1">Total Assessment</span>
-              <h3 className="card-title mb-2">{dashboardCount?.assessment_count}</h3>
-              
+              <h3 className="card-title mb-2">
+                {dashboardCount?.assessment_count}
+              </h3>
             </div>
           </div>
         </div>
@@ -225,7 +235,11 @@ export const DashboardPage = () => {
             <div className="card-body">
               <div className="card-title d-flex align-items-start justify-content-between">
                 <div className="avatar flex-shrink-0">
-                 <Icon icon="fluent:clipboard-code-16-filled" class={"fs-1"} style={{color:color?.primary}}/>
+                  <Icon
+                    icon="fluent:clipboard-code-16-filled"
+                    class={"fs-1"}
+                    style={{ color: color?.primary }}
+                  />
                 </div>
                 <div className="dropdown">
                   <button
@@ -243,20 +257,16 @@ export const DashboardPage = () => {
                     className="dropdown-menu dropdown-menu-end"
                     aria-labelledby="cardOpt3"
                   >
-                    <a
-                      aria-label="view more"
-                      className="dropdown-item"
-                      href="#"
-                    >
+                      <NavLink aria-label="view more" className="dropdown-item" to ="/query-test-list">
                       View More
-                    </a>
-                  
+                    </NavLink>
                   </div>
                 </div>
               </div>
               <span className="fw-medium d-block mb-1">Total Comp Test </span>
-              <h3 className="card-title mb-2">{dashboardCount?.compt_test_count}</h3>
-              
+              <h3 className="card-title mb-2">
+                {dashboardCount?.compt_test_count}
+              </h3>
             </div>
           </div>
         </div>
@@ -265,9 +275,13 @@ export const DashboardPage = () => {
             <div className="card-body">
               <div className="card-title d-flex align-items-start justify-content-between">
                 <div className="avatar flex-shrink-0">
-                 <Icon icon="hugeicons:permanent-job" class={"fs-1"} style={{color:color?.primary}}/>
+                  <Icon
+                    icon="hugeicons:permanent-job"
+                    class={"fs-1"}
+                    style={{ color: color?.primary }}
+                  />
                 </div>
-                <div className="dropdown">
+                <div className="dropdown d-none">
                   <button
                     aria-label="Click me"
                     className="btn p-0"
@@ -283,20 +297,20 @@ export const DashboardPage = () => {
                     className="dropdown-menu dropdown-menu-end"
                     aria-labelledby="cardOpt3"
                   >
-                    <a
+                    {/* <a
                       aria-label="view more"
                       className="dropdown-item"
                       href="#"
                     >
                       View More
-                    </a>
-                  
+                    </a> */}
                   </div>
                 </div>
               </div>
               <span className="fw-medium d-block mb-1">Total Active Job </span>
-              <h3 className="card-title mb-2">{dashboardCount?.active_job_count}</h3>
-              
+              <h3 className="card-title mb-2">
+                {dashboardCount?.active_job_count}
+              </h3>
             </div>
           </div>
         </div>
@@ -305,9 +319,13 @@ export const DashboardPage = () => {
             <div className="card-body">
               <div className="card-title d-flex align-items-start justify-content-between">
                 <div className="avatar flex-shrink-0">
-                 <Icon icon="fluent-emoji-high-contrast:man-student" class={"fs-1"} style={{color:color?.primary}}/>
+                  <Icon
+                    icon="fluent-emoji-high-contrast:man-student"
+                    class={"fs-1"}
+                    style={{ color: color?.primary }}
+                  />
                 </div>
-                <div className="dropdown">
+                <div className="dropdown d-none">
                   <button
                     aria-label="Click me"
                     className="btn p-0"
@@ -330,13 +348,15 @@ export const DashboardPage = () => {
                     >
                       View More
                     </a>
-                  
                   </div>
                 </div>
               </div>
-              <span className="fw-medium d-block mb-1">Total Active Internship </span>
-              <h3 className="card-title mb-2">{dashboardCount?.active_internship_count}</h3>
-              
+              <span className="fw-medium d-block mb-1">
+                Total Active Internship{" "}
+              </span>
+              <h3 className="card-title mb-2">
+                {dashboardCount?.active_internship_count}
+              </h3>
             </div>
           </div>
         </div>

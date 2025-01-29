@@ -121,6 +121,12 @@ export const LoginPage = () => {
           aria-label="Click me"
           className="btn btn-primary d-grid w-100"
           type="submit"
+          onKeyDown={(e)=>{
+            console.log(e);
+            if(e.key === 'Enter'){
+              handleSubmit();
+            }
+          }}
           onClick={handleSubmit}
         >
           Sign in

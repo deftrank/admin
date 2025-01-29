@@ -5,7 +5,7 @@ import DeftDate from "../../../components/deftDate/index";
 import { Form } from "react-bootstrap";
 import DeftSelect from "../../../components/dropdown";
 import { USER_TYPE } from "../../../utils/appEnums";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getPlanDetailsByAdmin,
@@ -17,7 +17,7 @@ export default function UpdatePlan() {
   const [formDataError, setFormDataError] = useState({});
   const dispatch = useDispatch();
   const { planDetailsByAdmin } = useSelector((state) => state.onBoarding);
-
+const navigate=useNavigate();
   const option = [
     {
       value: 1,
@@ -33,42 +33,42 @@ export default function UpdatePlan() {
     if (!formData?.name) {
       setFormDataError((prev) => ({
         ...prev,
-        name: "Name is required",
+        name: "Please enter plan name",
       }));
       return;
     }
     if (!formData?.title) {
       setFormDataError((prev) => ({
         ...prev,
-        title: "title is required",
+        title: "Please enter plan title",
       }));
       return;
     }
     if (!formData?.description) {
       setFormDataError((prev) => ({
         ...prev,
-        description: "description is required",
+        description: ".Please enter plan description ",
       }));
       return;
     }
     if (!formData?.expire) {
       setFormDataError((prev) => ({
         ...prev,
-        expire: "expire months is required",
+        expire: "Please enter expire months",
       }));
       return;
     }
     if (!formData?.for) {
       setFormDataError((prev) => ({
         ...prev,
-        for: "user type is required",
+        for: "Please select user type",
       }));
       return;
     }
     if (!formData?.status) {
       setFormDataError((prev) => ({
         ...prev,
-        status: "status is required",
+        status: "Please select status",
       }));
       return;
     }
@@ -96,7 +96,7 @@ export default function UpdatePlan() {
       id: id,
       language: "en",
     };
-    dispatch(getUpdatePlanDetailsByAdmin(requestParam, data));
+    dispatch(getUpdatePlanDetailsByAdmin(requestParam, data,navigate));
   };
   // here is calling plan details
   const handlePlanDetails = () => {
@@ -183,18 +183,22 @@ export default function UpdatePlan() {
             </div>
 
             <div className="col-12 col-md-6 mb-3">
-              <DeftInput
-              error={formDataError?.expire}
-                placeholder="Enter plan enter plan month "
-                label="Expire Months"
-                value={formData?.expire}
-                onchange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    expire: e.trimStart(),
-                  }))
-                }
-              />
+            <DeftInput
+  error={formDataError?.expire}
+  placeholder="Enter plan month"
+  label="Expire Months"
+  maxLength={2}
+  value={formData?.expire}
+  onchange={(e) => {
+    // Ensure the value is numeric (using regex to allow only digits)
+    const numericValue = e.replace(/[^0-9]/g, ''); // This regex removes any non-numeric characters
+    setFormData((prev) => ({
+      ...prev,
+      expire: numericValue, // Update the value with only numeric characters
+    }));
+  }}
+/>
+
             </div>
             <div className="col-12 col-md-6 mb-3">
               <DeftSelect

@@ -11,6 +11,7 @@ import {
   getCityList,
   getCompanyCategoryList,
   getCountryList,
+  getImageUpload,
   getSkillList,
   getStateList,
   registerCompany,
@@ -33,6 +34,7 @@ export default function index() {
   const [formDataError, setFormDataError] = useState({});
   const [locationData, setLocationData] = useState({});
   const loadingBarRef = useRef(null);
+  const [logo,setLogo]=useState(null)
   const { loginUserData } = useSelector((state) => state.auth);
   const {
     companyCategoryList,
@@ -98,13 +100,24 @@ export default function index() {
       pin_code: accountData?.pin_code,
       about: accountData?.about_company,
     }));
-
+setLogo(accountData?.company_logo)
     setLocationData((formData) => ({
       ...formData,
       country: accountData?.country_id,
       state: accountData?.state_id,
       city: accountData?.city_id,
     }));
+  };
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    let data = {
+      foldername: "companyProfileImage",
+      type: "image",
+    };
+
+    if (file) {
+      dispatch(getImageUpload(data, file, setFormData, setLogo));
+    }
   };
 
   const fetchStateData = (id, search) => {
@@ -179,7 +192,7 @@ export default function index() {
     if (!formData?.company_person_name) {
       setFormDataError((formDataError) => ({
         ...formDataError,
-        company_person_name: "Please enter company person name",
+        company_person_name: "Please enter contact person name",
       }));
       return;
     }
@@ -316,7 +329,7 @@ export default function index() {
       country: formData?.country_name,
       pin_code: formData?.pin_code,
       about_company: formData?.about,
-      company_logo: "https://examplecompany.com/logo.png",
+      company_logo:logo,
       language: "en",
       country_id: formData?.country_id,
       state_id: formData?.state_id,
@@ -328,7 +341,7 @@ export default function index() {
       dispatch(registerCompany(data, navigate));
     }
   };
-  console.log("here is most id0", formData?.skill_ids);
+
   return (
     <>
       <h5 className="mb-4">
@@ -348,7 +361,7 @@ export default function index() {
         <div className="card-body">
           <div className="d-flex align-items-start align-items-sm-center gap-4">
             <img
-              src={profile}
+              src={logo?logo:profile}
               alt="user-avatar"
               className="d-block rounded"
               height="100"
@@ -367,6 +380,7 @@ export default function index() {
                 <input
                   type="file"
                   id="upload"
+                  onChange={handleFileChange}
                   className="account-file-input"
                   hidden
                   accept="image/png, image/jpeg"
@@ -381,7 +395,7 @@ export default function index() {
                 <span className="d-none d-sm-block">Reset</span>
               </button> */}
               <p className="text-muted mb-0">
-                Allowed JPG, JPEG or PNG. Max size of 800K
+                Allowed JPG, JPEG or PNG. 
               </p>
               <small>
                 Note: Upload Logo launching soon! Stay tuned for more
@@ -512,8 +526,8 @@ export default function index() {
             </div>
             <div className="mb-3 col-md-6">
               <DeftInput
-                label="Company Website"
-                placeholder="Enter Company Website"
+                label="Comapny Website URL"
+                placeholder="Enter comapny website URL"
                 error={formDataError?.company_website}
                 value={formData?.company_website}
                 type="text"
@@ -572,7 +586,7 @@ export default function index() {
                     skill_ids: "",
                   }));
                 }}
-                placeholder="Current Course Name *"
+                placeholder="Enter most hired skill *"
                 dropdownHeight="200px"
                 multi={false}
               />

@@ -51,7 +51,7 @@ export default function index() {
               className=" rounded-top-4"
             ></div>
             <img
-              src={profile}
+              src={studentDetail?.accountData?.company_logo?studentDetail?.accountData?.company_logo:profile}
               alt=""
               className="img-fluid position-absolute rounded-circle top-25"
               style={{
@@ -168,7 +168,7 @@ export default function index() {
                           style={{ color: color.secondaryGray }}
                           className="mb-0"
                         >
-                          {studentDetail?.accountData?.company_website || "-"}
+                          {/* {studentDetail?.accountData?.company_website || "-"} */}
                         </h6>
                       </div>
                     </div>
@@ -183,7 +183,7 @@ export default function index() {
                         />
                         <h6
                           style={{ color: color.secondaryGray }}
-                          className="mb-0"
+                          className="mb-0 text-wrap"
                         >
                           {studentDetail?.accountData?.linkedin_url || "-"}
                         </h6>

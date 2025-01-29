@@ -619,7 +619,7 @@ export default function index() {
                   <td colSpan="12" className="text-center">
                     {jobCount == 0
                       ? "No companies have been listed yet!"
-                      : "No result available"}
+                      : "No job have been listed yet!"}
                   </td>
                 </tr>
               )}

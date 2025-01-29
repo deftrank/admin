@@ -17,7 +17,7 @@ import { toast } from "react-toastify";
 export default function CompanyForm() {
   const navigate = useNavigate();
   const [currentImage, setCurrentImage] = useState(null);
-  const {marketingContentDetails}=useSelector((state)=>state.onBoarding)
+  const { marketingContentDetails } = useSelector((state) => state.onBoarding);
   const { id } = useParams();
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({});
@@ -49,6 +49,7 @@ export default function CompanyForm() {
   };
 
   const handleSubmit = () => {
+    const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
     if (!formData?.image) {
       toast.error("Please upload an image");
       return;
@@ -65,36 +66,45 @@ export default function CompanyForm() {
     //   setFormDataError({ is_active: "Status is required" });
     //   return;
     // }
-if(id){
-  dispatch(getMarketingContentEditByAdmin(formData))
-  console.log("log======",formData?.id);
-}
-
-else{
-  dispatch(getMarketingContentAddByAdmin(formData, navigate));
-}
-
+    if (!formData?.url) {
+      setFormDataError((prev) => ({ ...prev, url: "Please enter url" }));
+      return;
+    }
+    else if (!urlRegex.test(formData?.url)){
+      setFormDataError((prev) => ({ ...prev, url: "Invalid url" }));
+      return;
+    }
+    else{
+      setFormDataError((prev) => ({ ...prev, url: "" }));
+    }
+    
+    if (id) {
+      dispatch(getMarketingContentEditByAdmin(formData,navigate));
+    } else {
+      dispatch(getMarketingContentAddByAdmin(formData, navigate));
+    }
   };
-// here is fetch the data 
-useEffect(()=>{
-  setFormData((prev)=>({
-    ...prev,
-    bannerId:marketingContentDetails?.id,
-    title:marketingContentDetails?.title,
-    description:marketingContentDetails?.description,
-    is_active:marketingContentDetails?.is_active,
-    image:marketingContentDetails?.image,
-  }))
-  setCurrentImage(marketingContentDetails?.image)
-},[marketingContentDetails])
+  // here is fetch the data
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      bannerId: marketingContentDetails?.id,
+      title: marketingContentDetails?.title,
+      description: marketingContentDetails?.description,
+      is_active: marketingContentDetails?.is_active,
+      image: marketingContentDetails?.image,
+      url: marketingContentDetails?.url,
+    }));
+    setCurrentImage(marketingContentDetails?.image);
+  }, [marketingContentDetails]);
   return (
     <>
       <h5 className="mb-4">
         <span
           className="text-muted fw-light cursor-pointer"
-          onClick={() => navigate("/company")}
+          onClick={() => navigate("/marketing-banner")}
         >
-          <span className="text-decoration-underline">Company</span> /
+          <span className="text-decoration-underline">Marketing Content </span> /
         </span>{" "}
         <span className="text-decoration-underline">{id ? "Edit" : "Add"}</span>
       </h5>
@@ -128,7 +138,7 @@ useEffect(()=>{
                 />
               </label>
               <p className="text-muted mb-0">
-                Allowed JPG, JPEG or PNG. Max size of 800K
+                Allowed JPG, JPEG or PNG. 
               </p>
               <small>
                 Note: Upload Logo launching soon! Stay tuned for more
@@ -143,6 +153,7 @@ useEffect(()=>{
             <div className="col-md-6 col-12 mb-4">
               <DeftInput
                 error={formDataError?.title}
+                maxLength={100}
                 name="title"
                 placeholder="Enter the title"
                 label="Title"
@@ -159,6 +170,7 @@ useEffect(()=>{
               <DeftInput
                 error={formDataError?.description}
                 name="description"
+                maxLength={250}
                 placeholder="Enter the description"
                 label="Description"
                 value={formData?.description}
@@ -176,13 +188,28 @@ useEffect(()=>{
                 name="status"
                 options={options}
                 label={"Status"}
-                value={formData?.is_active?1:0}
+                value={formData?.is_active ? 1 : 0}
                 placeholder={"Please select Content Status"}
                 onChange={(e) => {
                   console.log("ee", typeof e);
                   setFormData((prev) => ({
                     ...prev,
                     is_active: Boolean(parseInt(e)),
+                  }));
+                }}
+              />
+            </div>
+            <div className="col-md-6 col-12 mb-4">
+              <DeftInput
+                error={formDataError?.url}
+                name="description"
+                placeholder="Enter the your url"
+                label="Link url "
+                value={formData?.url}
+                onchange={(e) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    url: e,
                   }));
                 }}
               />

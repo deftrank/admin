@@ -402,8 +402,8 @@ export default function CompTestList() {
                 >
                   <td colSpan="12" className="text-center">
                     {queriesCount == 0
-                      ? "No companies have been listed yet!"
-                      : "No result available"}
+                      ? "No comp test queries have been listed yet!"
+                      : "No comp test queries have been listed yet!"}
                   </td>
                 </tr>
               )}

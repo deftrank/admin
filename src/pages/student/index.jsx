@@ -406,8 +406,8 @@ export default function index() {
                 >
                   <td colSpan="12" className="text-center">
                     {userCount == 0
-                      ? "No Students listed yet!"
-                      : "No result available"}
+                      ? "No students have been listed yet!"
+                      : "No students have been listed yet!"}
                   </td>
                 </tr>
               )}
