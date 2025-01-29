@@ -65,12 +65,15 @@ export default function CompanyForm() {
     //   setFormDataError({ is_active: "Status is required" });
     //   return;
     // }
-if(formData?.id){
+if(id){
   dispatch(getMarketingContentEditByAdmin(formData))
+  console.log("log======",formData?.id);
 }
+
 else{
   dispatch(getMarketingContentAddByAdmin(formData, navigate));
 }
+
   };
 // here is fetch the data 
 useEffect(()=>{
