@@ -25,8 +25,8 @@ export default function CompanyForm() {
   const loadingBarRef = useRef(null);
   console.log(id);
   const options = [
-    { value: 1, label: "Active" },
-    { value: 0, label: "Deactive" },
+    { value: "1", label: "Active" },
+    { value:"0", label: "Deactive" },
   ];
   console.log(marketingContentDetails);
   useEffect(() => {

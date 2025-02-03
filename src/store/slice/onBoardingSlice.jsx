@@ -288,6 +288,16 @@ const slice = createSlice({
   
       }
     },
+    changeStatusSuccess: (state, action) => {
+      // Find the index of the item in listOfUserByAdmin (as you're modifying this array)
+      const index = state.listOfQueriesTestByAdmin?.findIndex((item) => item?.id === action.payload.inquiry_id);
+      
+      // If the index is valid, update the status
+      if (index !== -1) {
+        state.listOfQueriesTestByAdmin[index].status = action.payload.status;
+      }
+    }
+    
     
     
   },
@@ -333,7 +343,8 @@ const {
   getUpdatePlanDetailsSuccess,
   getMarketingListSuccess,
   getDeleteContentSuccess,
-  getMarketingDetailSuccess
+  getMarketingDetailSuccess,
+  changeStatusSuccess
 } = slice.actions;
 
 //  stepper currentIndex
@@ -933,7 +944,8 @@ export const getChangeStatusOfCompQueryByAdmin = (data) => async (dispatch) => {
   try {
     const response = await api.post(`${DEFT_RANK_API.test.changeStatus}`, data);
     if (response?.status) {
-      console.log("her is the test===", response?.data);
+      toast.success(response?.data?.data?.message)
+      dispatch(changeStatusSuccess(data))
     } else {
       // toast.error(response?.message);
     }

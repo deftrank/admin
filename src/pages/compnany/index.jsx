@@ -383,6 +383,7 @@ export default function index() {
                             : "Enable"}{" "}
                           Company
                         </a>
+                        {console.log(item?.auth_id)}
                         <a
                           aria-label="dropdown action option"
                           className="dropdown-item"

@@ -81,148 +81,114 @@ export default function index() {
                   </div>
                 </div>
                 <div>
-                  <div className="row">
-                    {/* Email */}
-                    <div className="col-4 pt-2">
-                      <div className="d-flex align-items-center">
-                        <Icon
-                          icon="mdi:tag"
-                          className="fs-2 me-3" // Increased margin for more space
-                          style={{ color: color.secondaryGray }}
-                        />
-                        <h6
-                          style={{ color: color.secondaryGray }}
-                          className="mb-0"
-                        >
-                          {studentDetail?.accountData?.category || "-"}
-                        </h6>
-                      </div>
-                    </div>
+                <div className="row">
+  {/* Email */}
+  <div className="col-12 col-sm-4 pt-2">
+    <div className="d-flex align-items-center">
+      <Icon
+        icon="mdi:tag"
+        className="fs-2 me-3"
+        style={{ color: color.secondaryGray }}
+      />
+      <h6 style={{ color: color.secondaryGray }} className="mb-0">
+        {studentDetail?.accountData?.category || "-"}
+      </h6>
+    </div>
+  </div>
 
-                    {/* Phone */}
-                    <div className="col-4 pt-2">
-                      <div className="d-flex align-items-center">
-                        <Icon
-                          icon="mdi:account"
-                          className="fs-2 me-3" // Increased margin for more space
-                          style={{ color: color.secondaryGray }}
-                        />
-                        <h6
-                          style={{ color: color.secondaryGray }}
-                          className="mb-0"
-                        >
-                          {studentDetail?.accountData?.contact_person_name
-                            ? studentDetail?.accountData?.contact_person_name
-                            : "-"}
-                        </h6>
-                      </div>
-                    </div>
+  {/* Contact Person Name */}
+  <div className="col-12 col-sm-4 pt-2">
+    <div className="d-flex align-items-center">
+      <Icon
+        icon="mdi:account"
+        className="fs-2 me-3"
+        style={{ color: color.secondaryGray }}
+      />
+      <h6 style={{ color: color.secondaryGray }} className="mb-0">
+        {studentDetail?.accountData?.contact_person_name || "-"}
+      </h6>
+    </div>
+  </div>
 
-                    {/* Birth Date */}
-                    <div className="col-4 pt-2">
-                      <div className="d-flex align-items-center">
-                        <Icon
-                          icon="mdi:email"
-                          className="fs-2 me-3" // Increased margin for more space
-                          style={{ color: color.secondaryGray }}
-                        />
-                        <h6
-                          style={{ color: color.secondaryGray }}
-                          className="mb-0"
-                        >
-                          {studentDetail?.authData?.email
-                            ? studentDetail.authData.email
-                            : "-"}
-                        </h6>
-                      </div>
-                    </div>
+  {/* Email */}
+  <div className="col-12 col-sm-4 pt-2">
+    <div className="d-flex align-items-center">
+      <Icon
+        icon="mdi:email"
+        className="fs-2 me-3"
+        style={{ color: color.secondaryGray }}
+      />
+      <h6 style={{ color: color.secondaryGray }} className="mb-0">
+        {studentDetail?.authData?.email || "-"}
+      </h6>
+    </div>
+  </div>
 
-                    {/* Current Course */}
-                    <div className="col-4 pt-2">
-                      <div className="d-flex align-items-center">
-                        <Icon
-                          icon="mdi:phone"
-                          className="fs-2 me-3" // Increased margin for more space
-                          style={{ color: color.secondaryGray }}
-                        />
-                        <h6
-                          style={{ color: color.secondaryGray }}
-                          className="mb-0"
-                        >
-                          {studentDetail?.accountData?.contact_person_number
-                            ? `${studentDetail?.accountData?.countryCode}${studentDetail?.accountData?.contact_person_number}`
-                            : "-"}
-                        </h6>
-                      </div>
-                    </div>
+  {/* Phone Number */}
+  <div className="col-12 col-sm-4 pt-2">
+    <div className="d-flex align-items-center">
+      <Icon
+        icon="mdi:phone"
+        className="fs-2 me-3"
+        style={{ color: color.secondaryGray }}
+      />
+      <h6 style={{ color: color.secondaryGray }} className="mb-0">
+        {studentDetail?.accountData?.contact_person_number
+          ? `${studentDetail?.accountData?.countryCode}${studentDetail?.accountData?.contact_person_number}`
+          : "-"}
+      </h6>
+    </div>
+  </div>
 
-                    {/* College Name */}
-                    <div className="col-4 pt-2">
-                      <div className="d-flex align-items-center">
-                        <Icon
-                          icon="mdi:web"
-                          className="fs-2 me-3" // Increased margin for more space
-                          style={{ color: color.secondaryGray }}
-                        />
-                        <h6
-                          style={{ color: color.secondaryGray }}
-                          className="mb-0"
-                        >
-                          {/* {studentDetail?.accountData?.company_website || "-"} */}
-                        </h6>
-                      </div>
-                    </div>
+  {/* College Website (empty for now) */}
+  <div className="col-12 col-sm-4 pt-2">
+    <div className="d-flex align-items-center">
+      <Icon
+        icon="mdi:web"
+        className="fs-2 me-3"
+        style={{ color: color.secondaryGray }}
+      />
+      <h6 style={{ color: color.secondaryGray }} className="mb-0">
+        {/* {studentDetail?.accountData?.company_website || "-"} */}
+      </h6>
+    </div>
+  </div>
 
-                    {/* Semester */}
-                    <div className="col-4 pt-2">
-                      <div className="d-flex align-items-center">
-                        <Icon
-                          icon="mdi:linkedin"
-                          className="fs-2 me-3" // Increased margin for more space
-                          style={{ color: color.secondaryGray }}
-                        />
-                        <h6
-                          style={{ color: color.secondaryGray }}
-                          className="mb-0 text-wrap"
-                        >
-                          {studentDetail?.accountData?.linkedin_url || "-"}
-                        </h6>
-                      </div>
-                    </div>
+  {/* LinkedIn */}
+  <div className="col-12 col-sm-4 pt-2">
+    <div className="d-flex align-items-center">
+      <Icon
+        icon="mdi:linkedin"
+        className="fs-2 me-3"
+        style={{ color: color.secondaryGray }}
+      />
+      <h6 style={{ color: color.secondaryGray }} className="mb-0">
+        {studentDetail?.accountData?.linkedin_url || "-"}
+      </h6>
+    </div>
+  </div>
 
-                    {/* Location */}
-                    <div className="col-8 pt-2 d-flex align-items-center">
-                      <Icon
-                        icon="mdi:map-marker"
-                        className="fs-2 me-3" // Increased margin for more space
-                        style={{ color: color.secondaryGray }}
-                      />
-                      <h6
-                        style={{ color: color.secondaryGray }}
-                        className="mb-0"
-                      >
-                        {studentDetail?.accountData?.current_location ||
-                        studentDetail?.accountData?.state ||
-                        studentDetail?.accountData?.country ||
-                        studentDetail?.accountData?.pin_code
-                          ? `${
-                              studentDetail?.accountData?.current_location
-                                ? studentDetail.accountData.current_location +
-                                  ","
-                                : ""
-                            } ${
-                              studentDetail?.accountData?.state
-                                ? studentDetail.accountData.state + ","
-                                : ""
-                            } ${
-                              studentDetail?.accountData?.country
-                                ? studentDetail.accountData.country + ","
-                                : ""
-                            } ${studentDetail?.accountData?.pin_code || ""}`
-                          : "-"}
-                      </h6>
-                    </div>
-                  </div>
+  {/* Location */}
+  <div className="col-12 pt-2 d-flex align-items-center">
+    <Icon
+      icon="mdi:map-marker"
+      className="fs-2 me-3"
+      style={{ color: color.secondaryGray }}
+    />
+    <h6 style={{ color: color.secondaryGray }} className="mb-0">
+      {studentDetail?.accountData?.current_location ||
+      studentDetail?.accountData?.state ||
+      studentDetail?.accountData?.country ||
+      studentDetail?.accountData?.pin_code
+        ? `${studentDetail?.accountData?.current_location ? studentDetail.accountData.current_location + "," : ""} 
+           ${studentDetail?.accountData?.state ? studentDetail.accountData.state + "," : ""} 
+           ${studentDetail?.accountData?.country ? studentDetail.accountData.country + "," : ""} 
+           ${studentDetail?.accountData?.pin_code || ""}`
+        : "-"}
+    </h6>
+  </div>
+</div>
+
                 </div>
               </div>
             </div>
