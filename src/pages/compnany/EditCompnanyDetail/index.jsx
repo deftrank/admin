@@ -75,6 +75,8 @@ export default function index() {
     userAccountDetails?.accountData ? showAccountDetails() : "";
   }, [userAccountDetails]);
 
+
+  console.log("form data ",formData);
   const showAccountDetails = () => {
     const accountData = userAccountDetails?.accountData;
     setFormData((formData) => ({
@@ -319,7 +321,7 @@ setLogo(accountData?.company_logo)
       registered_name: formData?.company_name,
       category: formData?.category_Name,
       contact_person_name: formData?.company_person_name,
-      contact_person_number: formData.phone,
+  contact_person_number: formData?.phone ? formData?.phone.replace(/^null+/, '').trimStart() : '', // Fix contact_person_number
       company_website: formData?.company_website,
       linkedin_url: formData?.linkedin_url,
       most_hired_skills: [formData?.skill_names],
@@ -336,6 +338,7 @@ setLogo(accountData?.company_logo)
       city_id: formData?.city_id,
     };
     if (id) {
+      console.log(formData,data);
       dispatch(updateCompanyProfile(data, navigate));
     } else {
       dispatch(registerCompany(data, navigate));

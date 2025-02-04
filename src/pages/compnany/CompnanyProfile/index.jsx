@@ -61,7 +61,7 @@ export default function index() {
               }}
             />
             <div className="mt-5 pb-4 ">
-              <div className="px-5 col-10">
+              <div className="px-5 col-12">
                 <div className="row mb-3">
                   <div className="col-12">
                     <h6 className="font-size-20 mt-2 text-capitalize">
@@ -149,19 +149,20 @@ export default function index() {
         style={{ color: color.secondaryGray }}
       />
       <h6 style={{ color: color.secondaryGray }} className="mb-0">
-        {/* {studentDetail?.accountData?.company_website || "-"} */}
+        {studentDetail?.accountData?.company_website || "-"}
       </h6>
     </div>
   </div>
 
   {/* LinkedIn */}
   <div className="col-12 col-sm-4 pt-2">
-    <div className="d-flex align-items-center">
+    <div className="d-flex align-items-center ">
       <Icon
         icon="mdi:linkedin"
-        className="fs-2 me-3"
+        className="fs-1 me-3"
         style={{ color: color.secondaryGray }}
       />
+    
       <h6 style={{ color: color.secondaryGray }} className="mb-0">
         {studentDetail?.accountData?.linkedin_url || "-"}
       </h6>

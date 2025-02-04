@@ -305,7 +305,7 @@ export default function index() {
                           aria-label="dropdown action option"
                           className="dropdown-item"
                           style={{ cursor: "pointer" }}
-                          onClick={() => handleClose(item.auth_id._id, "edit")}
+                          onClick={() => handleClose(item?.auth_id?._id, "edit")}
                         >
                           <Icon
                             icon="iconamoon:edit-thin"
