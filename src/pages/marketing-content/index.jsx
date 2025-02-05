@@ -276,8 +276,8 @@ export default function index() {
                   >
                     <td colSpan="12" className="text-center">
                       {marketingContentCount == 0
-                        ? "Marketing Content have been listed yet!"
-                        : "Marketing Content have been listed yet!"}
+                        ? "No Marketing Content have been listed yet!"
+                        : "No Marketing Content have been listed yet!"}
                     </td>
                   </tr>
                 )}

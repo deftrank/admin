@@ -23,6 +23,7 @@ import CommonComponent from "../commonComponent";
 import CompTestQuery from "./compTestQueryDetail";
 import CompTestID from "./compTestIDModal";
 import { COMP_TEST_STATUS } from "../../../utils/appEnums";
+import { toast } from "react-toastify";
 
 export default function CompTestList() {
   const {
@@ -121,14 +122,31 @@ export default function CompTestList() {
   };
 
   const handleChangeStatus = (item, currentStatus) => {
-    let data = {
-      inquiry_id: item?.id,
-      xobin_assessment_id: xobinTestId?.xobin_id,
-      status: currentStatus,
-    };
+    if (currentStatus === COMP_TEST_STATUS?.COMPLETE) {
+      if (!xobinTestId?.xobin_id) {
+        toast.error("Please enter test id");
+        return;
+      }
+      let data = {
+        inquiry_id: item?.id,
+        xobin_assessment_id: xobinTestId?.xobin_id,
+        status: currentStatus,
+      };
+  
+      dispatch(getChangeStatusOfCompQueryByAdmin(data));
+      setShowInputModal(false);
+    }
+    else{
+      let data = {
+        inquiry_id: item?.id,
+        xobin_assessment_id: xobinTestId?.xobin_id,
+        status: currentStatus,
+      };
+  
+      dispatch(getChangeStatusOfCompQueryByAdmin(data));
+    }
 
-
-    dispatch(getChangeStatusOfCompQueryByAdmin(data));
+  
   };
 
   return (
@@ -292,18 +310,23 @@ export default function CompTestList() {
                   </td>
                   <td>
                     <span
-                   className={`badge ${
-                    item?.status === COMP_TEST_STATUS?.UNDER_DISCUSSION
-                      ? 'text-bg-info'
-                      : item?.status === COMP_TEST_STATUS?.UNDER_REVIEW
-                      ? 'text-bg-primary'
-                      : item?.status === COMP_TEST_STATUS?.COMPLETE
-                      ? 'bg-label-success'
-                      : 'bg-label-warning'
-                  } me-1 text-capitalize`}
-                  
+                      className={`badge ${
+                        item?.status === COMP_TEST_STATUS?.UNDER_DISCUSSION
+                          ? "text-bg-info"
+                          : item?.status === COMP_TEST_STATUS?.UNDER_REVIEW
+                          ? "text-bg-primary"
+                          : item?.status === COMP_TEST_STATUS?.COMPLETE
+                          ? "bg-label-success"
+                          : "bg-label-warning"
+                      } me-1 text-capitalize`}
                     >
-                      {item?.status===COMP_TEST_STATUS?.UNDER_DISCUSSION ?"Under Discussion ":item?.status===COMP_TEST_STATUS?.UNDER_REVIEW?"Under review ":item?.status===COMP_TEST_STATUS?.COMPLETE?"Completed":"Pending"}
+                      {item?.status === COMP_TEST_STATUS?.UNDER_DISCUSSION
+                        ? "Under Discussion "
+                        : item?.status === COMP_TEST_STATUS?.UNDER_REVIEW
+                        ? "Under review "
+                        : item?.status === COMP_TEST_STATUS?.COMPLETE
+                        ? "Completed"
+                        : "Pending"}
                     </span>
                   </td>
                   <td>
@@ -370,7 +393,11 @@ export default function CompTestList() {
                         </a>
                         <a
                           aria-label="dropdown action option"
-                          className="dropdown-item"
+                          className={`dropdown-item ${
+                            item?.status === COMP_TEST_STATUS?.COMPLETE
+                              ? "d-none"
+                              : ""
+                          }`}
                           style={{ cursor: "pointer" }}
                           onClick={() => {
                             setShowInputModal(true);
