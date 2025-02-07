@@ -41,10 +41,10 @@ const Sidebar = () => {
                     <React.Fragment key={section.header}>
                         {section.header && (
                             <li className="menu-header small text-uppercase">
-                                <span className="menu-header-text">{section.header}</span>
+                                <span className="menu-header-text fw-bolder">{section.header}</span>
                             </li>
                         )}
-                        {section.items.map(MenuItem)}
+                                   {section.items.map(MenuItem)}
                     </React.Fragment>
                 ))}
             </ul>
@@ -77,7 +77,8 @@ const MenuItem = (item) => {
       <NavLink
         aria-label={`Navigate to ${item.text} ${!item.available ? "Pro" : ""}`}
         to={item.link}
-        className={`menu-link ${item.submenu ? "menu-toggle" : ""}`}
+         style={{paddingLeft:"3rem"}}
+        className={`menu-link  ${item.submenu ? "menu-toggle" : ""}`}
         
       >
         {/* <i className={`menu-icon tf-icons ${item.icon}`}></i> */}
