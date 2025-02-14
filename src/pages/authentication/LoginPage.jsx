@@ -4,7 +4,10 @@ import "./page-auth.css";
 import DeftInput from "../../components/deftInput/deftInput";
 import { Icon } from "@iconify/react";
 import { login } from "../../store/slice/authSlice";
-import { isEmailValid } from "../../utils/appValidation";
+import {
+  isEmailValid,
+  isEmailValidAllowGmail,
+} from "../../utils/appValidation";
 import { useDispatch } from "react-redux";
 // import { AuthWrapper } from "./AuthWrapper";
 
@@ -27,7 +30,7 @@ export const LoginPage = () => {
       }));
       return;
     }
-    if (!isEmailValid(loginData?.email)) {
+    if (!isEmailValidAllowGmail(loginData?.email)) {
       setLoginData((loginData) => ({
         ...loginData,
         emailErr: "Please enter a valid email address",
@@ -121,9 +124,9 @@ export const LoginPage = () => {
           aria-label="Click me"
           className="btn btn-primary d-grid w-100"
           type="submit"
-          onKeyDown={(e)=>{
+          onKeyDown={(e) => {
             console.log(e);
-            if(e.key === 'Enter'){
+            if (e.key === "Enter") {
               handleSubmit();
             }
           }}

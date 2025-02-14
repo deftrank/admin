@@ -10,6 +10,18 @@ export const isEmailValid = (/** @type {any} */ email) => {
   return false;
 };
 
+export const isEmailValidAllowGmail = (/** @type {any} */ email) => {
+  // Regular expression to check for a valid email format
+  var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // Check if the email is valid (including Gmail addresses)
+  if (regex.test(email.replace(/\s/g, ""))) {
+    return true;
+  }
+  
+  return false;
+};
+
 export const isWebsiteValid = (/** @type {any} */ url) => {
   var valid = true;
   var regex =
