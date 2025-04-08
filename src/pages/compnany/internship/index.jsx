@@ -54,7 +54,7 @@ export default function index() {
   const [currentApplicantPage, setCurrentApplicantPage] = useState(10);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
-  const applicantContent=useRef(null);
+  const applicantContent = useRef(null);
   useEffect(() => {
     getJobList();
   }, []);
@@ -173,13 +173,12 @@ export default function index() {
   const fetchApplicantList = (id) => {
     let data = {
       language: "en",
-      page:PAGES_ENUM?.PAGE ,
+      page: PAGES_ENUM?.PAGE,
       limit: currentApplicantPage,
       internship_id: id,
       sort_by: "",
     };
     dispatch(getInternshipApplicantsByAdmin(data));
-   
   };
   const handleScroll = () => {
     const applicantContainer = applicantContent?.current;
@@ -193,7 +192,7 @@ export default function index() {
 
     if (isAtBottom && hasMoreData) {
       console.log("Loading next page:", perPages);
-      
+
       currentApplicantPage((prevPage) => prevPage + 5);
     }
   };
@@ -593,8 +592,8 @@ export default function index() {
                             <Icon
                               icon={
                                 item?.is_verified == jobVerifyStatus?.create
-                                  ? "lsicon:disable-outline"
-                                  : "fontisto:radio-btn-active"
+                                  ? "entypo:circle-with-cross"
+                                  : "entypo:circle-with-cross"
                               }
                               height={20}
                               className={"me-1"}
@@ -793,8 +792,6 @@ export default function index() {
           data={JobApplicantList}
           handleClose={() => {
             setApplicantList(false);
-
-
           }}
           hasMore={applicantContent}
           isLoading={loading}

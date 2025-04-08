@@ -30,6 +30,9 @@ export default function index() {
     dispatch(getStudentDetailById(data));
   };
 
+  console.log("here is my ",studentDetail?.accountData?.profile_url);
+  
+
   return (
     <section className="py-4 container-fluid">
       <h5 className="mb-4">
@@ -52,7 +55,8 @@ export default function index() {
             className=" rounded-top-4"
           ></div>
           <img
-            src={profile}
+            src={studentDetail?.accountData
+?.profile_url?studentDetail?.accountData?.profile_url:profile}
             alt=""
             className="img-fluid position-absolute rounded-circle top-25"
             style={{
