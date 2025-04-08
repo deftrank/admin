@@ -91,50 +91,6 @@ const Index = (props) => {
             </div>
           </div>
 
-          {/* Current Course */}
-          <div className="col-4 pt-2">
-            <div className="d-flex align-items-center">
-              <Icon
-                icon="mdi:book-open-outline"
-                className="fs-2 me-3" // Increased margin for more space
-                style={{ color: color.secondaryGray }}
-              />
-              <h6 style={{ color: color.secondaryGray }} className="mb-0">
-                {studentDetail?.accountData?.current_course || "-"}
-              </h6>
-            </div>
-          </div>
-
-          {/* College Name */}
-          <div className="col-4 pt-2">
-            <div className="d-flex align-items-center">
-              <Icon
-                icon="mdi:school-outline"
-                className="fs-2 me-3" // Increased margin for more space
-                style={{ color: color.secondaryGray }}
-              />
-              <h6 style={{ color: color.secondaryGray }} className="mb-0">
-                {studentDetail?.accountData?.college_name || "-"}
-              </h6>
-            </div>
-          </div>
-
-          {/* Semester */}
-          <div className="col-4 pt-2">
-            <div className="d-flex align-items-center">
-              <Icon
-                icon="mdi:calendar-month-outline"
-                className="fs-2 me-3" // Increased margin for more space
-                style={{ color: color.secondaryGray }}
-              />
-              <h6 style={{ color: color.secondaryGray }} className="mb-0">
-                {studentDetail?.accountData?.semester
-                  ? `${intToRoman(studentDetail.accountData.semester)} semester`
-                  : "-"}
-              </h6>
-            </div>
-          </div>
-
           {/* Location */}
           <div className="col-4 pt-2 d-flex align-items-center">
             <Icon
@@ -142,7 +98,14 @@ const Index = (props) => {
               className="fs-2 me-3" // Increased margin for more space
               style={{ color: color.secondaryGray }}
             />
-            <h6 style={{ color: color.secondaryGray }} className="mb-0">
+            <h6
+              style={{
+                color: color.secondaryGray,
+                wordWrap: "break-word", // Ensures word wrapping
+                overflowWrap: "break-word", // Also ensures word wrapping
+              }}
+              className="mb-0"
+            >
               {studentDetail?.accountData?.current_location ||
               studentDetail?.accountData?.state ||
               studentDetail?.accountData?.country ||
@@ -186,7 +149,14 @@ const Index = (props) => {
                 className="fs-2 me-3" // Increased margin for more space
                 style={{ color: color.secondaryGray }}
               />
-              <h6 style={{ color: color.secondaryGray }} className="mb-0">
+              <h6
+                style={{
+                  color: color.secondaryGray,
+                  wordWrap: "break-word", // Ensures word wrapping
+                  overflowWrap: "break-word", // Also ensures word wrapping
+                }}
+                className="mb-0"
+              >
                 {studentDetail?.accountData?.github_url || "-"}
               </h6>
             </div>
@@ -200,7 +170,14 @@ const Index = (props) => {
                 className="fs-2 me-3" // Increased margin for more space
                 style={{ color: color.secondaryGray }}
               />
-              <h6 style={{ color: color.secondaryGray }} className="mb-0">
+              <h6
+                style={{
+                  color: color.secondaryGray,
+                  wordWrap: "break-word", // Ensures word wrapping
+                  overflowWrap: "break-word", // Also ensures word wrapping
+                }}
+                className="mb-0"
+              >
                 {studentDetail?.accountData?.linkedin_url || "-"}
               </h6>
             </div>

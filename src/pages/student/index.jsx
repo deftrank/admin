@@ -197,8 +197,7 @@ export default function index() {
                 <th>Name</th>
                 <th>Email</th>
                 <th>Phone Number</th>
-                <th>Course</th>
-                <th>College</th>
+              
                 <th>Joined On</th>
                 <th>Status</th>
                 <th>Action</th>
@@ -246,34 +245,8 @@ export default function index() {
                       ? item?.auth_id?.country_code + item?.auth_id?.phone
                       : "-"}
                   </td>
-                  <td>
-                    <div
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
-                      title={item?.current_course ? item?.current_course : ""}
-                      style={{
-                        width: "8vw",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {item?.current_course ? item?.current_course : "-"}
-                    </div>
-                  </td>
-                  <td>
-                    <div
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
-                      title={item?.college_name ? item?.college_name : ""}
-                      style={{
-                        width: "8vw",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {item?.college_name ? item?.college_name : "-"}
-                    </div>
-                  </td>
+                 
+               
                   <td>
                     <p className="mb-0">
                       {item?.createdAt ? changeDate(item?.createdAt) : "-"}

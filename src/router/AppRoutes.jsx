@@ -9,6 +9,7 @@ import Layout from "../layouts/Layout";
 import Student from "../pages/student/index";
 import Compnany from "../pages/compnany";
 import EditStudent from "../pages/student/EditStudentDetail/index";
+import EducationEdit from "../pages/student/studentProfile/educationalDetails"
 import StudentProfile from "../pages/student/studentProfile/index";
 import EditCompnany from "../pages/compnany/EditCompnanyDetail/index";
 import CompnanyProfile from "../pages/compnany/CompnanyProfile/index";
@@ -40,6 +41,7 @@ const AppRoutes = () => {
         { path: "students", element: <Student /> },
         { path: "student-edit/:id", element: <EditStudent /> },
         { path: "student-details/:id", element: <StudentProfile /> },
+        { path: "student-education-edit/:id", element: < EducationEdit/> },
         { path: "company", element: <Compnany /> },
         { path: "company-add", element: <EditCompnany /> },
         { path: "company-edit/:id", element: <EditCompnany /> },

@@ -84,15 +84,10 @@ export default function index() {
       email: authdata?.email,
       phone: authdata?.phone,
       countryCode: authdata?.country_code ? authdata?.country_code : "+91",
-      courseName: accountData?.current_course
-        ? accountData?.current_course
-        : "",
-      course_id: accountData?.course_id ? accountData?.course_id : "",
-      semester: accountData?.semester,
-      collage: accountData?.college_name,
+    
     }));
 
-    setSem(accountData?.course_data?.semester);
+
   };
 
   const handleSubmit = () => {
@@ -112,37 +107,14 @@ export default function index() {
       }));
       return;
     }
-    if (!formData?.courseName) {
-      setFormDataError((formDataError) => ({
-        ...formDataError,
-        courseName: "Please select your course name",
-      }));
-      return;
-    }
-    if (!formData?.semester) {
-      setFormDataError((formDataError) => ({
-        ...formDataError,
-        semester: "Please select your semester",
-      }));
-      return;
-    }
-    if (!formData?.collage) {
-      setFormDataError((formDataError) => ({
-        ...formDataError,
-        collage: "Please select your college",
-      }));
-      return;
-    }
+  
     const data = {
       userId: userAccountDetails?.accountData?._id
         ? userAccountDetails?.accountData?._id
         : "",
       first_name: formData?.first_name,
       last_name: formData?.last_name,
-      course_name: formData?.courseName,
-      semester: formData?.semester,
-      college_name: formData?.collage,
-      course_id: formData?.course_id,
+    
       language: "en",
     };
     dispatch(updateProfile(data, navigate));
@@ -245,89 +217,7 @@ export default function index() {
                 setFormDataError={setFormDataError}
               />
             </div>
-            <div className="mb-3 col-md-6">
-              <DeftSelect
-                label="Current Course Name"
-                placeholder="Select current Course Name"
-                error={formDataError?.courseName}
-                options={
-                  courseList &&
-                  courseList?.map((item) => ({
-                    label: `${item.full_name}`,
-                    value: item._id,
-                  }))
-                }
-                value={formData?.course_id}
-                onChange={(val) => {
-                  const index = courseList?.findIndex(
-                    (item) => item._id === val
-                  );
-                  setFormData((formData) => ({
-                    ...formData,
-                    course_id: val,
-                    courseName: courseList[index]?.full_name,
-                  }));
-                  setFormDataError((formDataError) => ({
-                    ...formDataError,
-                    courseName: "",
-                  }));
-                  setSem(courseList[index]?.semester);
-                }}
-                multi={false}
-              />
-            </div>
-            <div className="mb-3 col-md-6">
-              <DeftSelect
-                label="Semester"
-                placeholder="Select Semester"
-                error={formDataError?.semester}
-                options={
-                  sem &&
-                  sem?.map((item) => ({
-                    label: `${item}`,
-                    value: item,
-                  }))
-                }
-                value={formData?.semester}
-                onChange={(val) => {
-                  setFormData((formData) => ({
-                    ...formData,
-                    semester: val,
-                  }));
-                  setFormDataError((formDataError) => ({
-                    ...formDataError,
-                    semester: "",
-                  }));
-                }}
-                multi={false}
-              />
-            </div>
-            <div className="mb-3 col-md-6">
-              <DeftSelect
-                label="College Name"
-                placeholder="Select College Name"
-                error={formDataError?.collage}
-                options={
-                  collageList &&
-                  collageList?.map((item) => ({
-                    label: `${item.college_name}`,
-                    value: item.college_name,
-                  }))
-                }
-                value={formData?.collage}
-                onChange={(val) => {
-                  setFormData((formData) => ({
-                    ...formData,
-                    collage: val,
-                  }));
-                  setFormDataError((formDataError) => ({
-                    ...formDataError,
-                    collage: "",
-                  }));
-                }}
-                multi={false}
-              />
-            </div>
+           
           </div>
           <div className="mt-2">
             <button
