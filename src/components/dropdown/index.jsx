@@ -9,15 +9,16 @@ const DeftSelect = ({
   className = "",
   label,
   error,
+  disabled,
   ...props
 }) => {
-
   return (
     <>
       <label className="form-label" htmlFor="country">
         {label}
       </label>
       <Form.Select
+        disabled={disabled}
         className="select2 form-select"
         value={value} // Control the select value
         onChange={(e) => onChange(e.target.value)}

@@ -2032,3 +2032,6 @@ button .focus-change:focus {
 .menu-link{
   padding: 0px !important;
 }
+.tab-content{
+  padding: 0 !important;
+}

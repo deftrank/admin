@@ -44,13 +44,15 @@ const Index = (props) => {
       <div>
         <div className="row">
           {/* Email */}
-          <div className="col-4 pt-2">
+          <div className="col-lg-4 col-sm-6 col-12 pt-3">
             <div className="d-flex align-items-center">
-              <Icon
-                icon="mdi:email-outline"
-                className="fs-2 me-3" // Increased margin for more space
-                style={{ color: color.secondaryGray }}
-              />
+              <div>
+                <Icon
+                  icon="mdi:email-outline"
+                  className="fs-2 me-lg-3 me-2" // Increased margin for more space
+                  style={{ color: color.secondaryGray }}
+                />
+              </div>
               <h6 style={{ color: color.secondaryGray }} className="mb-0">
                 {studentDetail?.authData?.email || "-"}
               </h6>
@@ -58,13 +60,15 @@ const Index = (props) => {
           </div>
 
           {/* Phone */}
-          <div className="col-4 pt-2">
+          <div className="col-lg-4 col-sm-6 col-12 pt-3">
             <div className="d-flex align-items-center">
+              <div>
               <Icon
                 icon="mdi:phone-outline"
-                className="fs-2 me-3" // Increased margin for more space
+                className="fs-2 me-lg-3 me-2" // Increased margin for more space
                 style={{ color: color.secondaryGray }}
               />
+              </div>
               <h6 style={{ color: color.secondaryGray }} className="mb-0">
                 {studentDetail?.authData?.phone
                   ? `${studentDetail.authData.country_code}${studentDetail.authData.phone}`
@@ -74,13 +78,15 @@ const Index = (props) => {
           </div>
 
           {/* Birth Date */}
-          <div className="col-4 pt-2">
+          <div className="col-lg-4 col-sm-6 col-12 pt-3">
             <div className="d-flex align-items-center">
+              <div>
               <Icon
                 icon="mdi:calendar-outline"
-                className="fs-2 me-3" // Increased margin for more space
+                className="fs-2 me-lg-3 me-2" // Increased margin for more space
                 style={{ color: color.secondaryGray }}
               />
+              </div>
               <h6 style={{ color: color.secondaryGray }} className="mb-0">
                 {studentDetail?.accountData?.birth_date
                   ? moment(studentDetail.accountData.birth_date).format(
@@ -92,12 +98,14 @@ const Index = (props) => {
           </div>
 
           {/* Location */}
-          <div className="col-4 pt-2 d-flex align-items-center">
-            <Icon
-              icon="mdi:map-marker-outline"
-              className="fs-2 me-3" // Increased margin for more space
-              style={{ color: color.secondaryGray }}
-            />
+          <div className="col-lg-4 col-sm-6 col-12 pt-3 d-flex align-items-center">
+            <div>
+              <Icon
+                icon="mdi:map-marker-outline"
+                className="fs-2 me-lg-3 me-2" // Increased margin for more space
+                style={{ color: color.secondaryGray }}
+              />
+            </div>
             <h6
               style={{
                 color: color.secondaryGray,
@@ -128,13 +136,15 @@ const Index = (props) => {
           </div>
 
           {/* Gender */}
-          <div className="col-4 pt-2">
+          <div className="col-lg-4 col-sm-6 col-12 pt-3">
             <div className="d-flex align-items-center">
-              <Icon
-                icon="mdi:gender-male-female-variant"
-                className="fs-2 me-3" // Increased margin for more space
-                style={{ color: color.secondaryGray }}
-              />
+              <div>
+                <Icon
+                  icon="mdi:gender-male-female-variant"
+                  className="fs-2 me-lg-3 me-2" // Increased margin for more space
+                  style={{ color: color.secondaryGray }}
+                />
+              </div>
               <h6 style={{ color: color.secondaryGray }} className="mb-0">
                 {studentDetail?.accountData?.gender || "-"}
               </h6>
@@ -142,20 +152,22 @@ const Index = (props) => {
           </div>
 
           {/* GitHub URL */}
-          <div className="col-4 pt-2">
+          <div className="col-lg-4 col-sm-6 col-12 pt-3">
             <div className="d-flex align-items-center">
-              <Icon
-                icon="mdi:github"
-                className="fs-2 me-3" // Increased margin for more space
-                style={{ color: color.secondaryGray }}
-              />
+              <div>
+                <Icon
+                  icon="mdi:github"
+                  className="fs-2 me-lg-3 me-2" // Increased margin for more space
+                  style={{ color: color.secondaryGray }}
+                />
+              </div>
               <h6
                 style={{
                   color: color.secondaryGray,
                   wordWrap: "break-word", // Ensures word wrapping
                   overflowWrap: "break-word", // Also ensures word wrapping
                 }}
-                className="mb-0"
+                className="mb-0 text-wrap"
               >
                 {studentDetail?.accountData?.github_url || "-"}
               </h6>
@@ -163,13 +175,15 @@ const Index = (props) => {
           </div>
 
           {/* LinkedIn URL */}
-          <div className="col-4 pt-2">
+          <div className="col-6 pt-2">
             <div className="d-flex align-items-center">
-              <Icon
-                icon="mdi:linkedin"
-                className="fs-2 me-3" // Increased margin for more space
-                style={{ color: color.secondaryGray }}
-              />
+              <div>
+                <Icon
+                  icon="mdi:linkedin"
+                  className="fs-2 me-lg-3 me-2" // Increased margin for more space
+                  style={{ color: color.secondaryGray }}
+                />
+              </div>
               <h6
                 style={{
                   color: color.secondaryGray,
