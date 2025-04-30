@@ -30,8 +30,6 @@ export default function index() {
     dispatch(getStudentDetailById(data));
   };
 
-  console.log("here is my ",studentDetail?.accountData?.profile_url);
-  
 
   return (
     <section className="py-4 container-fluid">
@@ -55,8 +53,11 @@ export default function index() {
             className=" rounded-top-4"
           ></div>
           <img
-            src={studentDetail?.accountData
-?.profile_url?studentDetail?.accountData?.profile_url:profile}
+            src={
+              studentDetail?.accountData?.profile_url
+                ? studentDetail?.accountData?.profile_url
+                : profile
+            }
             alt=""
             className="img-fluid position-absolute rounded-circle top-25"
             style={{
@@ -68,7 +69,7 @@ export default function index() {
           <div className="mt-5 pb-4 ">
             <div className="px-5 col-12">
               <BasicAndPeronalDetail studentDetail={studentDetail} />
-              <div className="mt-5 d-none">
+              <div className="mt-5 ">
                 <Tabs
                   defaultActiveKey="home"
                   id="uncontrolled-tab-example"
@@ -77,11 +78,15 @@ export default function index() {
                   <Tab eventKey="home" title="Educational Details">
                     <EducationalDetails studentDetail={studentDetail} />
                   </Tab>
-                  <Tab eventKey="profile" title="Employability Details" className={"p-0"}>
+                  <Tab
+                    eventKey="profile"
+                    title="Employability Details"
+                    className={"p-0"}
+                  >
                     <EmployabilityDetails studentDetail={studentDetail} />
                   </Tab>
                   <Tab eventKey="contact" title="Career Path">
-                    <CareerPath />
+                    <CareerPath studentDetail={studentDetail} />
                   </Tab>
                 </Tabs>
               </div>

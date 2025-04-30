@@ -83,7 +83,7 @@ export default function index() {
                 <div>
                 <div className="row">
   {/* Email */}
-  <div className="col-12 col-sm-4 pt-2">
+  <div className="col-lg-4 col-sm-6 col-12 pt-2">
     <div className="d-flex align-items-center">
       <Icon
         icon="mdi:tag"
@@ -97,7 +97,7 @@ export default function index() {
   </div>
 
   {/* Contact Person Name */}
-  <div className="col-12 col-sm-4 pt-2">
+  <div className="col-lg-4 col-sm-6 col-12 pt-2">
     <div className="d-flex align-items-center">
       <Icon
         icon="mdi:account"
@@ -111,7 +111,7 @@ export default function index() {
   </div>
 
   {/* Email */}
-  <div className="col-12 col-sm-4 pt-2">
+  <div className="col-lg-4 col-sm-6 col-12 pt-2">
     <div className="d-flex align-items-center">
       <Icon
         icon="mdi:email"
@@ -125,7 +125,7 @@ export default function index() {
   </div>
 
   {/* Phone Number */}
-  <div className="col-12 col-sm-4 pt-2">
+  <div className="col-lg-4 col-sm-6 col-12 pt-2">
     <div className="d-flex align-items-center">
       <Icon
         icon="mdi:phone"
@@ -141,7 +141,7 @@ export default function index() {
   </div>
 
   {/* College Website (empty for now) */}
-  <div className="col-12 col-sm-4 pt-2">
+  <div className="col-lg-4 col-sm-6 col-12 pt-2">
     <div className="d-flex align-items-center">
       <Icon
         icon="mdi:web"
@@ -155,22 +155,25 @@ export default function index() {
   </div>
 
   {/* LinkedIn */}
-  <div className="col-12 col-sm-4 pt-2">
-    <div className="d-flex align-items-center ">
-      <Icon
-        icon="mdi:linkedin"
-        className="fs-1 me-3"
-        style={{ color: color.secondaryGray }}
-      />
-    
-      <h6 style={{ color: color.secondaryGray }} className="mb-0">
-        {studentDetail?.accountData?.linkedin_url || "-"}
-      </h6>
-    </div>
+  <div className="col-lg-4 col-sm-6 col-12 pt-2">
+  <div className="d-flex align-items-start  text-break">
+    <Icon
+      icon="mdi:linkedin"
+      className="fs-1 me-3 flex-shrink-0"
+      style={{ color: color.secondaryGray }}
+    />
+    <h6
+      style={{ color: color.secondaryGray, wordBreak: 'break-word' }}
+      className="mb-0"
+    >
+      {studentDetail?.accountData?.linkedin_url || "-"}
+    </h6>
   </div>
+</div>
+
 
   {/* Location */}
-  <div className="col-12 pt-2 d-flex align-items-center">
+  <div className="col-lg-4 col-sm-6 col-12 pt-2 d-flex align-items-center">
     <Icon
       icon="mdi:map-marker"
       className="fs-2 me-3"

@@ -72,3 +72,44 @@ export const COMP_TEST_STATUS={
   COMPLETE:4
 
 }
+export const PER_PAGES = {
+  PAGES: 1,
+  PER_Pages: 10,
+  per_pages12: 12,
+  PER_PAGES: 100,
+};
+export const sem = [
+  {
+    value: 1,
+    label: 1,
+  },
+  {
+    value: 2,
+    label: 2,
+  },
+  {
+    value: "66ff955de3eefa23125009a3",
+    label: 3,
+  },
+  {
+    value: 4,
+    label: 4,
+  },
+  {
+    value: 5,
+    label: 5,
+  },
+  {
+    value: 6,
+    label: 6,
+  },
+  {
+    value: 7,
+    label: 7,
+  },
+
+  {
+    value: 8,
+    label: 8,
+  },
+];

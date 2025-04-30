@@ -2,19 +2,25 @@
 
 import { useDispatch, useSelector } from "react-redux";
 import { getCtcList } from "../../../store/slice/onBoardingSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import DeftSelect from "../../../components/dropdown";
+import DeftDateRange from "../../../components/deftDaterange";
+import DeftInput from "../../../components/deftInput/deftInput";
+import moment from "moment";
+import "primereact/resources/themes/lara-light-cyan/theme.css";
 
+import { MultiSelect } from "primereact/multiselect";
+import { useResponsive } from "../../../hooks/useResponsive";
 const index = (props) => {
   const { studentDetail } = props;
   const { jobCtcList, internshipCtcList } = useSelector(
     (state) => state.onBoarding
   );
+  const {screenType}=useResponsive()
+
   const dispatch = useDispatch();
-  console.log(
-    "studentDetail?.college_education == dssddff",
-    studentDetail?.accountData?.employability
-  );
+    const [option] = useState(Array.from({ length: 100000 }).map((_, i) => ({ label: `Item #${i}`, value: i })));
+
   const fetchCtcList = () => {
     const jobData = {
       language: "en",
@@ -53,8 +59,14 @@ const index = (props) => {
       {studentDetail?.accountData?.employability?.length > 0 ? (
         studentDetail?.accountData?.employability?.map((item) => (
           <>
-            <div className="row">
-              <div className="d-flex align-items-center gap-3">
+             <h1
+          className="text-black font-size-20"
+          style={{ fontSize: 24, fontWeight: 700 }}
+        >
+         Employability Details
+        </h1>
+            <div className={`row my-2 ${item?.employ_type == 2 && "mt-5"}`}>
+              <div className="d-flex align-items-center gap-3 mt-2">
                 <h5 className={"mb-0"}>
                   {item?.employ_type === 1
                     ? "Ready For Internship"
@@ -91,8 +103,36 @@ const index = (props) => {
                 </div>
               </div>
             </div>
-            <div className="row my-3 align-items-center">
-              <div className="col-6">
+            <div className="row my-2 align-items-center">
+              {item?.employ_type === 1 ? (
+                <>
+              <div className={`col-12 col-md-6 d-flex align-items-center ${screenType=="MOBILE" && "my-2"}`}>
+                    <DeftInput
+                      type="date"
+                      value={moment(item?.start_date).format("YYYY-MM-DD")}
+                      readOnly={true}
+                    />
+                  </div>
+                  <div className={`col-12 col-md-6 d-flex align-items-center ${screenType=="MOBILE" && "my-2"}`}>
+                    <DeftInput
+                      type="date"
+                      value={moment(item?.end_date).format("YYYY-MM-DD")}
+                      readOnly={true}
+                    />
+                  </div>
+                </>
+              ) : (
+                <div className={`col-12 col-md-6 d-flex align-items-center ${screenType=="MOBILE" && "my-2"}`}>
+                <DeftInput
+                    type="date"
+                    value={moment(item?.start_date).format("YYYY-MM-DD")}
+                    readOnly={true}
+                  />
+                </div>
+              )}
+            </div>
+            <div className="row my-2 align-items-center">
+              <div className={`col-12 col-md-6 d-flex align-items-center ${screenType=="MOBILE" && "my-2"}`}>
                 <DeftSelect
                   options={noc}
                   disabled={item?.noc_avail}
@@ -102,10 +142,9 @@ const index = (props) => {
                   multi={false}
                 />
               </div>
-              <div className="col-6">
-                {console.log("here us the job list ")}
+              <div className={`col-12 col-md-6 d-flex align-items-center ${screenType=="MOBILE" && "my-2"}`}>
+              
 
-                <h5 className={"mb-0 text-capitalize"}>
                   {item?.employ_type == 1 ? (
                     <DeftSelect
                       disabled={true}
@@ -125,10 +164,10 @@ const index = (props) => {
                       disabled={true}
                     />
                   )}
-                </h5>
+        
               </div>
-              <div className="col-6">
-                
+              <div className="col-12 col-md-6 ">
+            <h6 className={"my-3"}>  Preferred Location : {item?.employ_type==1?item?.location.join(","):item?.location.join(",")}</h6>
               </div>
             </div>
           </>

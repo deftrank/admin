@@ -78,7 +78,7 @@ const Index = (props) => {
           </div>
 
           {/* Birth Date */}
-          <div className="col-lg-4 col-sm-6 col-12 pt-3">
+          {studentDetail?.accountData?.birth_date && ( <div className="col-lg-4 col-sm-6 col-12 pt-3">
             <div className="d-flex align-items-center">
               <div>
               <Icon
@@ -95,48 +95,53 @@ const Index = (props) => {
                   : "-"}
               </h6>
             </div>
-          </div>
+          </div>)}
+         
 
           {/* Location */}
-          <div className="col-lg-4 col-sm-6 col-12 pt-3 d-flex align-items-center">
-            <div>
-              <Icon
-                icon="mdi:map-marker-outline"
-                className="fs-2 me-lg-3 me-2" // Increased margin for more space
-                style={{ color: color.secondaryGray }}
-              />
-            </div>
-            <h6
-              style={{
-                color: color.secondaryGray,
-                wordWrap: "break-word", // Ensures word wrapping
-                overflowWrap: "break-word", // Also ensures word wrapping
-              }}
-              className="mb-0"
-            >
-              {studentDetail?.accountData?.current_location ||
-              studentDetail?.accountData?.state ||
-              studentDetail?.accountData?.country ||
-              studentDetail?.accountData?.pin_code
-                ? `${
-                    studentDetail?.accountData?.current_location
-                      ? studentDetail.accountData.current_location + ","
-                      : ""
-                  } ${
-                    studentDetail?.accountData?.state
-                      ? studentDetail.accountData.state + ","
-                      : ""
-                  } ${
-                    studentDetail?.accountData?.country
-                      ? studentDetail.accountData.country + ","
-                      : ""
-                  } ${studentDetail?.accountData?.pin_code || ""}`
-                : "-"}
-            </h6>
-          </div>
+          {
+            
+              studentDetail?.accountData?.pin_code  && (    <div className="col-lg-4 col-sm-6 col-12 pt-3 d-flex align-items-center">
+              <div>
+                <Icon
+                  icon="mdi:map-marker-outline"
+                  className="fs-2 me-lg-3 me-2" // Increased margin for more space
+                  style={{ color: color.secondaryGray }}
+                />
+              </div>
+              <h6
+                style={{
+                  color: color.secondaryGray,
+                  wordWrap: "break-word", // Ensures word wrapping
+                  overflowWrap: "break-word", // Also ensures word wrapping
+                }}
+                className="mb-0"
+              >
+                {studentDetail?.accountData?.current_location ||
+                studentDetail?.accountData?.state ||
+                studentDetail?.accountData?.country ||
+                studentDetail?.accountData?.pin_code
+                  ? `${
+                      studentDetail?.accountData?.current_location
+                        ? studentDetail.accountData.current_location + ","
+                        : ""
+                    } ${
+                      studentDetail?.accountData?.state
+                        ? studentDetail.accountData.state + ","
+                        : ""
+                    } ${
+                      studentDetail?.accountData?.country
+                        ? studentDetail.accountData.country + ","
+                        : ""
+                    } ${studentDetail?.accountData?.pin_code || ""}`
+                  : "-"}
+              </h6>
+            </div>)}
+      
 
           {/* Gender */}
-          <div className="col-lg-4 col-sm-6 col-12 pt-3">
+
+          {studentDetail?.accountData?.gender && ( <div className="col-lg-4 col-sm-6 col-12 pt-3">
             <div className="d-flex align-items-center">
               <div>
                 <Icon
@@ -149,10 +154,12 @@ const Index = (props) => {
                 {studentDetail?.accountData?.gender || "-"}
               </h6>
             </div>
-          </div>
+          </div>)}
+         
 
           {/* GitHub URL */}
-          <div className="col-lg-4 col-sm-6 col-12 pt-3">
+
+          {studentDetail?.accountData?.github_url && (   <div className="col-lg-4 col-sm-6 col-12 pt-3">
             <div className="d-flex align-items-center">
               <div>
                 <Icon
@@ -172,10 +179,11 @@ const Index = (props) => {
                 {studentDetail?.accountData?.github_url || "-"}
               </h6>
             </div>
-          </div>
+          </div>)}
+       
 
           {/* LinkedIn URL */}
-          <div className="col-6 pt-2">
+          {studentDetail?.accountData?.linkedin_url && (   <div className="col-6 pt-2">
             <div className="d-flex align-items-center">
               <div>
                 <Icon
@@ -195,7 +203,8 @@ const Index = (props) => {
                 {studentDetail?.accountData?.linkedin_url || "-"}
               </h6>
             </div>
-          </div>
+          </div>)}
+       
         </div>
       </div>
     </>
