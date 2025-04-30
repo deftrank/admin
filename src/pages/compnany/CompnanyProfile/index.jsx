@@ -134,7 +134,7 @@ export default function index() {
       />
       <h6 style={{ color: color.secondaryGray }} className="mb-0">
         {studentDetail?.accountData?.contact_person_number
-          ? `${studentDetail?.accountData?.countryCode}${studentDetail?.accountData?.contact_person_number}`
+          ? `${studentDetail?.accountData?.countryCode} ${studentDetail?.accountData?.contact_person_number}`
           : "-"}
       </h6>
     </div>
