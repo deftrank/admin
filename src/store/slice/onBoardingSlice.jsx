@@ -82,6 +82,7 @@ const slice = createSlice({
       state.boardList = action.payload;
     },
     universityListSuccess: (state, action) => {
+      console.log("university payload===>",action.payload);
       state.universityList = action.payload;
     },
     listOfUserByAdminSuccess(state, action) {
@@ -297,6 +298,8 @@ const slice = createSlice({
         state.listOfQueriesTestByAdmin[index].status = action.payload.status;
       }
     }
+    ,
+   
     
     
     
@@ -381,13 +384,32 @@ export const accountDetails = (data, loadingBarRef) => async (dispatch) => {
     loadingBarRef.current.complete();
   }
 };
-
+export const getClearUniversityList = (data) => async (dispatch) => {
+  dispatch(universityListSuccess(""));
+};
 export const getCollageList = (data) => async (dispatch) => {
   try {
     const response = await api.post(DEFT_RANK_API.list.getCollageList, data);
 
     if (response?.status) {
-      dispatch(collageListSuccess(response?.data?.data));
+      console.log("response===>",response?.data?.data);
+      console.log("payload",data);
+      if (data?.search_type == 1) {
+        const transformedList =
+          response?.data?.data?.map((college) => ({
+            name: college.college_name,
+            id: college._id,
+          })) || [];
+          console.log("new collage ",transformedList);
+        dispatch(collageListSuccess(transformedList));
+      } else {
+        const transformedList =
+          response?.data?.data?.map((college) => ({
+            label: college.university_name,
+            value: college._id,
+          })) || [];
+        dispatch(universityListSuccess(transformedList));
+      }
     } else {
       // toast.error(response?.message);
     }
