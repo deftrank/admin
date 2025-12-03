@@ -653,7 +653,7 @@ export default function index() {
                               } Company`,
                               data: item,
                               message: `Are you sure you want to ${
-                                item?.status == status?.active
+                                item?.status == status?.deactive
                                   ? "Active"
                                   : "Deactive"
                               } this internship?`,
