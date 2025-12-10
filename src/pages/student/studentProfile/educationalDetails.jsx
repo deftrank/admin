@@ -7,7 +7,6 @@ import { color } from "../../../themes/color/color";
 import { Icon } from "@iconify/react";
 import DatePicker from "react-datepicker";
 import { FormControl } from "react-bootstrap";
-import "react-country-state-city/dist/react-country-state-city.css";
 import {
   getBoardList,
   getClearUniversityList,

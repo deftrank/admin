@@ -37,7 +37,6 @@ const slice = createSlice({
     jobCount: 0,
     queriesTotalCount: 0,
     queriesCount: 0,
-    listOfCompanyByAdmin: [],
     internshipTotalCount: 0,
     listOfJobByAdmin: [],
     listOfInternshipByAdmin: [],
