@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Pagination } from "react-bootstrap";
+import { Button, Modal, Pagination } from "react-bootstrap";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import {
   clearAllState,
@@ -10,6 +10,7 @@ import {
   getListOfCompanyByAdmin,
   suspendUser,
 } from "../../store/slice/onBoardingSlice";
+import { forgotPassword } from "../../store/slice/authSlice";
 import DeftInput from "../../components/deftInput/deftInput";
 import CompanyDefault from "../../assets/img/companyDefaul.png";
 import Confirmation from "../../components/confirmationModel/confirmation";
@@ -17,6 +18,7 @@ import DeftDaterange from "../../components/deftDaterange/index";
 import moment from "moment-timezone"; // Import moment-timezone
 import { changeDate } from "../../utils/appConstant";
 import LoadingBar from "react-top-loading-bar";
+import { isEmailValidAllowGmail } from "../../utils/appValidation";
 
 export default function index() {
   const { listOfCompanyByAdmin, compnanyTotalCount, companyCount } =
@@ -28,6 +30,14 @@ export default function index() {
   const [changePasswordModal, setChangePasswordModal] = useState({});
   const [dateRange, setDateRange] = useState({});
   const [status, setStatus] = useState("");
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+  const [resetFormData, setResetFormData] = useState({
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [resetFormErrors, setResetFormErrors] = useState({});
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -108,6 +118,70 @@ export default function index() {
       language: "en",
     };
     dispatch(suspendUser(data, setChangePasswordModal, "company"));
+  };
+
+  const openResetModal = (item) => {
+    setResetFormData({
+      email: item?.auth_id?.email || "",
+      phone: item?.contact_person_number || "",
+      password: "",
+      confirmPassword: "",
+    });
+    setResetFormErrors({});
+    setIsResetModalOpen(true);
+  };
+
+  const handleResetSubmit = () => {
+    const errors = {};
+    const emailValue = resetFormData?.email?.trim() || "";
+    const phoneValue = resetFormData?.phone?.trim() || "";
+
+    if (!emailValue && !phoneValue) {
+      errors.email = "Email or phone is required";
+      errors.phone = "Email or phone is required";
+    } else {
+      if (emailValue && !isEmailValidAllowGmail(emailValue)) {
+        errors.email = "Please enter a valid email";
+      }
+      if (phoneValue && !/^\+?\d{6,15}$/.test(phoneValue.replace(/\s/g, ""))) {
+        errors.phone = "Please enter a valid phone number";
+      }
+    }
+
+    if (!resetFormData?.password) {
+      errors.password = "Please enter password";
+    } else if (resetFormData?.password?.length < 8) {
+      errors.password = "Password must be at least 8 characters long";
+    }
+    if (!resetFormData?.confirmPassword) {
+      errors.confirmPassword = "Please confirm password";
+    } else if (resetFormData?.confirmPassword?.length < 8) {
+      errors.confirmPassword = "Password must be at least 8 characters long";
+    } else if (resetFormData?.password !== resetFormData?.confirmPassword) {
+      errors.confirmPassword = "Password does not match";
+    }
+
+    if (Object.keys(errors).length) {
+      setResetFormErrors(errors);
+      return;
+    }
+
+    const payload = {
+      email: resetFormData?.email ? resetFormData?.email : "",
+      phone: resetFormData?.phone ? resetFormData?.phone : "",
+      password: resetFormData?.password,
+    };
+
+    dispatch(
+      forgotPassword(payload, () => {
+        setIsResetModalOpen(false);
+        setResetFormData((prev) => ({
+          ...prev,
+          password: "",
+          confirmPassword: "",
+        }));
+      })
+    );
   };
 
   return (
@@ -334,6 +408,19 @@ export default function index() {
                           aria-label="dropdown action option"
                           className="dropdown-item"
                           style={{ cursor: "pointer" }}
+                          onClick={() => openResetModal(item)}
+                        >
+                          <Icon
+                            icon="ic:baseline-lock-reset"
+                            height={20}
+                            className={"me-1"}
+                          />{" "}
+                          Reset Password
+                        </a>
+                        <a
+                          aria-label="dropdown action option"
+                          className="dropdown-item"
+                          style={{ cursor: "pointer" }}
                           onClick={() =>
                             handleClose(item.auth_id._id, "detail")
                           }
@@ -503,6 +590,94 @@ export default function index() {
           }
         />
       )}
+      <Modal
+        show={isResetModalOpen}
+        onHide={() => setIsResetModalOpen(false)}
+        centered
+        backdrop="static"
+        className="otp-radius "
+      >
+        <Modal.Header className={"border-0 p-3"}>
+          <Modal.Title>Reset Password</Modal.Title>
+          <button
+            onClick={() => setIsResetModalOpen(false)}
+            type="button"
+            className="btn-close  shadow-none"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+            
+        </Modal.Header>
+        <Modal.Body className={"container"}>
+      
+          <div className="my-3 ">
+            <DeftInput
+              label="Email"
+              placeholder="Enter email"
+                            disabled={true}
+
+              readOnly={true}
+              value={resetFormData.email}
+              onchange={(value) => {
+                setResetFormData((prev) => ({ ...prev, email: value }));
+                setResetFormErrors((prev) => ({ ...prev, email: "" }));
+              }}
+              error={resetFormErrors.email}
+            />
+          </div>
+          <div className="my-3 ">
+            <DeftInput
+              label="Phone"
+              placeholder="Enter phone"
+               readOnly={true}
+               disabled={true}
+              value={resetFormData.phone}
+              onchange={(value) => {
+                setResetFormData((prev) => ({ ...prev, phone: value }));
+                setResetFormErrors((prev) => ({ ...prev, phone: "" }));
+              }}
+              error={resetFormErrors.phone}
+            />
+          </div>
+          <div className="my-3 ">
+            <DeftInput
+              label="New Password"
+              placeholder="Enter new password"
+              type="password"
+              value={resetFormData.password}
+              onchange={(value) => {
+                setResetFormData((prev) => ({ ...prev, password: value }));
+                setResetFormErrors((prev) => ({ ...prev, password: "" }));
+              }}
+              error={resetFormErrors.password}
+            />
+          </div>
+          <div className="my-3 ">
+            <DeftInput
+              label="Confirm Password"
+              placeholder="Re-enter new password"
+              type="password"
+              value={resetFormData.confirmPassword}
+              onchange={(value) => {
+                setResetFormData((prev) => ({
+                  ...prev,
+                  confirmPassword: value,
+                }));
+                setResetFormErrors((prev) => ({
+                  ...prev,
+                  confirmPassword: "",
+                }));
+              }}
+              error={resetFormErrors.confirmPassword}
+            />
+          </div>
+        </Modal.Body>
+        <Modal.Footer className={"border-0"}>
+          <Button variant="primary w-100" onClick={handleResetSubmit}>
+            Submit
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <LoadingBar color={"#0b0b7c"} height="0.5rem" ref={loadingBarRef} />
     </>
   );

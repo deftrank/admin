@@ -1,7 +1,8 @@
+// @ts-nocheck
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
 import "./page-auth.css";
-import logo from "../../assets/img/black_logo.svg";
+import logo from "../../assets/img/logo_white.png";
 
 export default function AuthWrapper() {
   return (
@@ -16,12 +17,12 @@ export default function AuthWrapper() {
                   to="/"
                   className="app-brand-link gap-2"
                 >
-                  <span className="app-brand-logo demo">
-                    <img src={logo} alt="sneat-logo" />
+                  <span className="app-brand-logo center-content">
+                    <img src={logo} alt="sneat-logo" style={{width:"30%"}}/>
                   </span>
-                  <span className="app-brand-text demo text-body fw-bold">
+                  {/* <span className="app-brand-text demo text-body fw-bold">
                     Deft Rank
-                  </span>
+                  </span> */}
                 </Link>
               </div>
               <Outlet />

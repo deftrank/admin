@@ -4,7 +4,10 @@ import profile from "../../../assets/img/default.jpg";
 import profileBg from "../../../assets/img/bg/profileBg.png";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getStudentDetailById } from "../../../store/slice/onBoardingSlice";
+import {
+  deleteUser,
+  getStudentDetailById,
+} from "../../../store/slice/onBoardingSlice";
 import { Icon } from "@iconify/react";
 import { color } from "../../../themes/color/color";
 import moment from "moment/moment";
@@ -12,6 +15,7 @@ import { Button, Modal } from "react-bootstrap";
 import DeftInput from "../../../components/deftInput/deftInput";
 import { forgotPassword } from "../../../store/slice/authSlice";
 import { isEmailValidAllowGmail } from "../../../utils/appValidation";
+import Confirmation from "../../../components/confirmationModel/confirmation";
 
 export default function index() {
   const navigate = useNavigate();
@@ -23,8 +27,10 @@ export default function index() {
     email: "",
     phone: "",
     password: "",
+    confirmPassword: "",
   });
   const [formErrors, setFormErrors] = useState({});
+  const [companyActionModal, setCompanyActionModal] = useState(null);
 
   useEffect(() => {
     getStudentDetail();
@@ -43,6 +49,7 @@ export default function index() {
       email: studentDetail?.authData?.email || "",
       phone: studentDetail?.accountData?.contact_person_number || "",
       password: "",
+      confirmPassword: "",
     });
     setFormErrors({});
     setIsResetModalOpen(true);
@@ -70,6 +77,13 @@ export default function index() {
     } else if (formData?.password?.length < 8) {
       errors.password = "Password must be at least 8 characters long";
     }
+    if (!formData?.confirmPassword) {
+      errors.confirmPassword = "Please confirm password";
+    } else if (formData?.confirmPassword?.length < 8) {
+      errors.confirmPassword = "Password must be at least 8 characters long";
+    } else if (formData?.password !== formData?.confirmPassword) {
+      errors.confirmPassword = "Password does not match";
+    }
 
     if (Object.keys(errors).length) {
       setFormErrors(errors);
@@ -85,9 +99,17 @@ export default function index() {
     dispatch(
       forgotPassword(payload, () => {
         setIsResetModalOpen(false);
-        setFormData((prev) => ({ ...prev, password: "" }));
+        setFormData((prev) => ({ ...prev, password: "", confirmPassword: "" }));
       })
     );
+  };
+
+  const handleDeleteCompany = () => {
+    const data = {
+      auth_id: id,
+      language: "en",
+    };
+    dispatch(deleteUser(data, setCompanyActionModal, "company"));
   };
 
   return (
@@ -103,6 +125,7 @@ export default function index() {
             </span>{" "}
             <span className="text-decoration-underline"> Details</span>
           </h5>
+          
           <div className="dropdown">
             <button
               className="btn btn-outline-primary dropdown-toggle"
@@ -110,12 +133,35 @@ export default function index() {
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              Menu
+              Settings
             </button>
             <ul className="dropdown-menu dropdown-menu-end">
               <li>
                 <button className="dropdown-item" onClick={openResetModal}>
                   Reset Password
+                </button>
+              </li>
+              <li>
+                <button
+                  className="dropdown-item"
+                  onClick={() => navigate(`/company-edit/${id}`)}
+                >
+                  Edit Company
+                </button>
+              </li>
+              <li>
+                <button
+                  className="dropdown-item text-danger"
+                  onClick={() =>
+                    setCompanyActionModal({
+                      show: true,
+                      title: "Delete Company",
+                      message: "Are you sure you want to delete this Company?",
+                      type: "Delete",
+                    })
+                  }
+                >
+                  Delete Company
                 </button>
               </li>
             </ul>
@@ -299,10 +345,14 @@ export default function index() {
           ></button>
         </Modal.Header>
         <Modal.Body className={"container"}>
+          <p className="text-muted mb-3">
+            Use the company contact details below and set a new password.
+          </p>
           <div className="my-3 ">
             <DeftInput
               label="Email"
               placeholder="Enter email"
+              readOnly
               value={formData.email}
               onchange={(value) => {
                 setFormData((prev) => ({ ...prev, email: value }));
@@ -315,6 +365,7 @@ export default function index() {
             <DeftInput
               label="Phone"
               placeholder="Enter phone"
+              readOnly
               value={formData.phone}
               onchange={(value) => {
                 setFormData((prev) => ({ ...prev, phone: value }));
@@ -336,6 +387,19 @@ export default function index() {
               error={formErrors.password}
             />
           </div>
+          <div className="my-3 ">
+            <DeftInput
+              label="Confirm Password"
+              placeholder="Re-enter new password"
+              type="password"
+              value={formData.confirmPassword}
+              onchange={(value) => {
+                setFormData((prev) => ({ ...prev, confirmPassword: value }));
+                setFormErrors((prev) => ({ ...prev, confirmPassword: "" }));
+              }}
+              error={formErrors.confirmPassword}
+            />
+          </div>
         </Modal.Body>
         <Modal.Footer className={"border-0"}>
           <Button variant="primary w-100" onClick={handleResetSubmit}>
@@ -343,6 +407,14 @@ export default function index() {
           </Button>
         </Modal.Footer>
       </Modal>
+      {companyActionModal?.show && (
+        <Confirmation
+          dialogData={companyActionModal}
+          open={companyActionModal?.show}
+          handleClose={() => setCompanyActionModal(null)}
+          handleSubmit={() => handleDeleteCompany()}
+        />
+      )}
     </>
   );
 }

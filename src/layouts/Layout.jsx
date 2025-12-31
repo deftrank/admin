@@ -7,7 +7,18 @@ import { Outlet } from "react-router-dom";
 
 const Layout = ({ children }) => {
   useEffect(() => {
-    Main();
+    let retries = 0;
+    const initMenu = () => {
+      if (typeof window.Main === "function") {
+        window.Main();
+        return;
+      }
+      if (retries < 20) {
+        retries += 1;
+        setTimeout(initMenu, 100);
+      }
+    };
+    initMenu();
   }, []);
   return (
     <div className="layout-wrapper layout-content-navbar">

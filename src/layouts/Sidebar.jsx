@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import menuData from "../data/menuData.json";
-import logo from "../assets/img/black_logo.svg";
+import logo from "../assets/img/logo_white_icon.png";
 import { Icon } from "@iconify/react";
 
 const Sidebar = () => {
@@ -10,7 +10,7 @@ const Sidebar = () => {
     <>
       <aside
         id="layout-menu"
-        className="layout-menu menu-vertical menu bg-menu-theme"
+        className="layout-menu menu-vertical menu bg-menu-theme sidebar-deft"
       >
         <div className="app-brand demo">
           <Link
@@ -19,9 +19,15 @@ const Sidebar = () => {
             className="app-brand-link"
           >
             <span className="app-brand-logo demo">
-              <img src={logo} alt="sneat-logo" aria-label="Sneat logo image" />
+              <img
+                src={logo}
+                alt="Deft Rank logo"
+                aria-label="Deft Rank logo"
+                className="sidebar-deft__logo"
+                style={{width:60}}
+              />
             </span>
-            <span className="app-brand-text demo menu-text fw-bold ms-2">
+            <span className="text-white app-brand-text demo menu-text fw-bold ms-2 sidebar-deft__title">
               Deft Rank
             </span>
           </Link>
@@ -85,7 +91,6 @@ const MenuItem = (item) => {
         <Icon
           icon={item.icon}
           height={20}
-          color={active ? "#A1A8B6" : ""}
           className={`menu-icon`}
         />
         <div>{item.text}</div>{" "}
