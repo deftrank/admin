@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import profile from "../../../assets/img/default.jpg";
 import profileBg from "../../../assets/img/bg/profileBg.png";
 import { useNavigate, useParams } from "react-router-dom";
@@ -8,12 +8,23 @@ import { getStudentDetailById } from "../../../store/slice/onBoardingSlice";
 import { Icon } from "@iconify/react";
 import { color } from "../../../themes/color/color";
 import moment from "moment/moment";
+import { Button, Modal } from "react-bootstrap";
+import DeftInput from "../../../components/deftInput/deftInput";
+import { forgotPassword } from "../../../store/slice/authSlice";
+import { isEmailValidAllowGmail } from "../../../utils/appValidation";
 
 export default function index() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { studentDetail } = useSelector((state) => state.onBoarding);
   const dispatch = useDispatch();
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    phone: "",
+    password: "",
+  });
+  const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
     getStudentDetail();
@@ -27,18 +38,89 @@ export default function index() {
     dispatch(getStudentDetailById(data));
   };
 
+  const openResetModal = () => {
+    setFormData({
+      email: studentDetail?.authData?.email || "",
+      phone: studentDetail?.accountData?.contact_person_number || "",
+      password: "",
+    });
+    setFormErrors({});
+    setIsResetModalOpen(true);
+  };
+
+  const handleResetSubmit = () => {
+    const errors = {};
+    const emailValue = formData?.email?.trim() || "";
+    const phoneValue = formData?.phone?.trim() || "";
+
+    if (!emailValue && !phoneValue) {
+      errors.email = "Email or phone is required";
+      errors.phone = "Email or phone is required";
+    } else {
+      if (emailValue && !isEmailValidAllowGmail(emailValue)) {
+        errors.email = "Please enter a valid email";
+      }
+      if (phoneValue && !/^\+?\d{6,15}$/.test(phoneValue.replace(/\s/g, ""))) {
+        errors.phone = "Please enter a valid phone number";
+      }
+    }
+
+    if (!formData?.password) {
+      errors.password = "Please enter password";
+    } else if (formData?.password?.length < 8) {
+      errors.password = "Password must be at least 8 characters long";
+    }
+
+    if (Object.keys(errors).length) {
+      setFormErrors(errors);
+      return;
+    }
+
+    const payload = {
+      email: formData?.email ? formData?.email : "",
+      phone: formData?.phone ? formData?.phone : "",
+      password: formData?.password,
+    };
+
+    dispatch(
+      forgotPassword(payload, () => {
+        setIsResetModalOpen(false);
+        setFormData((prev) => ({ ...prev, password: "" }));
+      })
+    );
+  };
+
   return (
     <>
       <section className="py-4 container-fluid">
-        <h5 className="mb-4">
-          <span
-            className="text-muted fw-light cursor-pointer"
-            onClick={() => navigate("/company")}
-          >
-            <span className="text-decoration-underline">Company</span> /
-          </span>{" "}
-          <span className="text-decoration-underline"> Details</span>
-        </h5>
+        <div className="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+          <h5 className="mb-0">
+            <span
+              className="text-muted fw-light cursor-pointer"
+              onClick={() => navigate("/company")}
+            >
+              <span className="text-decoration-underline">Company</span> /
+            </span>{" "}
+            <span className="text-decoration-underline"> Details</span>
+          </h5>
+          <div className="dropdown">
+            <button
+              className="btn btn-outline-primary dropdown-toggle"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Menu
+            </button>
+            <ul className="dropdown-menu dropdown-menu-end">
+              <li>
+                <button className="dropdown-item" onClick={openResetModal}>
+                  Reset Password
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
         <div className=" py-3 ">
           <div className="shadow-lg position-relative rounded-4">
             <div
@@ -199,6 +281,68 @@ export default function index() {
           </div>
         </div>
       </section>
+      <Modal
+        show={isResetModalOpen}
+        onHide={() => setIsResetModalOpen(false)}
+        centered
+        backdrop="static"
+        className="otp-radius "
+      >
+        <Modal.Header className={"border-0 p-3"}>
+          <Modal.Title>Reset Password</Modal.Title>
+          <button
+            onClick={() => setIsResetModalOpen(false)}
+            type="button"
+            className="btn-close  shadow-none"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </Modal.Header>
+        <Modal.Body className={"container"}>
+          <div className="my-3 ">
+            <DeftInput
+              label="Email"
+              placeholder="Enter email"
+              value={formData.email}
+              onchange={(value) => {
+                setFormData((prev) => ({ ...prev, email: value }));
+                setFormErrors((prev) => ({ ...prev, email: "" }));
+              }}
+              error={formErrors.email}
+            />
+          </div>
+          <div className="my-3 ">
+            <DeftInput
+              label="Phone"
+              placeholder="Enter phone"
+              value={formData.phone}
+              onchange={(value) => {
+                setFormData((prev) => ({ ...prev, phone: value }));
+                setFormErrors((prev) => ({ ...prev, phone: "" }));
+              }}
+              error={formErrors.phone}
+            />
+          </div>
+          <div className="my-3 ">
+            <DeftInput
+              label="New Password"
+              placeholder="Enter new password"
+              type="password"
+              value={formData.password}
+              onchange={(value) => {
+                setFormData((prev) => ({ ...prev, password: value }));
+                setFormErrors((prev) => ({ ...prev, password: "" }));
+              }}
+              error={formErrors.password}
+            />
+          </div>
+        </Modal.Body>
+        <Modal.Footer className={"border-0"}>
+          <Button variant="primary w-100" onClick={handleResetSubmit}>
+            Submit
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }

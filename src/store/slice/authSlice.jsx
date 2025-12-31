@@ -83,21 +83,45 @@ export const login = (data, navigate) => async (dispatch) => {
   }
 };
 
-export const forgetPassword = (data, navigate) => async (dispatch) => {
+export const forgetPassword = (data, onSuccess) => async (dispatch) => {
   dispatch(apiFetching());
 
   try {
-    const response = await api.post(DEFT_RANK_API.auth.login, data);
+    const response = await api.post(DEFT_RANK_API.auth.forgotPassword, data);
     const result = response?.data;
 
     if (result?.status) {
-      toast.success(result.message);
-      navigate("/");
+      toast.success(result?.message);
+      if (onSuccess) {
+        onSuccess();
+      }
     } else {
-      toast.error(result.message);
+      toast.error(result?.message);
     }
   } catch (error) {
-    console.error("Login failed:", error.message);
+    console.error("Forgot password failed:", error.message);
+    toast.error(error.message);
+  }
+};
+
+export const forgotPassword = (data, onSuccess) => async (dispatch) => {
+  dispatch(apiFetching());
+
+  try {
+    const response = await api.post(DEFT_RANK_API.auth.forgotPassword, data);
+    const result = response?.data;
+
+    if (result?.status) {
+      toast.success(result?.message);
+      if (onSuccess) {
+        onSuccess();
+      }
+    } else {
+      toast.error(result?.message);
+    }
+  } catch (error) {
+    console.error("Forgot password failed:", error.message);
+    toast.error(error.message);
   }
 };
 

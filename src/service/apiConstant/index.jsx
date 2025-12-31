@@ -14,6 +14,7 @@ export const DEFT_RANK_API = {
     suspendUser: "admin/suspendUser",
     registerCompany: "admin/registerCompany",
     updateCompanyProfile: "admin/updateCompanyProfile",
+    forgotPassword: "users/forgot-password",
   },
   dashboard: {
     dashboardCount: "/admin/count",
