@@ -1,385 +1,393 @@
 // @ts-nocheck
-import { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-
-import { Pagination } from "react-bootstrap";
-
+import React, { useMemo, useState } from "react";
+import { Modal, Form } from "react-bootstrap";
 import { Icon } from "@iconify/react";
 
-import moment from "moment-timezone"; // Import moment-timezone
-
-import LoadingBar from "react-top-loading-bar";
-
-
 import DeftInput from "../../components/deftInput/deftInput";
-import { getPlanListByAdmin } from "../../store/slice/onBoardingSlice";
-import { changeDate } from "../../utils/appConstant";
+import { monetizationSections } from "../../data/monetizationPlans";
+import "./subscription.css";
 
-export default function index() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { planListByAdmin,planListCount, } = useSelector(
-    (state) => state.onBoarding
+const formatValue = (value) => {
+  if (value === undefined || value === null || value === "") {
+    return "-";
+  }
+  return value;
+};
+
+const formatCurrency = (value) => {
+  if (value === undefined || value === null || value === "") {
+    return "-";
+  }
+  return `INR ${value}`;
+};
+
+const normalize = (value) => `${value || ""}`.toLowerCase();
+
+const buildTagBadges = (tags = []) => (
+  <div className="d-flex flex-wrap gap-1">
+    {tags.length === 0 ? (
+      <span className="text-muted">-</span>
+    ) : (
+      tags.map((tag) => (
+        <span key={tag} className="badge bg-label-primary">
+          {tag}
+        </span>
+      ))
+    )}
+  </div>
+);
+
+const buildFeatureBadges = (item) => {
+  const features = [];
+  if (item.resumeDownloads) features.push("Resume downloads");
+  if (item.contactUnlock) features.push("Contact unlock");
+  if (item.testRequest) features.push("Test request");
+  if (item.discountEligible) features.push("Discount eligible");
+  if (item.dedicatedRm) features.push("Dedicated RM");
+
+  if (features.length === 0) {
+    return <span className="text-muted">-</span>;
+  }
+
+  return (
+    <div className="d-flex flex-wrap gap-1">
+      {features.map((feature) => (
+        <span key={feature} className="badge bg-label-info">
+          {feature}
+        </span>
+      ))}
+    </div>
   );
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchData, setSearchData] = useState("");
-  const [sort, setSort] = useState({});
-  const [itemsPerPage, setItemsPerPage] = useState(10);
-  // const totalPages = Math.ceil(planListByAdmin.length/ itemsPerPage);
-  const [changePasswordModal, setChangePasswordModal] = useState([]);
-  const [dateRange, setDateRange] = useState({});
-  const [status, setStatus] = useState("");
-  const loadingBarRef = useRef(null);
+};
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+export default function SubscriptionPlans() {
+  const [searchData, setSearchData] = useState("");
+  const [sections, setSections] = useState(() =>
+    JSON.parse(JSON.stringify(monetizationSections))
+  );
+  const [openSections, setOpenSections] = useState(() =>
+    new Set(monetizationSections.slice(0, 1).map((section) => section.id))
+  );
+  const [editSectionId, setEditSectionId] = useState(null);
+  const [editPlanId, setEditPlanId] = useState(null);
+  const [editForm, setEditForm] = useState(null);
+
+  const searchTerm = searchData.trim().toLowerCase();
+  const isSearchActive = searchTerm.length > 0;
+
+  const filteredSections = useMemo(() => {
+    return sections.map((section) => {
+      const filteredItems = section.items.filter((item) => {
+        const haystack = [
+          section.title,
+          item.name,
+          item.id,
+          item.visibility,
+          item.status,
+          ...(item.tags || [])
+        ]
+          .map(normalize)
+          .join(" ");
+        return normalize(haystack).includes(searchTerm);
+      });
+
+      return {
+        ...section,
+        filteredItems
+      };
+    });
+  }, [sections, searchTerm]);
+
+  const totalMatches = filteredSections.reduce(
+    (sum, section) => sum + section.filteredItems.length,
+    0
+  );
+
+  const handleToggleSection = (sectionId) => {
+    if (isSearchActive) return;
+    setOpenSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(sectionId)) {
+        next.delete(sectionId);
+      } else {
+        next.add(sectionId);
+      }
+      return next;
+    });
   };
 
-  useEffect(() => {
+  const handleEditOpen = (sectionId, planId) => {
+    const section = sections.find((item) => item.id === sectionId);
+    if (!section) return;
+    const plan = section.items.find((item) => item.id === planId);
+    if (!plan) return;
+    setEditSectionId(sectionId);
+    setEditPlanId(planId);
+    setEditForm({ ...plan });
+  };
 
-    dispatch(getPlanListByAdmin())
-  }, []);
+  const handleEditClose = () => {
+    setEditSectionId(null);
+    setEditPlanId(null);
+    setEditForm(null);
+  };
 
-  useEffect(() => {getPlanListByAdmin();}, [currentPage,searchData,itemsPerPage,dateRange,status]);
+  const handleEditChange = (key, value) => {
+    setEditForm((prev) => ({
+      ...prev,
+      [key]: value
+    }));
+  };
 
+  const applyCompanyTags = (plan) => {
+    if (editSectionId !== "company-connect") return plan;
+    const tags = [];
+    if (plan.bestseller) tags.push("Bestseller");
+    if (plan.recommended) tags.push("Recommended");
+    if (plan.enterprise) tags.push("Enterprise");
+    return {
+      ...plan,
+      tags
+    };
+  };
 
+  const handleEditSave = () => {
+    if (!editForm || !editSectionId || !editPlanId) return;
+    setSections((prev) =>
+      prev.map((section) => {
+        if (section.id !== editSectionId) return section;
+        return {
+          ...section,
+          items: section.items.map((item) => {
+            if (item.id !== editPlanId) return item;
+            return applyCompanyTags(editForm);
+          })
+        };
+      })
+    );
+    handleEditClose();
+  };
 
-
-
-  const handleClose = (id, flag) => {
-    if (flag == "edit") {
-      navigate(`/subscription-plan/${id}`);
-    } else {
-      navigate(`/student-details/${id}`);
+  const renderCell = (item, column) => {
+    if (column.type === "currency") {
+      return formatCurrency(item[column.key]);
     }
+    if (column.type === "tags") {
+      return buildTagBadges(item[column.key]);
+    }
+    if (column.key === "features") {
+      return buildFeatureBadges(item);
+    }
+    return formatValue(item[column.key]);
   };
 
   return (
     <>
       <div className="card">
-        <div class="p-3">
-          <h4>Subscription Plans</h4>
-          <div class="d-flex justify-content-between">
-            <div class="row">
-              <div class=" input-group-merge">
-                <DeftInput
-                  placeholder="Search by name"
-                  type="text"
-                  value={searchData}
-                  onchange={(value) => {
-                    setCurrentPage(1);
-                    setSearchData(value);
-                  }}
-                  leftIcon={<i className="bx bx-search"></i>}
-                />
-              </div>
-            
+        <div className="p-3">
+          <h4>Monetization Plans</h4>
+          <div className="d-flex flex-column flex-md-row justify-content-between gap-3">
+            <div className="input-group-merge subscription-search">
+              <DeftInput
+                placeholder="Search plans, tags, or sections"
+                type="text"
+                value={searchData}
+                onchange={(value) => setSearchData(value)}
+                leftIcon={<i className="bx bx-search"></i>}
+              />
+            </div>
+            <div className="text-muted align-self-md-center">
+              {isSearchActive
+                ? `${totalMatches} result${totalMatches === 1 ? "" : "s"}`
+                : "Browse plans by folder"}
             </div>
           </div>
         </div>
 
-     <div className="container">
-     <div className="table-responsive text-nowrap">
-          <table className="table table-hover">
-            <thead className="table-dark">
-              <tr>
-                <th>Name</th>
-                <th>title</th>
-                <th>Description</th>
-                <th>Discount</th>
-                <th>Create</th>
-                <th>Amount</th>
-              
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody className="table-border-bottom-0">
-              {planListByAdmin?.map((item) => (
-                <tr key={item?._id}>
-                  {console.log(item?.name)}
-                  <td>
-                    <div
-                      data-bs-toggle="tooltip"
-                    
-                      data-bs-placement="top"
-                      title={
-                        item?.name
-                          ?     item?.name
-                          : ""
-                      }
-                      style={{
-                        width: "8vw",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        
-                      }}
-                    >
-                      {item?.name
-                        ? item?.name
-                        : "-"}
-                    </div>
-                  </td>
-                  <td>
-                  <div
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
-                      title={item?.title ? item?.title : ""}
-                      style={{
-                        width: "8vw",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {item?.title ? item?.title : "-"}
-                    </div>
-                   
-                  </td>
-                  <td>
-                    <div
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
-                      title={item?.description ? item?.description : ""}
-                      style={{
-                        width: "8vw",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {item?.description ? item?.description : "-"}
-                    </div>
-                  </td>
-                 
-                  <td>
-                    <div
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
-                      title={item?.discount ? item?.discount : ""}
-                      style={{
-                        width: "8vw",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {item?.discount ? item?.discount : "-"}
-                    </div>
-                  </td>
-                  
-                  <td>
-                    <p className="mb-0">
-                      {item?.createdAt ? changeDate(item?.createdAt) : "-"}
-                    </p>
-                  </td>
-                  <td>
-                    <div
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
-                      title={item?.amount ? item?.amount : ""}
-                      style={{
-                        width: "8vw",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {item?.amount ? item?.amount : "-"}
-                    </div>
-                  </td>
-                  <td>
-                    <div className="dropdown">
-                      <button
-                        aria-label="Click me"
-                        type="button"
-                        className="btn p-0 dropdown-toggle hide-arrow"
-                        data-bs-toggle="dropdown"
-                      >
-                        <i className="bx bx-dots-vertical-rounded"></i>
-                      </button>
-                      <div className="dropdown-menu">
-                        <a
-                          aria-label="dropdown action option"
-                          className="dropdown-item"
-                          style={{ cursor: "pointer" }}
-                          onClick={() => handleClose(item?._id, "edit")}
-                        >
-                          <Icon
-                            icon="iconamoon:edit-thin"
-                            height={20}
-                            className={"me-1"}
-                          />{" "}
-                          Edit Plan
-                        </a>
-                        {/* <a
-                          aria-label="dropdown action option"
-                          className="dropdown-item"
-                          style={{ cursor: "pointer" }}
-                          onClick={() =>
-                            handleClose(item.auth_id._id, "detail")
-                          }
-                        >
-                          <Icon
-                            icon="lsicon:view-outline"
-                            height={20}
-                            className={"me-1"}
-                          />{" "}
-                          View User
-                        </a>
-                        <a
-                          aria-label="dropdown action option"
-                          className="dropdown-item"
-                          style={{ cursor: "pointer" }}
-                          onClick={() => {
-                            setChangePasswordModal((changePasswordModal) => ({
-                              ...changePasswordModal,
-                              show: true,
-                              id: item.auth_id._id,
-                              title: `${
-                                item?.auth_id?.suspend_status == "active"
-                                  ? "Suspend"
-                                  : "Enable"
-                              } User`,
-                              data: item,
-                              message: `Are you sure you want to ${
-                                item?.auth_id?.suspend_status == "active"
-                                  ? "suspend"
-                                  : "enable"
-                              } this user?`,
-                            }));
-                          }}
-                        >
-                          <Icon
-                            icon={
-                              item?.auth_id?.suspend_status == "active"
-                                ? "lsicon:disable-outline"
-                                : "fontisto:radio-btn-active"
-                            }
-                            height={20}
-                            className={"me-1"}
-                          />{" "}
-                          {item?.auth_id?.suspend_status == "active"
-                            ? "Suspend"
-                            : "Enable"}{" "}
-                          User
-                        </a>
-                        <a
-                          aria-label="dropdown action option"
-                          className="dropdown-item"
-                          style={{ cursor: "pointer" }}
-                          onClick={() => {
-                            setChangePasswordModal((changePasswordModal) => ({
-                              ...changePasswordModal,
-                              show: true,
-                              id: item.auth_id._id,
-                              title: "Delete User",
-                              data: item,
-                              message:
-                                "Are you sure you want to delete this user?",
-                              type: "Delete",
-                            }));
-                          }}
-                        >
-                          <Icon
-                            icon="mdi-light:delete"
-                            height={20}
-                            className={"me-1"}
-                          />{" "}
-                          Delete User
-                        </a> */}
+        <div className="container pb-4">
+          <div className="subscription-folders">
+            {filteredSections.map((section) => {
+              const isOpen = isSearchActive
+                ? section.filteredItems.length > 0
+                : openSections.has(section.id);
+              return (
+                <details
+                  key={section.id}
+                  className="subscription-folder"
+                  open={isOpen}
+                >
+                  <summary
+                    className="subscription-folder__summary"
+                    onClick={(event) => {
+                      if (isSearchActive) return;
+                      // Prevent the native <details> toggle; we control it via state.
+                      event.preventDefault();
+                      handleToggleSection(section.id);
+                    }}
+                  >
+                    <div className="d-flex align-items-center gap-2">
+                      <Icon icon="bx:folder" height={20} />
+                      <div>
+                        <div className="fw-semibold">{section.title}</div>
+                        <div className="small text-muted">
+                          {section.description}
+                        </div>
                       </div>
                     </div>
-                  </td>
-                </tr>
-              ))}
+                    <span className="badge bg-label-secondary">
+                      {section.filteredItems.length}
+                    </span>
+                  </summary>
 
-              {planListByAdmin?.length == 0 && (
-                <tr
-                  style={{
-                    height: "20rem",
-                    fontSize: "2rem",
-                    fontWeight: "600",
-                  }}
-                >
-                  <td colSpan="12" className="text-center">
-                    { planListCount== 0
-                      ? "No Students listed yet!"
-                      : "No result available"}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-     </div>
-
-        {/* <div class="container mt-4">
-          <div class="row justify-content-center">
-            <div class="col">
-              <span className="p-2">Show</span>
-              <div className="btn-group">
-                <select
-                  className="btn btn-outline-primary dropdown-toggle"
-                  onChange={(e) => setItemsPerPage(e.target.value)}
-                >
-                  <option value="5">5</option>
-                  <option value="10" selected>
-                    10
-                  </option>
-                  <option value="25">25</option>
-                  <option value="50">50</option>
-                  <option value="100">100</option>
-                </select>
-              </div>
-              <span className="p-2">entries</span>
-            </div>
-
-            <div class="col p-1">
-              {" "}
-              Showing <b>
-                {currentPage * itemsPerPage - (itemsPerPage - 1)}
-              </b>{" "}
-              to <b>{currentPage * itemsPerPage}</b> of <b>{planListCount}</b>{" "}
-              entries
-            </div>
-
-            <div class="col">
-              <div className="d-flex justify-content-end">
-                <Pagination>
-                  <Pagination.Prev
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                  />
-                  {[...Array(totalPages).keys()]?.map((page) => (
-                    <Pagination.Item
-                      key={page + 1}
-                      active={page + 1 === currentPage}
-                      onClick={() => handlePageChange(page + 1)}
-                    >
-                      {page + 1}
-                    </Pagination.Item>
-                  ))}
-                  <Pagination.Next
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                  />
-                </Pagination>
-              </div>
-            </div>
+                  <div className="subscription-folder__body">
+                    <div className="table-responsive text-nowrap">
+                      <table className="table table-hover align-middle">
+                        <thead className="table-dark">
+                          <tr>
+                            {section.columns.map((column) => (
+                              <th key={column.key}>{column.label}</th>
+                            ))}
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody className="table-border-bottom-0">
+                          {section.filteredItems.map((item) => (
+                            <tr
+                              key={item.id}
+                              className="subscription-row"
+                              onClick={() => handleEditOpen(section.id, item.id)}
+                            >
+                              {section.columns.map((column) => (
+                                <td key={`${item.id}-${column.key}`}>
+                                  {renderCell(item, column)}
+                                </td>
+                              ))}
+                              <td onClick={(event) => event.stopPropagation()}>
+                                <div className="dropdown">
+                                  <button
+                                    aria-label="Plan actions"
+                                    type="button"
+                                    className="btn p-0 dropdown-toggle hide-arrow"
+                                    data-bs-toggle="dropdown"
+                                  >
+                                    <i className="bx bx-dots-vertical-rounded"></i>
+                                  </button>
+                                  <div className="dropdown-menu">
+                                    <button
+                                      type="button"
+                                      className="dropdown-item"
+                                      onClick={() =>
+                                        handleEditOpen(section.id, item.id)
+                                      }
+                                    >
+                                      <Icon
+                                        icon="iconamoon:edit-thin"
+                                        height={20}
+                                        className="me-1"
+                                      />
+                                      Edit Plan
+                                    </button>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                          {section.filteredItems.length === 0 && (
+                            <tr>
+                              <td
+                                colSpan={section.columns.length + 1}
+                                className="text-center py-4 text-muted"
+                              >
+                                {isSearchActive
+                                  ? "No matching plans"
+                                  : "No plans configured yet"}
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </details>
+              );
+            })}
           </div>
-        </div> */}
+        </div>
       </div>
-      {/* 
-      {changePasswordModal && (
-        <Con
-          dialogData={changePasswordModal}
-          open={changePasswordModal?.show}
-          handleClose={() => setChangePasswordModal(false)}
-          handleSubmit={() =>
-            changePasswordModal?.type == "Delete"
-              ? deleteAccount()
-              : suspentAccount()
-          }
-        />
-      )} */}
-      <LoadingBar color={"#0b0b7c"} height="0.5rem" ref={loadingBarRef} />
+
+      <Modal show={!!editForm} centered backdrop="static" size="lg">
+        <Modal.Header>
+          <h5 className="modal-title">Edit Plan</h5>
+          <button
+            onClick={handleEditClose}
+            type="button"
+            className="btn-close shadow-none"
+            aria-label="Close"
+          ></button>
+        </Modal.Header>
+        <Modal.Body>
+          {editForm && (
+            <div className="row">
+              {sections
+                .find((section) => section.id === editSectionId)
+                ?.fields.map((field) => (
+                  <div
+                    className={`col-12 ${
+                      field.type === "boolean" ? "" : "col-md-6"
+                    } mb-3`}
+                    key={field.key}
+                  >
+                    {field.type === "boolean" ? (
+                      <Form.Check
+                        type="switch"
+                        id={`${field.key}-switch`}
+                        label={field.label}
+                        checked={Boolean(editForm[field.key])}
+                        onChange={(event) =>
+                          handleEditChange(field.key, event.target.checked)
+                        }
+                      />
+                    ) : field.type === "select" ? (
+                      <>
+                        <Form.Label>{field.label}</Form.Label>
+                        <Form.Select
+                          value={editForm[field.key] || ""}
+                          onChange={(event) =>
+                            handleEditChange(field.key, event.target.value)
+                          }
+                        >
+                          <option value="" disabled>
+                            Select {field.label}
+                          </option>
+                          {field.options.map((option) => (
+                            <option key={option} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </Form.Select>
+                      </>
+                    ) : (
+                      <DeftInput
+                        label={field.label}
+                        value={editForm[field.key]}
+                        type={field.type === "number" ? "number" : "text"}
+                        onchange={(value) => handleEditChange(field.key, value)}
+                      />
+                    )}
+                  </div>
+                ))}
+            </div>
+          )}
+        </Modal.Body>
+        <Modal.Footer className="border-0">
+          <button className="btn btn-outline-secondary" onClick={handleEditClose}>
+            Cancel
+          </button>
+          <button className="btn btn-primary" onClick={handleEditSave}>
+            Save Changes
+          </button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }

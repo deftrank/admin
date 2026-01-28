@@ -1,0 +1,58 @@
+.subscription-folders {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.subscription-folder {
+  border: 1px solid #0f0f10;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #111111;
+  overflow: hidden;
+}
+
+.subscription-folder__summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #111111;
+  color: #ffffff;
+  border-bottom: 1px solid #0b0b0c;
+}
+
+.subscription-folder__summary::-webkit-details-marker {
+  display: none;
+}
+
+.subscription-folder[open] .subscription-folder__summary {
+  background: #000000;
+}
+
+.subscription-folder__summary .text-muted {
+  color: #d1d5db !important;
+}
+
+.subscription-folder__body {
+  padding: 1rem 1.25rem 0.5rem;
+  background: #ffffff;
+}
+
+.subscription-folder__body table {
+  color: #111111;
+}
+
+.subscription-row {
+  cursor: pointer;
+}
+
+.subscription-row:hover {
+  background: #f1f1f3;
+}
+
+.subscription-search {
+  max-width: 360px;
+}

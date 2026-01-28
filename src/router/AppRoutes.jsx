@@ -24,6 +24,7 @@ import { Transactions } from "../pages/transaction";
 import UpdatePlan from "../pages/subscription/updatePlan";
 import MarketingBanner from "../pages/marketing-content/index";
 import AddContent from "../pages/marketing-content/addContent/index"
+import XobinTests from "../pages/xobinTests";
 
 
 const AppRoutes = () => {
@@ -51,6 +52,7 @@ const AppRoutes = () => {
         { path: "internship-details/:id", element: <ViewDetails /> },
         { path: "internship", element: <Internship /> },
         { path: "transaction", element: <Transactions /> },
+        { path: "xobin-tests", element: <XobinTests /> },
         { path: "query-test-list", element: <CompTestList /> },
         { path: "raised-tickets", element: <RaisedTicket /> },
         { path: "badges", element: <Badges/> },

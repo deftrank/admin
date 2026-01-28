@@ -45,13 +45,19 @@
         ]
     },
     {
-        "header": "Compt Test Inquiries",
+        "header": "Test",
         "items": [
             {
-                "text": "List",
+                "text": "Xobin Test/Assestments",
+                "icon": "bx bx-task",
+                "available": true,
+                "link": "/xobin-tests"
+            },
+            {
+                "text": "Comp Test Inquiries",
                 "icon": "bx bx-box",
                 "available": true,
-                "link": "/query-test-list "
+                "link": "/query-test-list"
             }
         ]
     },
