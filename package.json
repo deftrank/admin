@@ -5,7 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:dev": "vite --mode dev",
     "build": "vite build",
+    "build:default": "vite build",
+    "build:dev": "vite build --mode dev",
+    "build:all": "npm run build:default && npm run build:dev",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },

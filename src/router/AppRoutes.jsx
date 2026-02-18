@@ -25,6 +25,7 @@ import UpdatePlan from "../pages/subscription/updatePlan";
 import MarketingBanner from "../pages/marketing-content/index";
 import AddContent from "../pages/marketing-content/addContent/index"
 import XobinTests from "../pages/xobinTests";
+import CompTest from "../pages/compTest";
 
 
 const AppRoutes = () => {
@@ -53,6 +54,7 @@ const AppRoutes = () => {
         { path: "internship", element: <Internship /> },
         { path: "transaction", element: <Transactions /> },
         { path: "xobin-tests", element: <XobinTests /> },
+        { path: "comp-test", element: <CompTest /> },
         { path: "query-test-list", element: <CompTestList /> },
         { path: "raised-tickets", element: <RaisedTicket /> },
         { path: "badges", element: <Badges/> },
