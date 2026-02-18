@@ -17,7 +17,7 @@ export default function DeftInput(props) {
     label,
     onClick,
     maxLength,
-    className
+    className,
   } = props;
 
   return (
@@ -47,7 +47,10 @@ export default function DeftInput(props) {
           maxLength={maxLength}
         />
         {rightIcon && (
-          <span className="input-group-text cursor-pointer" onClick={rightIconClick}>
+          <span
+            className="input-group-text cursor-pointer"
+            onClick={rightIconClick}
+          >
             {rightIcon}
           </span>
         )}

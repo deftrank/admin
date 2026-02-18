@@ -1,7 +1,12 @@
 // @ts-nocheck
 import React, { useEffect, useMemo, useState } from "react";
 import { Form } from "react-bootstrap";
-import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { toast } from "react-toastify";
 
 import DeftInput from "../../../components/deftInput/deftInput";
@@ -15,11 +20,29 @@ const PLAN_META = {
     updateEndpoint: DEFT_RANK_API.plans.companyConnectUpdate,
     fields: [
       { key: "name", label: "Name", type: "text", required: true },
-      { key: "priceInr", label: "Price (INR)", type: "text", required: true },
-      { key: "connects", label: "Connects", type: "text", required: true },
-      { key: "validityDays", label: "Validity Days", type: "text", required: true },
+      {
+        key: "priceInr",
+        label: "Price (INR)",
+        type: "number",
+        required: true,
+        maxLength: 7,
+      },
+      { key: "connects", label: "Connects", type: "number", required: true },
+      {
+        key: "validityDays",
+        label: "Validity Days",
+        type: "number",
+        required: true,
+        maxLength: 4,
+      },
       { key: "taxRules", label: "Tax Rules", type: "text", required: true },
-      { key: "visibility", label: "Visibility", type: "select", options: ["Visible", "Hidden"], required: true },
+      {
+        key: "visibility",
+        label: "Visibility",
+        type: "select",
+        options: ["Visible", "Hidden"],
+        required: true,
+      },
       { key: "enterprise", label: "Enterprise", type: "boolean" },
       { key: "bestseller", label: "Bestseller", type: "boolean" },
       { key: "recommended", label: "Recommended", type: "boolean" },
@@ -37,12 +60,33 @@ const PLAN_META = {
     updateEndpoint: DEFT_RANK_API.plans.studentTestCreditsUpdate,
     fields: [
       { key: "name", label: "Name", type: "text", required: true },
-      { key: "priceInr", label: "Price (INR)", type: "text", required: true },
-      { key: "testsIncluded", label: "Tests Included", type: "text", required: true },
-      { key: "bgCampusCredits", label: "BG Campus Credits", type: "text", required: true },
-      { key: "validityDays", label: "Validity Days", type: "text", required: true },
-      { key: "freeQuota", label: "Free Quota", type: "text", required: true },
-      { key: "visibility", label: "Visibility", type: "select", options: ["Visible", "Hidden"], required: true },
+      { key: "priceInr", label: "Price (INR)", type: "number", required: true },
+      {
+        key: "testsIncluded",
+        label: "Tests Included",
+        type: "number",
+        required: true,
+      },
+      {
+        key: "bgCampusCredits",
+        label: "BG Campus Credits",
+        type: "number",
+        required: true,
+      },
+      {
+        key: "validityDays",
+        label: "Validity Days",
+        type: "number",
+        required: true,
+      },
+      { key: "freeQuota", label: "Free Quota", type: "number", required: true },
+      {
+        key: "visibility",
+        label: "Visibility",
+        type: "select",
+        options: ["Visible", "Hidden"],
+        required: true,
+      },
     ],
   },
   "ai-mentor-packs": {
@@ -51,9 +95,14 @@ const PLAN_META = {
     updateEndpoint: DEFT_RANK_API.plans.aiMentorPacksUpdate,
     fields: [
       { key: "name", label: "Name", type: "text", required: true },
-      { key: "priceInr", label: "Price (INR)", type: "text", required: true },
-      { key: "credits", label: "Credits", type: "text", required: true },
-      { key: "validityMonths", label: "Validity Months", type: "text", required: true },
+      { key: "priceInr", label: "Price (INR)", type: "number", required: true },
+      { key: "credits", label: "Credits", type: "number", required: true },
+      {
+        key: "validityMonths",
+        label: "Validity Months",
+        type: "number",
+        required: true,
+      },
     ],
   },
   "on-demand-tests": {
@@ -62,9 +111,25 @@ const PLAN_META = {
     updateEndpoint: DEFT_RANK_API.plans.onDemandTestsUpdate,
     fields: [
       { key: "name", label: "Name", type: "text", required: true },
-      { key: "basePriceInr", label: "Base Price (INR)", type: "text", required: true },
-      { key: "validityMonths", label: "Validity Months", type: "text", required: true },
-      { key: "status", label: "Status", type: "select", options: ["Enabled", "Disabled"], required: true },
+      {
+        key: "basePriceInr",
+        label: "Base Price (INR)",
+        type: "number",
+        required: true,
+      },
+      {
+        key: "validityMonths",
+        label: "Validity Months",
+        type: "number",
+        required: true,
+      },
+      {
+        key: "status",
+        label: "Status",
+        type: "select",
+        options: ["Enabled", "Disabled"],
+        required: true,
+      },
     ],
   },
 };
@@ -141,8 +206,35 @@ export default function UpdatePlan() {
     meta.fields.forEach((field) => {
       if (!field.required) return;
       const value = formData?.[field.key];
-      if (value === undefined || value === null || `${value}`.trim() === "") {
+      if (
+        value === undefined ||
+        value === null ||
+        `${value}`.trim() === "" ||
+        value?.trim() == 0
+      ) {
         nextErrors[field.key] = `${field.label} is required`;
+      }
+      // ✅ Number validation
+      if (field.type === "number" && value) {
+        if (!/^\d+$/.test(value)) {
+          nextErrors[
+            field.key
+          ] = `${field.label} must contain positive numbers only`;
+          return;
+        }
+
+        // Optional: prevent negative
+        if (Number(value) < 0) {
+          nextErrors[field.key] = `${field.label} cannot be negative`;
+          return;
+        }
+      }
+
+      // ✅ Max length validation
+      if (field.maxLength && value && value.length > field.maxLength) {
+        nextErrors[
+          field.key
+        ] = `${field.label} cannot exceed ${field.maxLength} digits`;
       }
     });
     setErrors(nextErrors);
@@ -211,7 +303,10 @@ export default function UpdatePlan() {
     setLoading(true);
     try {
       const payload = buildPayload();
-      const response = await api.put(`${meta.updateEndpoint}/${id}/en`, payload);
+      const response = await api.put(
+        `${meta.updateEndpoint}/${id}/en`,
+        payload
+      );
       const result = response?.data;
       if (result?.status === false) {
         toast.error(result?.message || "Failed to update plan.");
@@ -247,7 +342,9 @@ export default function UpdatePlan() {
         <div className="row">
           {meta.fields.map((field) => (
             <div
-              className={`col-12 ${field.type === "boolean" ? "" : "col-md-6"} mb-3`}
+              className={`col-12 ${
+                field.type === "boolean" ? "" : "col-md-6"
+              } mb-3`}
               key={field.key}
             >
               {field.type === "boolean" ? (
@@ -256,14 +353,18 @@ export default function UpdatePlan() {
                   id={`${field.key}-switch`}
                   label={field.label}
                   checked={toBoolean(formData?.[field.key])}
-                  onChange={(event) => handleChange(field.key, event.target.checked)}
+                  onChange={(event) =>
+                    handleChange(field.key, event.target.checked)
+                  }
                 />
               ) : field.type === "select" ? (
                 <>
                   <Form.Label>{field.label}</Form.Label>
                   <Form.Select
                     value={formData?.[field.key] || ""}
-                    onChange={(event) => handleChange(field.key, event.target.value)}
+                    onChange={(event) =>
+                      handleChange(field.key, event.target.value)
+                    }
                   >
                     <option value="" disabled>
                       Select {field.label}
@@ -275,13 +376,15 @@ export default function UpdatePlan() {
                     ))}
                   </Form.Select>
                   {errors?.[field.key] && (
-                    <div className="text-danger font-size-14">{errors[field.key]}</div>
+                    <div className="text-danger font-size-14">
+                      {errors[field.key]}
+                    </div>
                   )}
                 </>
               ) : (
                 <DeftInput
                   label={field.label}
-                  type="text"
+                  type={field.type}
                   value={formData?.[field.key] || ""}
                   error={errors?.[field.key]}
                   onchange={(value) => handleChange(field.key, value)}
