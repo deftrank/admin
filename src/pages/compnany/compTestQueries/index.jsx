@@ -7,6 +7,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import {
   getChangeStatusOfCompQueryByAdmin,
   getCityList,
+  getDeleteCompTestEnquiryByAdmin,
   getListOfQueriesTestByAdmin,
   getSkillList,
   updateJob,
@@ -51,6 +52,7 @@ export default function CompTestList() {
   const totalPages = Math.ceil(queriesTotalCount / itemsPerPage);
   const [showInputModal, setShowInputModal] = useState(false);
   const [xobinTestId, setXobinTestID] = useState(null);
+  const [deleteModal, setDeleteModal] = useState({});
   useEffect(() => {
     getTestList();
   }, [currentPage]);
@@ -147,6 +149,14 @@ export default function CompTestList() {
     }
 
   
+  };
+
+  const handleDeleteInquiry = () => {
+    const data = {
+      id: deleteModal?.id,
+      language: "en",
+    };
+    dispatch(getDeleteCompTestEnquiryByAdmin(data, setDeleteModal));
   };
 
   return (
@@ -413,6 +423,27 @@ export default function CompTestList() {
                           />{" "}
                           Complete
                         </a>
+                        <a
+                          aria-label="dropdown action option"
+                          className="dropdown-item text-danger"
+                          style={{ cursor: "pointer" }}
+                          onClick={() =>
+                            setDeleteModal({
+                              show: true,
+                              id: item?.id,
+                              title: "Delete Comp Test Inquiry",
+                              message:
+                                "Are you sure you want to delete this inquiry? This action cannot be undone.",
+                            })
+                          }
+                        >
+                          <Icon
+                            icon={"mdi:delete"}
+                            height={20}
+                            className={"me-1"}
+                          />{" "}
+                          Delete
+                        </a>
                       </div>
                     </div>
                   </td>
@@ -512,6 +543,14 @@ export default function CompTestList() {
           data={xobinTestId}
           handleSubmit={handleChangeStatus}
           title="Comp Test ID"
+        />
+      )}
+      {deleteModal && (
+        <Confirmation
+          dialogData={deleteModal}
+          open={deleteModal?.show}
+          handleClose={() => setDeleteModal(false)}
+          handleSubmit={handleDeleteInquiry}
         />
       )}
     </>
