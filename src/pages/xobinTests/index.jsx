@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Icon } from "@iconify/react";
 import { useDispatch, useSelector } from "react-redux";
-import { Pagination } from "react-bootstrap";
+import { Modal, Pagination } from "react-bootstrap";
 
 import ConfirmationModal from "../../components/confirmationModel/confirmation";
 import { getXobinAssessmentListByAdmin } from "../../store/slice/onBoardingSlice";
@@ -18,6 +18,7 @@ export default function XobinTests() {
   const [sortBy, setSortBy] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [selectedTestJson, setSelectedTestJson] = useState(null);
   const totalPages = Math.max(
     1,
     Math.ceil((xobinAssessmentTotalCount || 0) / itemsPerPage)
@@ -58,9 +59,30 @@ export default function XobinTests() {
     return (
       item?.test_type ||
       item?.assessment_type ||
-      item?.type ||
+      item?.skillLevel ||
       "-"
     );
+  };
+
+  const getProctoringStatus = (item) => {
+    const proctoring = item?.proctoring_status;
+    if (proctoring && typeof proctoring === "object") {
+      const anyEnabled = Object.values(proctoring).some((value) => {
+        if (typeof value === "boolean") return value;
+        if (typeof value === "string") return value.toLowerCase() === "true";
+        if (typeof value === "number") return value === 1;
+        return false;
+      });
+      return anyEnabled ? "Proctored" : "Non-Proctored";
+    }
+
+    const typeValue = String(
+      item?.test_type || item?.assessment_type || item?.type || ""
+    ).toLowerCase();
+    if (typeValue.includes("proctored")) return "Proctored";
+    if (typeValue.includes("non-proctored")) return "Non-Proctored";
+
+    return "Non-Proctored";
   };
 
   const normalizeId = (item) => {
@@ -77,7 +99,7 @@ export default function XobinTests() {
     return (
       item?.test_name ||
       item?.assessment_name ||
-      item?.name ||
+      item?.skillLevel ||
       item?.title ||
       "-"
     );
@@ -101,6 +123,31 @@ export default function XobinTests() {
   const handlePageChange = (pageNumber) => {
     if (pageNumber < 1 || pageNumber > totalPages) return;
     setCurrentPage(pageNumber);
+  };
+
+  const formatDateTime = (value) => {
+    if (!value) return "-";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "-";
+    return date.toLocaleString();
+  };
+
+  const toLabel = (key) =>
+    String(key || "")
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+
+  const getProctoringItems = (item) => {
+    const proctoring = item?.proctoring_status;
+    if (!proctoring || typeof proctoring !== "object") return [];
+
+    return Object.entries(proctoring).map(([key, value]) => {
+      const enabled =
+        value === true ||
+        value === 1 ||
+        String(value).toLowerCase() === "true";
+      return { key, label: toLabel(key), enabled };
+    });
   };
 
   return (
@@ -176,7 +223,9 @@ export default function XobinTests() {
                 <tr>
                   <th>Test ID</th>
                   <th>Test Name</th>
-                  <th>Test Type</th>
+                  <th>Skill Level</th>
+                  <th>Proctoring</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody className="table-border-bottom-0">
@@ -185,21 +234,47 @@ export default function XobinTests() {
                     <td className="fw-semibold">{normalizeId(test)}</td>
                     <td>{normalizeName(test)}</td>
                     <td>
+                     
+                         {normalizeType(test)}
+                    </td>
+                    <td>
                       <span
                         className={`badge ${
-                          normalizeType(test) === "Proctored"
+                          getProctoringStatus(test) === "Proctored"
                             ? "bg-dark"
                             : "bg-label-secondary"
                         }`}
                       >
-                        {normalizeType(test)}
+                        {getProctoringStatus(test)}
                       </span>
+                    </td>
+                    <td>
+                      <div className="dropdown">
+                        <button
+                          aria-label="Click me"
+                          type="button"
+                          className="btn p-0 dropdown-toggle hide-arrow"
+                          data-bs-toggle="dropdown"
+                        >
+                          <i className="bx bx-dots-vertical-rounded"></i>
+                        </button>
+                        <div className="dropdown-menu">
+                          <a
+                            aria-label="dropdown action option"
+                            className="dropdown-item"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => setSelectedTestJson(test)}
+                          >
+                            <Icon icon="mdi:eye" height={20} className={"me-1"} /> View
+                          </a>
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 ))}
                 {xobinAssessmentList?.length === 0 && (
                   <tr>
-                    <td colSpan={3} className="text-center py-4 text-muted">
+                    <td colSpan={5} className="text-center py-4 text-muted">
                       No Xobin tests available.
                     </td>
                   </tr>
@@ -269,6 +344,103 @@ export default function XobinTests() {
         dialogData={dialogData}
         handleSubmit={handleFetchConfirm}
       />
+
+      <Modal
+        show={!!selectedTestJson}
+        onHide={() => setSelectedTestJson(null)}
+        centered
+        size="lg"
+      >
+        <Modal.Header>
+          <Modal.Title>Assessment Details</Modal.Title>
+          <button
+            type="button"
+            className="btn-close shadow-none"
+            aria-label="Close"
+            onClick={() => setSelectedTestJson(null)}
+          ></button>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedTestJson ? (
+            <>
+              <div className="row g-3">
+                <div className="col-md-6">
+                  <small className="text-muted">Test ID</small>
+                  <div className="fw-semibold">{normalizeId(selectedTestJson)}</div>
+                </div>
+                <div className="col-md-6">
+                  <small className="text-muted">Assessment ID</small>
+                  <div>{selectedTestJson?.assessment_id || "-"}</div>
+                </div>
+                <div className="col-12">
+                  <small className="text-muted">Test Name</small>
+                  <div className="fw-semibold">{normalizeName(selectedTestJson)}</div>
+                </div>
+                <div className="col-md-4">
+                  <small className="text-muted">Skill Level</small>
+                  <div>{selectedTestJson?.skillLevel || "-"}</div>
+                </div>
+                <div className="col-md-4">
+                  <small className="text-muted">Skill Type</small>
+                  <div>{selectedTestJson?.skillType || "-"}</div>
+                </div>
+                <div className="col-md-4">
+                  <small className="text-muted">Test Type</small>
+                  <div>{selectedTestJson?.testType ?? "-"}</div>
+                </div>
+                <div className="col-md-6">
+                  <small className="text-muted">Duration</small>
+                  <div>
+                    {selectedTestJson?.assessment_duration
+                      ? `${selectedTestJson.assessment_duration} min`
+                      : "-"}
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <small className="text-muted">Questions</small>
+                  <div>{selectedTestJson?.number_of_questions || "-"}</div>
+                </div>
+                <div className="col-md-6">
+                  <small className="text-muted">Created By</small>
+                  <div>{selectedTestJson?.created_by || "-"}</div>
+                </div>
+                <div className="col-md-6">
+                  <small className="text-muted">Company ID</small>
+                  <div>{selectedTestJson?.company_id || "-"}</div>
+                </div>
+                <div className="col-md-6">
+                  <small className="text-muted">Created At</small>
+                  <div>{formatDateTime(selectedTestJson?.createdAt)}</div>
+                </div>
+                <div className="col-md-6">
+                  <small className="text-muted">Updated At</small>
+                  <div>{formatDateTime(selectedTestJson?.updatedAt)}</div>
+                </div>
+              </div>
+
+              <hr />
+
+              <div>
+                <small className="text-muted d-block mb-2">Proctoring</small>
+                <div className="d-flex flex-wrap gap-2">
+                  {getProctoringItems(selectedTestJson).length > 0 ? (
+                    getProctoringItems(selectedTestJson).map((item) => (
+                      <span
+                        key={item.key}
+                        className={`badge ${item.enabled ? "bg-label-success" : "bg-label-secondary"}`}
+                      >
+                        {item.label}: {item.enabled ? "Enabled" : "Disabled"}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-muted">No proctoring details available</span>
+                  )}
+                </div>
+              </div>
+            </>
+          ) : null}
+        </Modal.Body>
+      </Modal>
     </>
   );
 }

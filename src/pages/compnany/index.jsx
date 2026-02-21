@@ -350,6 +350,7 @@ export default function index() {
               <tr>
                 <th>Name</th>
                 <th>Company Name</th>
+                <th>Company Email</th>
                 <th>Category</th>
                 <th>Website</th>
                 <th>Address</th>
@@ -387,6 +388,20 @@ export default function index() {
                       }}
                     >
                       {item.registered_name ? item.registered_name : "-"}
+                    </div>
+                  </td>
+                  <td>
+                    <div
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      title={item?.auth_id?.email ? item?.auth_id?.email : ""}
+                      style={{
+                        width: "12vw",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {item?.auth_id?.email ? item?.auth_id?.email : "-"}
                     </div>
                   </td>
                   <td>{item.category}</td>

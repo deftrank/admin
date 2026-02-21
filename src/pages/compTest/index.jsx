@@ -1,7 +1,8 @@
 // @ts-nocheck
 import React, { useEffect, useState } from "react";
+import { Icon } from "@iconify/react";
 import { useDispatch, useSelector } from "react-redux";
-import { Pagination } from "react-bootstrap";
+import { Modal, Pagination } from "react-bootstrap";
 
 import { getCompTestListingByAdmin } from "../../store/slice/onBoardingSlice";
 import { changeDate } from "../../utils/appConstant";
@@ -16,6 +17,7 @@ export default function CompTest() {
   const [sortBy, setSortBy] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [selectedCompTestJson, setSelectedCompTestJson] = useState(null);
   const totalPages = Math.max(
     1,
     Math.ceil((compTestListingTotalCount || 0) / itemsPerPage)
@@ -70,6 +72,25 @@ export default function CompTest() {
       return item.primary_skills.join(", ");
     }
     return "-";
+  };
+  const getProctoringStatus = (item) => {
+    const proctoring = item?.proctoring_status || item?.assessmentDetails?.proctoring_status;
+    if (proctoring && typeof proctoring === "object") {
+      const anyEnabled = Object.values(proctoring).some((value) => {
+        if (typeof value === "boolean") return value;
+        if (typeof value === "string") return value.toLowerCase() === "true";
+        if (typeof value === "number") return value === 1;
+        return false;
+      });
+      return anyEnabled ? "Proctored" : "Non-Proctored";
+    }
+
+    const typeValue = String(item?.comp_test_type || item?.testType || item?.test_type || "")
+      .toLowerCase();
+    if (typeValue.includes("proctored")) return "Proctored";
+    if (typeValue.includes("non-proctored")) return "Non-Proctored";
+
+    return "Non-Proctored";
   };
 
   return (
@@ -135,7 +156,9 @@ export default function CompTest() {
                 <th>Job Title</th>
                 <th>Company</th>
                 <th>Primary Skills</th>
+                <th>Proctoring</th>
                 <th>Created Date</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody className="table-border-bottom-0">
@@ -145,12 +168,45 @@ export default function CompTest() {
                   <td>{normalizeTitle(item)}</td>
                   <td>{normalizeCompany(item)}</td>
                   <td>{normalizeSkills(item)}</td>
+                  <td>
+                    <span
+                      className={`badge ${
+                        getProctoringStatus(item) === "Proctored"
+                          ? "bg-dark"
+                          : "bg-label-secondary"
+                      }`}
+                    >
+                      {getProctoringStatus(item)}
+                    </span>
+                  </td>
                   <td>{item?.createdAt ? changeDate(item?.createdAt) : "-"}</td>
+                  <td>
+                    <div className="dropdown">
+                      <button
+                        aria-label="Click me"
+                        type="button"
+                        className="btn p-0 dropdown-toggle hide-arrow"
+                        data-bs-toggle="dropdown"
+                      >
+                        <i className="bx bx-dots-vertical-rounded"></i>
+                      </button>
+                      <div className="dropdown-menu">
+                        <a
+                          aria-label="dropdown action option"
+                          className="dropdown-item"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => setSelectedCompTestJson(item)}
+                        >
+                          <Icon icon="mdi:eye" height={20} className={"me-1"} /> View
+                        </a>
+                      </div>
+                    </div>
+                  </td>
                 </tr>
               ))}
               {compTestListingByAdmin?.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="text-center py-4 text-muted">
+                  <td colSpan={7} className="text-center py-4 text-muted">
                     No comp test records available.
                   </td>
                 </tr>
@@ -210,6 +266,36 @@ export default function CompTest() {
           </div>
         </div>
       </div>
+
+      <Modal
+        show={!!selectedCompTestJson}
+        onHide={() => setSelectedCompTestJson(null)}
+        centered
+        size="lg"
+      >
+        <Modal.Header>
+          <Modal.Title>Comp Test JSON Details</Modal.Title>
+          <button
+            type="button"
+            className="btn-close shadow-none"
+            aria-label="Close"
+            onClick={() => setSelectedCompTestJson(null)}
+          ></button>
+        </Modal.Header>
+        <Modal.Body>
+          <pre
+            className="mb-0"
+            style={{
+              maxHeight: "60vh",
+              overflow: "auto",
+              whiteSpace: "pre-wrap",
+              wordBreak: "break-word",
+            }}
+          >
+            {selectedCompTestJson ? JSON.stringify(selectedCompTestJson, null, 2) : ""}
+          </pre>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }
