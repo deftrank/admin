@@ -130,14 +130,18 @@ const slice = createSlice({
         const suspendIndex = state.listOfCompanyByAdmin?.findIndex(
           (item) => item.auth_id._id === newObjId
         );
-        state.listOfCompanyByAdmin[suspendIndex].auth_id.suspend_status =
-          action.payload.data.status;
+        if (suspendIndex > -1) {
+          state.listOfCompanyByAdmin[suspendIndex].auth_id.suspend_status =
+            action.payload.data.status;
+        }
       } else {
         const suspendIndex = state.listOfUserByAdmin?.findIndex(
           (item) => item.auth_id._id === newObjId
         );
-        state.listOfUserByAdmin[suspendIndex].auth_id.suspend_status =
-          action.payload.data.status;
+        if (suspendIndex > -1) {
+          state.listOfUserByAdmin[suspendIndex].auth_id.suspend_status =
+            action.payload.data.status;
+        }
       }
     },
     accountDetailsSuccess(state, action) {

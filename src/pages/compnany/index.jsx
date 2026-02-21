@@ -30,6 +30,12 @@ export default function index() {
   const [changePasswordModal, setChangePasswordModal] = useState({});
   const [dateRange, setDateRange] = useState({});
   const [status, setStatus] = useState("");
+  const [rejectModal, setRejectModal] = useState({
+    show: false,
+    id: "",
+    reason: "",
+    error: "",
+  });
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [resetFormData, setResetFormData] = useState({
     email: "",
@@ -112,12 +118,55 @@ export default function index() {
   const suspentAccount = () => {
     const data = {
       auth_id: changePasswordModal?.id,
-      status:changePasswordModal?.data?.auth_id?.suspend_status == "active"
-          ? "suspended"
-          : "active",
+      status: changePasswordModal?.nextStatus || "active",
       language: "en",
     };
+    if (
+      (data.status === "inactive" || data.status === "reject") &&
+      changePasswordModal?.reason
+    ) {
+      data.reason = changePasswordModal?.reason;
+    }
     dispatch(suspendUser(data, setChangePasswordModal, "company"));
+  };
+
+  const handleRejectSubmit = () => {
+    const reason = rejectModal?.reason?.trim();
+    if (!reason) {
+      setRejectModal((prev) => ({
+        ...prev,
+        error: "Rejection reason is required",
+      }));
+      return;
+    }
+    const data = {
+      auth_id: rejectModal?.id,
+      status: "reject",
+      language: "en",
+      reason,
+    };
+    dispatch(suspendUser(data, setRejectModal, "company"));
+  };
+
+  const normalizeStatus = (rawStatus) => {
+    const statusValue = (rawStatus || "").toLowerCase();
+    if (statusValue === "active") return "approved";
+    if (statusValue === "pending") return "pending";
+    if (
+      statusValue === "inactive" ||
+      statusValue === "suspended" ||
+      statusValue === "reject"
+    ) {
+      return "rejected";
+    }
+    return statusValue || "pending";
+  };
+
+  const statusBadgeClass = (rawStatus) => {
+    const mappedStatus = normalizeStatus(rawStatus);
+    if (mappedStatus === "approved") return "bg-label-success";
+    if (mappedStatus === "pending") return "bg-label-warning";
+    return "bg-label-danger";
   };
 
   const openResetModal = (item) => {
@@ -223,7 +272,15 @@ export default function index() {
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
                   >
-                    {status ? `${status}` : "All Company"}
+                    {!status
+                      ? "All Company"
+                      : status === "active"
+                      ? "Approved"
+                      : status === "pending"
+                      ? "Pending"
+                      : status === "reject"
+                      ? "Rejected"
+                      : status}
                   </button>
                   <ul className="dropdown-menu">
                     <li>
@@ -233,7 +290,7 @@ export default function index() {
                         className="dropdown-item"
                         onClick={() => setStatus("active")}
                       >
-                        Active
+                        Approved
                       </a>
                     </li>
                     <li>
@@ -251,9 +308,9 @@ export default function index() {
                         style={{ cursor: "pointer" }}
                         aria-label="dropdown action link"
                         className="dropdown-item"
-                        onClick={() => setStatus("suspended")}
+                        onClick={() => setStatus("reject")}
                       >
-                        Suspend
+                        Rejected
                       </a>
                     </li>
                     <li>
@@ -369,15 +426,11 @@ export default function index() {
                   </td>
                   <td>
                     <span
-                      className={`badge ${
-                        item?.auth_id?.suspend_status == "active"
-                          ? "bg-label-success"
-                          : item?.auth_id?.suspend_status == "pending"
-                          ? "bg-label-warning"
-                          : "bg-label-danger"
-                      } me-1 text-capitalize`}
+                      className={`badge ${statusBadgeClass(
+                        item?.auth_id?.suspend_status
+                      )} me-1 text-capitalize`}
                     >
-                      {item?.auth_id?.suspend_status}
+                      {normalizeStatus(item?.auth_id?.suspend_status)}
                     </span>
                   </td>
                   <td>
@@ -441,36 +494,42 @@ export default function index() {
                               ...changePasswordModal,
                               show: true,
                               id: item.auth_id._id,
-                              title: `${
-                                item?.auth_id?.suspend_status == "active"
-                                  ? "Suspend"
-                                  : "Enable"
-                              } Company`,
+                              title: "Approve Company",
                               data: item,
-                              message: `Are you sure you want to ${
-                                item?.auth_id?.suspend_status == "active"
-                                  ? "suspend"
-                                  : "enable"
-                              } this company?`,
+                              message:
+                                "Are you sure you want to approve this company?",
+                              nextStatus: "active",
                               type: "Disable",
                             }));
                           }}
                         >
                           <Icon
-                            icon={
-                              item?.auth_id?.suspend_status == "active"
-                                ? "lsicon:disable-outline"
-                                : "fontisto:radio-btn-active"
-                            }
+                            icon={"fontisto:radio-btn-active"}
                             height={20}
                             className={"me-1"}
                           />{" "}
-                          {item?.auth_id?.suspend_status == "active"
-                            ? "Suspend"
-                            : "Enable"}{" "}
-                          Company
+                          Approve Company
                         </a>
-                        {console.log(item?.auth_id)}
+                        <a
+                          aria-label="dropdown action option"
+                          className="dropdown-item"
+                          style={{ cursor: "pointer" }}
+                          onClick={() =>
+                            setRejectModal({
+                              show: true,
+                              id: item.auth_id._id,
+                              reason: "",
+                              error: "",
+                            })
+                          }
+                        >
+                          <Icon
+                            icon={"lsicon:disable-outline"}
+                            height={20}
+                            className={"me-1"}
+                          />{" "}
+                          Reject Company
+                        </a>
                         <a
                           aria-label="dropdown action option"
                           className="dropdown-item"
@@ -675,6 +734,73 @@ export default function index() {
         <Modal.Footer className={"border-0"}>
           <Button variant="primary w-100" onClick={handleResetSubmit}>
             Submit
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal
+        show={rejectModal?.show}
+        onHide={() =>
+          setRejectModal({
+            show: false,
+            id: "",
+            reason: "",
+            error: "",
+          })
+        }
+        centered
+        backdrop="static"
+      >
+        <Modal.Header>
+          <Modal.Title>Reject Company</Modal.Title>
+          <button
+            onClick={() =>
+              setRejectModal({
+                show: false,
+                id: "",
+                reason: "",
+                error: "",
+              })
+            }
+            type="button"
+            className="btn-close shadow-none"
+            aria-label="Close"
+          ></button>
+        </Modal.Header>
+        <Modal.Body>
+          <label className="form-label">Reason</label>
+          <textarea
+            className="form-control"
+            rows={4}
+            placeholder="Enter rejection reason"
+            value={rejectModal?.reason || ""}
+            onChange={(e) =>
+              setRejectModal((prev) => ({
+                ...prev,
+                reason: e.target.value,
+                error: "",
+              }))
+            }
+          />
+          {rejectModal?.error ? (
+            <small className="text-danger">{rejectModal?.error}</small>
+          ) : null}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() =>
+              setRejectModal({
+                show: false,
+                id: "",
+                reason: "",
+                error: "",
+              })
+            }
+          >
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleRejectSubmit}>
+            Reject
           </Button>
         </Modal.Footer>
       </Modal>

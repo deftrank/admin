@@ -31,6 +31,7 @@ export default function index() {
   });
   const [formErrors, setFormErrors] = useState({});
   const [companyActionModal, setCompanyActionModal] = useState(null);
+  const [logoFallback, setLogoFallback] = useState(false);
 
   useEffect(() => {
     getStudentDetail();
@@ -112,6 +113,48 @@ export default function index() {
     dispatch(deleteUser(data, setCompanyActionModal, "company"));
   };
 
+  const accountData = studentDetail?.accountData || {};
+  const authData = studentDetail?.authData || {};
+  const companyStatus = (authData?.suspend_status || "pending").toLowerCase();
+  const statusLabel =
+    companyStatus === "active"
+      ? "Approved"
+      : companyStatus === "pending"
+      ? "Pending"
+      : companyStatus === "reject" ||
+        companyStatus === "inactive" ||
+        companyStatus === "suspended"
+      ? "Rejected"
+      : companyStatus;
+
+  const statusClass =
+    statusLabel === "Approved"
+      ? "bg-label-success"
+      : statusLabel === "Pending"
+      ? "bg-label-warning"
+      : "bg-label-danger";
+
+  const joinedDate = authData?.createdAt
+    ? moment(authData.createdAt).format("DD MMM YYYY")
+    : accountData?.createdAt
+    ? moment(accountData.createdAt).format("DD MMM YYYY")
+    : "-";
+
+  const locationText =
+    accountData?.current_location ||
+    accountData?.state ||
+    accountData?.country ||
+    accountData?.pin_code
+      ? `${accountData?.current_location ? `${accountData.current_location}, ` : ""}${
+          accountData?.state ? `${accountData.state}, ` : ""
+        }${accountData?.country ? `${accountData.country}, ` : ""}${
+          accountData?.pin_code || ""
+        }`
+      : "-";
+
+  const companyLogo =
+    !logoFallback && accountData?.company_logo ? accountData.company_logo : profile;
+
   return (
     <>
       <section className="py-4 container-fluid">
@@ -123,9 +166,9 @@ export default function index() {
             >
               <span className="text-decoration-underline">Company</span> /
             </span>{" "}
-            <span className="text-decoration-underline"> Details</span>
+            <span className="text-decoration-underline">Details</span>
           </h5>
-          
+
           <div className="dropdown">
             <button
               className="btn btn-outline-primary dropdown-toggle"
@@ -167,166 +210,133 @@ export default function index() {
             </ul>
           </div>
         </div>
-        <div className=" py-3 ">
-          <div className="shadow-lg position-relative rounded-4">
+
+        <div className="py-3">
+          <div className="shadow-lg position-relative rounded-4 overflow-hidden bg-body">
             <div
               style={{
                 backgroundImage: `url(${profileBg})`,
-                height: 140,
-
+                height: 180,
                 backgroundSize: "cover",
+                backgroundPosition: "center",
               }}
-              className=" rounded-top-4"
+              className="rounded-top-4"
             ></div>
-            <img
-              src={studentDetail?.accountData?.company_logo?studentDetail?.accountData?.company_logo:profile}
-              alt=""
-              className="img-fluid position-absolute rounded-circle top-25"
-              style={{
-                width: 100,
-                height: 100,
-                transform: "translate(40px, -50px)",
-              }}
-            />
-            <div className="mt-5 pb-4 ">
-              <div className="px-5 col-12">
-                <div className="row mb-3">
-                  <div className="col-12">
-                    <h6 className="font-size-20 mt-2 text-capitalize">
-                      {" "}
-                      {/* Reduced margin-top from mt-3 to mt-2 */}
-                      {studentDetail?.accountData?.registered_name
-                        ? studentDetail.accountData.registered_name
-                        : "-"}
-                    </h6>
-                    <p style={{ marginTop: "-0.5rem" }}>
-                      {" "}
-                      {/* Adjusted margin-top for the paragraph */}
-                      {studentDetail?.accountData?.about_company
-                        ? studentDetail?.accountData?.about_company
-                        : ""}
-                    </p>
+
+            <div className="position-absolute top-0 end-0 m-3">
+              <span className={`badge ${statusClass} text-capitalize px-3 py-2`}>
+                {statusLabel}
+              </span>
+            </div>
+
+            <div className="px-4 px-md-5 pb-4" style={{ marginTop: -50 }}>
+              <div className="d-flex flex-column flex-md-row align-items-md-end gap-3">
+                <img
+                  src={companyLogo}
+                  alt="Company logo"
+                  onError={() => setLogoFallback(true)}
+                  className="img-fluid rounded-circle border border-4 border-white shadow-sm bg-white"
+                  style={{
+                    width: 110,
+                    height: 110,
+                    objectFit: "cover",
+                  }}
+                />
+                <div className="d-flex flex-column gap-1 pb-md-1">
+                  <h4 className="mb-0 text-capitalize">{accountData?.registered_name || "-"}</h4>
+                  <div className="d-flex flex-wrap gap-2">
+                    <span className="badge bg-label-primary px-3 py-2">
+                      {accountData?.category || "Uncategorized"}
+                    </span>
+                    <span className="badge bg-label-info px-3 py-2">Joined {joinedDate}</span>
                   </div>
                 </div>
-                <div>
+              </div>
+
+              <div className="mt-3">
+                <p className="text-muted mb-0">
+                  {accountData?.about_company || "No company description added yet."}
+                </p>
+              </div>
+
+              <div className="row g-3 mt-1">
+                <div className="col-xl-3 col-md-6 col-12">
+                  <div className="border rounded-3 p-3 h-100 bg-white">
+                    <p className="text-muted mb-2 small">Contact Person</p>
+                    <h6 className="mb-0">{accountData?.contact_person_name || "-"}</h6>
+                  </div>
+                </div>
+                <div className="col-xl-3 col-md-6 col-12">
+                  <div className="border rounded-3 p-3 h-100 bg-white">
+                    <p className="text-muted mb-2 small">Email</p>
+                    <h6 className="mb-0 text-break">{authData?.email || "-"}</h6>
+                  </div>
+                </div>
+                <div className="col-xl-3 col-md-6 col-12">
+                  <div className="border rounded-3 p-3 h-100 bg-white">
+                    <p className="text-muted mb-2 small">Phone</p>
+                    <h6 className="mb-0">
+                      {accountData?.contact_person_number
+                        ? `${accountData?.countryCode || ""} ${accountData?.contact_person_number}`
+                        : "-"}
+                    </h6>
+                  </div>
+                </div>
+                <div className="col-xl-3 col-md-6 col-12">
+                  <div className="border rounded-3 p-3 h-100 bg-white">
+                    <p className="text-muted mb-2 small">Pincode</p>
+                    <h6 className="mb-0">{accountData?.pin_code || "-"}</h6>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4">
                 <div className="row">
-  {/* Email */}
-  <div className="col-lg-4 col-sm-6 col-12 pt-2">
-    <div className="d-flex align-items-center">
-      <Icon
-        icon="mdi:tag"
-        className="fs-2 me-3"
-        style={{ color: color.secondaryGray }}
-      />
-      <h6 style={{ color: color.secondaryGray }} className="mb-0">
-        {studentDetail?.accountData?.category || "-"}
-      </h6>
-    </div>
-  </div>
+                  <div className="col-lg-4 col-sm-6 col-12 pt-2">
+                    <div className="d-flex align-items-center">
+                      <Icon
+                        icon="mdi:web"
+                        className="fs-2 me-3"
+                        style={{ color: color.secondaryGray }}
+                      />
+                      <h6 style={{ color: color.secondaryGray }} className="mb-0 text-break">
+                        {accountData?.company_website || "-"}
+                      </h6>
+                    </div>
+                  </div>
 
-  {/* Contact Person Name */}
-  <div className="col-lg-4 col-sm-6 col-12 pt-2">
-    <div className="d-flex align-items-center">
-      <Icon
-        icon="mdi:account"
-        className="fs-2 me-3"
-        style={{ color: color.secondaryGray }}
-      />
-      <h6 style={{ color: color.secondaryGray }} className="mb-0">
-        {studentDetail?.accountData?.contact_person_name || "-"}
-      </h6>
-    </div>
-  </div>
+                  <div className="col-lg-4 col-sm-6 col-12 pt-2">
+                    <div className="d-flex align-items-center">
+                      <Icon
+                        icon="mdi:linkedin"
+                        className="fs-2 me-3"
+                        style={{ color: color.secondaryGray }}
+                      />
+                      <h6 style={{ color: color.secondaryGray }} className="mb-0 text-break">
+                        {accountData?.linkedin_url || "-"}
+                      </h6>
+                    </div>
+                  </div>
 
-  {/* Email */}
-  <div className="col-lg-4 col-sm-6 col-12 pt-2">
-    <div className="d-flex align-items-center">
-      <Icon
-        icon="mdi:email"
-        className="fs-2 me-3"
-        style={{ color: color.secondaryGray }}
-      />
-      <h6 style={{ color: color.secondaryGray }} className="mb-0">
-        {studentDetail?.authData?.email || "-"}
-      </h6>
-    </div>
-  </div>
-
-  {/* Phone Number */}
-  <div className="col-lg-4 col-sm-6 col-12 pt-2">
-    <div className="d-flex align-items-center">
-      <Icon
-        icon="mdi:phone"
-        className="fs-2 me-3"
-        style={{ color: color.secondaryGray }}
-      />
-      <h6 style={{ color: color.secondaryGray }} className="mb-0">
-        {studentDetail?.accountData?.contact_person_number
-          ? `${studentDetail?.accountData?.countryCode} ${studentDetail?.accountData?.contact_person_number}`
-          : "-"}
-      </h6>
-    </div>
-  </div>
-
-  {/* College Website (empty for now) */}
-  <div className="col-lg-4 col-sm-6 col-12 pt-2">
-    <div className="d-flex align-items-center">
-      <Icon
-        icon="mdi:web"
-        className="fs-2 me-3"
-        style={{ color: color.secondaryGray }}
-      />
-      <h6 style={{ color: color.secondaryGray }} className="mb-0">
-        {studentDetail?.accountData?.company_website || "-"}
-      </h6>
-    </div>
-  </div>
-
-  {/* LinkedIn */}
-  <div className="col-lg-4 col-sm-6 col-12 pt-2">
-  <div className="d-flex align-items-start  text-break">
-    <Icon
-      icon="mdi:linkedin"
-      className="fs-1 me-3 flex-shrink-0"
-      style={{ color: color.secondaryGray }}
-    />
-    <h6
-      style={{ color: color.secondaryGray, wordBreak: 'break-word' }}
-      className="mb-0"
-    >
-      {studentDetail?.accountData?.linkedin_url || "-"}
-    </h6>
-  </div>
-</div>
-
-
-  {/* Location */}
-  <div className="col-lg-4 col-sm-6 col-12 pt-2 d-flex align-items-center">
-    <Icon
-      icon="mdi:map-marker"
-      className="fs-2 me-3"
-      style={{ color: color.secondaryGray }}
-    />
-    <h6 style={{ color: color.secondaryGray }} className="mb-0">
-      {studentDetail?.accountData?.current_location ||
-      studentDetail?.accountData?.state ||
-      studentDetail?.accountData?.country ||
-      studentDetail?.accountData?.pin_code
-        ? `${studentDetail?.accountData?.current_location ? studentDetail.accountData.current_location + "," : ""} 
-           ${studentDetail?.accountData?.state ? studentDetail.accountData.state + "," : ""} 
-           ${studentDetail?.accountData?.country ? studentDetail.accountData.country + "," : ""} 
-           ${studentDetail?.accountData?.pin_code || ""}`
-        : "-"}
-    </h6>
-  </div>
-</div>
-
+                  <div className="col-lg-4 col-sm-6 col-12 pt-2">
+                    <div className="d-flex align-items-center">
+                      <Icon
+                        icon="mdi:map-marker"
+                        className="fs-2 me-3"
+                        style={{ color: color.secondaryGray }}
+                      />
+                      <h6 style={{ color: color.secondaryGray }} className="mb-0 text-break">
+                        {locationText}
+                      </h6>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </section>
+
       <Modal
         show={isResetModalOpen}
         onHide={() => setIsResetModalOpen(false)}
@@ -407,6 +417,7 @@ export default function index() {
           </Button>
         </Modal.Footer>
       </Modal>
+
       {companyActionModal?.show && (
         <Confirmation
           dialogData={companyActionModal}
