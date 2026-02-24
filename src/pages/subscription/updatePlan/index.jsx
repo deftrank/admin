@@ -161,6 +161,15 @@ export default function UpdatePlan() {
   const [errors, setErrors] = useState({});
 
   const title = useMemo(() => (meta ? meta.title : "Edit Plan"), [meta]);
+  const navigateToPlanList = () => {
+    navigate("/subscription-plans", {
+      state: {
+        focusSection: planType,
+        updatedPlanId: id,
+        refreshAt: Date.now(),
+      },
+    });
+  };
 
   useEffect(() => {
     if (!meta) return;
@@ -182,14 +191,14 @@ export default function UpdatePlan() {
       const selected = list.find((item) => `${getPlanId(item)}` === `${id}`);
       if (!selected) {
         toast.error("Plan not found.");
-        navigate("/subscription-plans");
+        navigateToPlanList();
         return;
       }
       setFormData(buildInitialForm(selected, planType));
     } catch (e) {
       console.error(e.message);
       toast.error("Failed to load plan details.");
-      navigate("/subscription-plans");
+      navigateToPlanList();
     } finally {
       setLoading(false);
     }
@@ -313,7 +322,7 @@ export default function UpdatePlan() {
         return;
       }
       toast.success("Plan updated successfully.");
-      navigate("/subscription-plans");
+      navigateToPlanList();
     } catch (e) {
       console.error(e.message);
       toast.error("Failed to update plan.");
@@ -397,7 +406,7 @@ export default function UpdatePlan() {
           <button
             className="btn btn-outline-secondary"
             type="button"
-            onClick={() => navigate("/subscription-plans")}
+            onClick={navigateToPlanList}
             disabled={loading}
           >
             Cancel

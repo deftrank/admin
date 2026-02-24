@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useEffect, useMemo, useState } from "react";
 import { Icon } from "@iconify/react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import DeftInput from "../../components/deftInput/deftInput";
 import api from "../../service";
@@ -11,6 +11,7 @@ import "./subscription.css";
 const SECTION_CONFIG = [
   {
     id: "company-connect",
+    group: "company",
     title: "Company Connect Plans",
     description: "Plans that unlock hiring actions for companies.",
     listEndpoint: DEFT_RANK_API.plans.companyConnectList,
@@ -26,6 +27,7 @@ const SECTION_CONFIG = [
   },
   {
     id: "student-test-credits",
+    group: "student",
     title: "Student Test Credit Plans",
     description: "Student plans with tests and BG Campus credits.",
     listEndpoint: DEFT_RANK_API.plans.studentTestCreditsList,
@@ -40,6 +42,7 @@ const SECTION_CONFIG = [
   },
   {
     id: "ai-mentor-packs",
+    group: "student",
     title: "AI Mentor On-Demand Packs",
     description: "Standalone packs that stack with plan credits.",
     listEndpoint: DEFT_RANK_API.plans.aiMentorPacksList,
@@ -52,6 +55,7 @@ const SECTION_CONFIG = [
   },
   {
     id: "on-demand-tests",
+    group: "student",
     title: "On-Demand Test Pricing",
     description: "Per-test pricing configuration for students.",
     listEndpoint: DEFT_RANK_API.plans.onDemandTestsList,
@@ -125,7 +129,10 @@ const buildTagBadges = (tags = []) => (
 
 export default function SubscriptionPlans() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchData, setSearchData] = useState("");
+  const [planScope, setPlanScope] = useState("all");
+  const [highlightedPlanId, setHighlightedPlanId] = useState("");
   const [loading, setLoading] = useState(false);
   const [sections, setSections] = useState(
     SECTION_CONFIG.map((item, index) => ({
@@ -140,12 +147,29 @@ export default function SubscriptionPlans() {
     fetchPlanSections();
   }, []);
 
+  useEffect(() => {
+    const focusSection = location?.state?.focusSection;
+    const updatedPlanId = location?.state?.updatedPlanId;
+    const scopeFromSection = SECTION_CONFIG.find(
+      (section) => section.id === focusSection
+    )?.group;
+
+    if (scopeFromSection) {
+      setPlanScope(scopeFromSection);
+    }
+    if (updatedPlanId) {
+      setHighlightedPlanId(`${updatedPlanId}`);
+      const timer = setTimeout(() => setHighlightedPlanId(""), 3500);
+      return () => clearTimeout(timer);
+    }
+  }, [location?.state]);
+
   const fetchPlanSections = async () => {
     setLoading(true);
     try {
       const responses = await Promise.all(
         SECTION_CONFIG.map((section) =>
-          api.get(`${section.listEndpoint}/en`)
+          api.get(`${section.listEndpoint}/en?t=${Date.now()}`)
         )
       );
 
@@ -156,7 +180,7 @@ export default function SubscriptionPlans() {
           ...section,
           items: data,
           filteredItems: data,
-          open: index === 0,
+          open: section.id === (location?.state?.focusSection || SECTION_CONFIG[0].id),
         };
       });
 
@@ -164,11 +188,11 @@ export default function SubscriptionPlans() {
     } catch (e) {
       console.error(e.message);
       setSections(
-        SECTION_CONFIG.map((section, index) => ({
+        SECTION_CONFIG.map((section) => ({
           ...section,
           items: [],
           filteredItems: [],
-          open: index === 0,
+          open: section.id === (location?.state?.focusSection || SECTION_CONFIG[0].id),
         }))
       );
     } finally {
@@ -180,24 +204,26 @@ export default function SubscriptionPlans() {
   const isSearchActive = searchTerm.length > 0;
 
   const filteredSections = useMemo(() => {
-    return sections.map((section) => {
-      const filteredItems = section.items.filter((item) => {
-        const haystack = [
-          section.title,
-          item.name,
-          item.id,
-          item.visibility,
-          item.status,
-          item.taxRules,
-          ...(item.tags || []),
-        ]
-          .map(normalize)
-          .join(" ");
-        return normalize(haystack).includes(searchTerm);
+    return sections
+      .filter((section) => planScope === "all" || section.group === planScope)
+      .map((section) => {
+        const filteredItems = section.items.filter((item) => {
+          const haystack = [
+            section.title,
+            item.name,
+            item.id,
+            item.visibility,
+            item.status,
+            item.taxRules,
+            ...(item.tags || []),
+          ]
+            .map(normalize)
+            .join(" ");
+          return normalize(haystack).includes(searchTerm);
+        });
+        return { ...section, filteredItems };
       });
-      return { ...section, filteredItems };
-    });
-  }, [sections, searchTerm]);
+  }, [planScope, sections, searchTerm]);
 
   const totalMatches = filteredSections.reduce(
     (sum, section) => sum + section.filteredItems.length,
@@ -232,6 +258,35 @@ export default function SubscriptionPlans() {
     <div className="card">
       <div className="p-3">
         <h4>Monetization Plans</h4>
+        <div className="d-flex gap-2 flex-wrap mt-2 mb-3">
+          <button
+            type="button"
+            className={`btn btn-sm ${
+              planScope === "all" ? "btn-primary" : "btn-outline-primary"
+            }`}
+            onClick={() => setPlanScope("all")}
+          >
+            All Plans
+          </button>
+          <button
+            type="button"
+            className={`btn btn-sm ${
+              planScope === "company" ? "btn-primary" : "btn-outline-primary"
+            }`}
+            onClick={() => setPlanScope("company")}
+          >
+            Company Plans
+          </button>
+          <button
+            type="button"
+            className={`btn btn-sm ${
+              planScope === "student" ? "btn-primary" : "btn-outline-primary"
+            }`}
+            onClick={() => setPlanScope("student")}
+          >
+            Student Plans
+          </button>
+        </div>
         <div className="d-flex flex-column flex-md-row justify-content-between gap-3">
           <div className="input-group-merge subscription-search">
             <DeftInput
@@ -299,7 +354,14 @@ export default function SubscriptionPlans() {
                       </thead>
                       <tbody className="table-border-bottom-0">
                         {section.filteredItems.map((item, index) => (
-                          <tr key={item.id || `${section.id}-${index}`} className="subscription-row">
+                          <tr
+                            key={item.id || `${section.id}-${index}`}
+                            className={`subscription-row ${
+                              `${item.id}` === highlightedPlanId
+                                ? "subscription-row--highlight"
+                                : ""
+                            }`}
+                          >
                             {section.columns.map((column) => (
                               <td key={`${item.id}-${column.key}`}>
                                 {renderCell(item, column)}
