@@ -54,6 +54,12 @@
                 "link": "/xobin-tests"
             },
             {
+                "text": "Comp Test",
+                "icon": "bx bx-task",
+                "available": true,
+                "link": "/comp-test"
+            },
+            {
                 "text": "Comp Test Inquiries",
                 "icon": "bx bx-box",
                 "available": true,

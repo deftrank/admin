@@ -41,6 +41,12 @@ const slice = createSlice({
     listOfJobByAdmin: [],
     listOfInternshipByAdmin: [],
     listOfQueriesTestByAdmin: [],
+    compTestListingByAdmin: [],
+    compTestListingTotalCount: 0,
+    compTestListingCount: 0,
+    xobinAssessmentList: [],
+    xobinAssessmentTotalCount: 0,
+    xobinAssessmentCount: 0,
     adminJobDetails: null,
     jobCtcList: null,
     internshipCtcList: null,
@@ -124,14 +130,18 @@ const slice = createSlice({
         const suspendIndex = state.listOfCompanyByAdmin?.findIndex(
           (item) => item.auth_id._id === newObjId
         );
-        state.listOfCompanyByAdmin[suspendIndex].auth_id.suspend_status =
-          action.payload.data.status;
+        if (suspendIndex > -1) {
+          state.listOfCompanyByAdmin[suspendIndex].auth_id.suspend_status =
+            action.payload.data.status;
+        }
       } else {
         const suspendIndex = state.listOfUserByAdmin?.findIndex(
           (item) => item.auth_id._id === newObjId
         );
-        state.listOfUserByAdmin[suspendIndex].auth_id.suspend_status =
-          action.payload.data.status;
+        if (suspendIndex > -1) {
+          state.listOfUserByAdmin[suspendIndex].auth_id.suspend_status =
+            action.payload.data.status;
+        }
       }
     },
     accountDetailsSuccess(state, action) {
@@ -230,6 +240,21 @@ const slice = createSlice({
       state.listOfQueriesTestByAdmin =
         action.payload.flag == "empty" ? [] : action.payload.data;
     },
+    compTestListingByAdminSuccess(state, action) {
+      state.compTestListingTotalCount =
+        action.payload.flag == "empty" ? 0 : action.payload.total_count;
+      state.compTestListingCount =
+        action.payload.flag == "empty" ? 0 : action.payload.count;
+      state.compTestListingByAdmin =
+        action.payload.flag == "empty" ? [] : action.payload.data;
+    },
+    xobinAssessmentListSuccess(state, action) {
+      state.xobinAssessmentList = action.payload.flag == "empty" ? [] : action.payload.data;
+      state.xobinAssessmentTotalCount =
+        action.payload.flag == "empty" ? 0 : action.payload.total_count || 0;
+      state.xobinAssessmentCount =
+        action.payload.flag == "empty" ? 0 : action.payload.count || 0;
+    },
     jobDetailSuccess(state, action) {
       console.log(action.payload?.data);
       state.adminJobDetails = action.payload?.data;
@@ -296,6 +321,18 @@ const slice = createSlice({
       if (index !== -1) {
         state.listOfQueriesTestByAdmin[index].status = action.payload.status;
       }
+    },
+    deleteCompTestEnquirySuccess: (state, action) => {
+      const inquiryId = action.payload?.id;
+      state.listOfQueriesTestByAdmin = state.listOfQueriesTestByAdmin?.filter(
+        (item) => item?.id !== inquiryId
+      );
+      if (state.queriesTotalCount > 0) {
+        state.queriesTotalCount -= 1;
+      }
+      if (state.queriesCount > 0) {
+        state.queriesCount -= 1;
+      }
     }
     ,
    
@@ -333,12 +370,14 @@ const {
   verifyInternShipSuccess,
   updateJobStatusSuccess,
   listOfQueriesTestByAdminSuccess,
+  compTestListingByAdminSuccess,
   jobDetailSuccess,
   getJobCtcLiSuccess,
   getInternshipCtcListSuccess,
   getApplicantSuccess,
   getTicketListSuccess,
   getDashboardCountSuccess,
+  xobinAssessmentListSuccess,
   getBadgeListSuccess,
   getPlanListSuccess,
   getPlanDetailsSuccess,
@@ -346,7 +385,8 @@ const {
   getMarketingListSuccess,
   getDeleteContentSuccess,
   getMarketingDetailSuccess,
-  changeStatusSuccess
+  changeStatusSuccess,
+  deleteCompTestEnquirySuccess
 } = slice.actions;
 
 //  stepper currentIndex
@@ -832,6 +872,76 @@ export const getListOfQueriesTestByAdmin =
       // loadingBarRef.current.complete();
     }
   };
+export const getCompTestListingByAdmin =
+  (payload = {}) => async (dispatch) => {
+    try {
+      const requestBody = {
+        page: payload?.page ?? 1,
+        limit: payload?.limit ?? 10,
+        search: payload?.search ?? "",
+        sort_by: payload?.sort_by ?? 0,
+        skills: payload?.skills ?? [],
+        company_id: payload?.company_id ?? "",
+        language: payload?.language ?? "en",
+      };
+
+      const response = await api.post(DEFT_RANK_API.test.queriesList, requestBody);
+      const result = response?.data;
+
+      if (result?.status) {
+        dispatch(
+          compTestListingByAdminSuccess({
+            data: result?.data || [],
+            total_count: result?.total_count || 0,
+            count: result?.count || 0,
+          })
+        );
+      } else {
+        dispatch(compTestListingByAdminSuccess({ flag: "empty" }));
+        if (result?.message) {
+          toast.error(result.message);
+        }
+      }
+    } catch (e) {
+      dispatch(compTestListingByAdminSuccess({ flag: "empty" }));
+      console.error(e.message);
+    }
+  };
+export const getXobinAssessmentListByAdmin = (payload = {}) => async (dispatch) => {
+  try {
+    const requestBody = {
+      page: payload?.page ?? 1,
+      limit: payload?.limit ?? 10,
+      search: payload?.search ?? "",
+      sort_by: payload?.sort_by ?? 0,
+      language: payload?.language ?? "en",
+    };
+
+    const response = await api.post(
+      DEFT_RANK_API.test.xobinAssessmentList,
+      requestBody
+    );
+    const result = response?.data;
+
+    if (result?.status) {
+      dispatch(
+        xobinAssessmentListSuccess({
+          data: result?.data || [],
+          total_count: result?.total_count || 0,
+          count: result?.count || 0,
+        })
+      );
+    } else {
+      dispatch(xobinAssessmentListSuccess({ flag: "empty" }));
+      if (result?.message) {
+        toast.error(result.message);
+      }
+    }
+  } catch (e) {
+    dispatch(xobinAssessmentListSuccess({ flag: "empty" }));
+    console.error(e.message);
+  }
+};
 export const getAdminJobDetails = (data) => async (dispatch) => {
   try {
     const response = await api.get(
@@ -974,6 +1084,27 @@ export const getChangeStatusOfCompQueryByAdmin = (data) => async (dispatch) => {
     console.error(e.message);
   }
 };
+export const getDeleteCompTestEnquiryByAdmin =
+  (data, setChangePasswordModal) => async (dispatch) => {
+    try {
+      const response = await api.post(
+        `${DEFT_RANK_API.test.deleteCompTestEnquiry}`,
+        data
+      );
+      const result = response?.data;
+      if (result?.status) {
+        dispatch(deleteCompTestEnquirySuccess(data));
+        if (setChangePasswordModal) {
+          setChangePasswordModal(false);
+        }
+        toast.success(result?.message || "Comp test enquiry deleted successfully");
+      } else {
+        toast.error(result?.message || "Failed to delete comp test enquiry");
+      }
+    } catch (e) {
+      console.error(e.message);
+    }
+  };
 getUpdatePlanDetailsSuccess;
 export const getPlanDetailsByAdmin = (data) => async (dispatch) => {
   try {

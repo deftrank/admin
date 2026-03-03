@@ -51,7 +51,9 @@ export const DEFT_RANK_API = {
   },
   test: {
     queriesList: "admin/comp-test-listing",
-    changeStatus:"/test/update-status"
+    changeStatus:"/test/update-status",
+    xobinAssessmentList: "/admin/xobin-assessment-list",
+    deleteCompTestEnquiry: "/admin/delete-comp-test-enquiry"
   },
   ticket: {
     ticketList: "/admin/ticketList",
@@ -62,7 +64,15 @@ export const DEFT_RANK_API = {
   plans:{
     planList:"/plan/getplan-list-all",
     planDetails:"/plan/getplan-by-id",
-    updatePlan:"/plan/update-plan-byId"
+    updatePlan:"/plan/update-plan-byId",
+    companyConnectList: "/company-connect-plan/get-list-all",
+    studentTestCreditsList: "/student-test-credits/get-list-all",
+    aiMentorPacksList: "/ai-mentor-packs/get-list-all",
+    onDemandTestsList: "/on-demand-tests/get-list-all",
+    companyConnectUpdate: "/company-connect-plan/update-by-id",
+    studentTestCreditsUpdate: "/student-test-credits/update-by-id",
+    aiMentorPacksUpdate: "/ai-mentor-packs/update-by-id",
+    onDemandTestsUpdate: "/on-demand-tests/update-by-id"
   },
   marketingContent:{
     getMarketingList:"/admin/getListBanner",

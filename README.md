@@ -1,29 +1,88 @@
-# README #
+# DeftRank Admin Portal
 
-This README would normally document whatever steps are necessary to get your application up and running.
+Admin dashboard frontend built with React + Vite.
 
-### What is this repository for? ###
+## Prerequisites
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+- Node.js 18+ (Node 20/22 recommended)
+- npm 9+
 
-### How do I get set up? ###
+## Install
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+```bash
+npm install
+```
 
-### Contribution guidelines ###
+## Environment Setup
 
-* Writing tests
-* Code review
-* Other guidelines
+Vite env priority:
 
-### Who do I talk to? ###
+1. `.env`
+2. `.env.local`
+3. `.env.<mode>`
+4. `.env.<mode>.local`
 
-* Repo owner or admin
-* Other community or team contact
+This project currently has:
+
+- `.env.dev`
+- `.env.prod`
+
+Modes used by scripts:
+
+- `development` for local
+- `dev` for dev environment
+- `prod` for production
+
+## Run (Dev Server)
+
+```bash
+# Local development mode
+npm run dev:local
+
+# Dev environment mode
+npm run dev:dev
+
+# Production-mode run
+npm run dev:prod
+```
+
+Default command:
+
+```bash
+npm run dev
+```
+
+## Build (Compile)
+
+```bash
+# Default build
+npm run build
+
+# Local-mode build
+npm run build:local
+
+# Dev-mode build
+npm run build:dev
+
+# Prod-mode build
+npm run build:prod
+```
+
+Additional admin build scripts:
+
+```bash
+npm run build:default
+npm run build:all
+```
+
+Build output:
+
+```text
+dist/
+```
+
+## Preview Build
+
+```bash
+npm run preview
+```
