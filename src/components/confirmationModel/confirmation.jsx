@@ -3,7 +3,7 @@ import React from "react";
 import { Button, Modal } from "react-bootstrap";
 // import OtpInput from "react-otp-input";
 export default function index(props) {
-  const { open, handleClose, dialogData, handleSubmit } = props;
+  const { open, handleClose, dialogData, handleSubmit, isLoading } = props;
 
   return (
     <>
@@ -18,6 +18,7 @@ export default function index(props) {
             className="btn-close  shadow-none"
             data-bs-dismiss="modal"
             aria-label="Close"
+            disabled={isLoading}
           ></button>
         </Modal.Header>
         <Modal.Body className={"container pt-4"}>
@@ -27,10 +28,31 @@ export default function index(props) {
         </Modal.Body>
         <Modal.Footer className={"border-0"}>
           <div>
-            <Button variant="primary" className={"mx-1"} onClick={handleSubmit}>
-              Yes
+            <Button
+              variant="primary"
+              className={"mx-1"}
+              onClick={handleSubmit}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                  Processing...
+                </>
+              ) : (
+                "Yes"
+              )}
             </Button>
-            <Button variant="primary" className={"mx-1"} onClick={handleClose}>
+            <Button
+              variant="primary"
+              className={"mx-1"}
+              onClick={handleClose}
+              disabled={isLoading}
+            >
               No
             </Button>
           </div>
