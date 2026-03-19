@@ -50,7 +50,7 @@ jobs:
           mv "${{ steps.vars.outputs.env_file }}" .env
 
       - name: Build
-        run: npm run build
+        run: npm run build:dev
 
       - name: Ensure build output exists
         run: |
