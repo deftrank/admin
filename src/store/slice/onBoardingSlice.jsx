@@ -8,9 +8,13 @@ import api from "../../service/index";
 // import { stepsArray } from "../../pages/onBoarding/stepperConstant";
 import { toast } from "react-toastify";
 
+
 const slice = createSlice({
   name: "onBoarding",
   initialState: {
+     transactionList: [], // ✅ HERE
+    currentStep: 0,
+    sucessMessage: "",
     currentStep: 0,
     sucessMessage: "",
     // completedStep: Array(stepsArray.length).fill(false),
@@ -87,7 +91,7 @@ const slice = createSlice({
       state.boardList = action.payload;
     },
     universityListSuccess: (state, action) => {
-      console.log("university payload===>",action.payload);
+      console.log("university payload===>", action.payload);
       state.universityList = action.payload;
     },
     listOfUserByAdminSuccess(state, action) {
@@ -293,30 +297,30 @@ const slice = createSlice({
     },
     getMarketingListSuccess: (state, action) => {
       state.marketingContentList = action.payload?.data;
-      state.marketingContentCount=action.payload?.totalCount
+      state.marketingContentCount = action.payload?.totalCount
     },
-    getMarketingDetailSuccess:(state, action) => {
+    getMarketingDetailSuccess: (state, action) => {
       state.marketingContentDetails = action.payload?.data;
-   
+
     },
     getDeleteContentSuccess: (state, action) => {
       const index = state.marketingContentList?.findIndex((item) => item?.id === action.payload.bannerId);
-      
+
       if (index !== -1) {
 
         state.marketingContentList = [
           ...state.marketingContentList.slice(0, index),
           ...state.marketingContentList.slice(index + 1),
         ];
-     
+
       } else {
-  
+
       }
     },
     changeStatusSuccess: (state, action) => {
       // Find the index of the item in listOfUserByAdmin (as you're modifying this array)
       const index = state.listOfQueriesTestByAdmin?.findIndex((item) => item?.id === action.payload.inquiry_id);
-      
+
       // If the index is valid, update the status
       if (index !== -1) {
         state.listOfQueriesTestByAdmin[index].status = action.payload.status;
@@ -339,9 +343,16 @@ const slice = createSlice({
     
     
     
+     setTransactionList: (state, action) => {
+      state.transactionList = action.payload; // ✅ IMPORTANT
+    },
+
+
+
+
   },
 });
-
+export const { setTransactionList } = slice.actions;
 export default slice.reducer;
 
 /**********************ACTIONS************************************************ */
@@ -431,15 +442,15 @@ export const getCollageList = (data) => async (dispatch) => {
     const response = await api.post(DEFT_RANK_API.list.getCollageList, data);
 
     if (response?.status) {
-      console.log("response===>",response?.data?.data);
-      console.log("payload",data);
+      console.log("response===>", response?.data?.data);
+      console.log("payload", data);
       if (data?.search_type == 1) {
         const transformedList =
           response?.data?.data?.map((college) => ({
             name: college.college_name,
             id: college._id,
           })) || [];
-          console.log("new collage ",transformedList);
+        console.log("new collage ", transformedList);
         dispatch(collageListSuccess(transformedList));
       } else {
         const transformedList =
@@ -1121,7 +1132,7 @@ export const getPlanDetailsByAdmin = (data) => async (dispatch) => {
   }
 };
 export const getUpdatePlanDetailsByAdmin =
-  (data, requestBody,navigate) => async (dispatch) => {
+  (data, requestBody, navigate) => async (dispatch) => {
     try {
       const response = await api.put(
         `${DEFT_RANK_API.plans.updatePlan}/${data?.id}/${data?.language}`,
@@ -1189,7 +1200,7 @@ export const getMarketingContentAddByAdmin =
       console.error(e.message);
     }
   };
-  export const getMarketingContentEditByAdmin =
+export const getMarketingContentEditByAdmin =
   (data, navigation) => async (dispatch) => {
     try {
       const response = await api.post(
@@ -1206,7 +1217,7 @@ export const getMarketingContentAddByAdmin =
       console.error(e.message);
     }
   };
-  export const getMarketingContentDetailByAdmin =
+export const getMarketingContentDetailByAdmin =
   (data) => async (dispatch) => {
     try {
       const response = await api.post(
@@ -1225,7 +1236,7 @@ export const getMarketingContentAddByAdmin =
       console.error(e.message);
     }
   };
-export const getImageUpload = (data, file, setFormData,setData) => async (dispatch) => {
+export const getImageUpload = (data, file, setFormData, setData) => async (dispatch) => {
   const formData = new FormData();
   formData.append("file", file, file.name);
 
@@ -1291,5 +1302,30 @@ export const getImageUpload = (data, file, setFormData,setData) => async (dispat
     });
     // Optional: Show an error toast message
     toast.error("An error occurred while uploading the image.");
+  }
+};
+
+export const getTransactionList = (data) => async (dispatch) => {
+  try {
+    const response = await api.post(`plan/transaction-list/${data.language}`);
+
+    console.log("Full API Response:", response.data);
+
+    // ✅ Correct extraction
+    const list = Array.isArray(response.data?.data)
+      ? response.data.data
+      : [];
+
+    console.log("Full API Response:", response.data.data);
+
+    // ✅ Dispatch once only
+    dispatch(setTransactionList(list));
+
+  } catch (error) {
+    if (error.response) {
+      console.error("Data:", error.response.data);
+      console.error("Status:", error.response.status);
+      console.error("Headers:", error.response.headers);
+    }
   }
 };

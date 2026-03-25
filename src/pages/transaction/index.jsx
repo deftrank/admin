@@ -1,9 +1,12 @@
 // @ts-nocheck
-import React, { useMemo, useState } from "react";
-import { Form } from "react-bootstrap";
+import React, { useEffect, useMemo, useState } from "react";
+import { Form, Spinner } from "react-bootstrap";
 import { Icon } from "@iconify/react";
 
 import DeftInput from "../../components/deftInput/deftInput";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { getTransactionList } from "../../store/slice/onBoardingSlice";
 
 const transactionSeed = [
   {
@@ -57,7 +60,6 @@ const filters = [
   "All",
   "Company Plans",
   "Student Plans",
-  "On Demand"
 ];
 
 const normalize = (value) => `${value || ""}`.toLowerCase();
@@ -108,36 +110,73 @@ const toCsv = (rows) => {
 };
 
 export const Transactions = () => {
+  const dispatch = useDispatch();
+
+  // 1. Grab transactionList from your Redux state
+  const { transactionList = [] } = useSelector(
+    (state) => state.onBoarding || {}
+
+  );
   const [searchData, setSearchData] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All");
+
+  // 2. API Call Arrangement
+  const fetchTransactionData = () => {
+    let data = {
+      language: "en",
+    };
+    dispatch(getTransactionList(data));
+  };
+
+  useEffect(() => {
+    fetchTransactionData();
+  }, []);
 
   const searchTerm = searchData.trim().toLowerCase();
 
   const filteredTransactions = useMemo(() => {
-    return transactionSeed.filter((txn) => {
+    if (!Array.isArray(transactionList)) return [];
+
+    // ✅ Normalize FIRST
+    const normalizedList = transactionList.map((txn) => ({
+      transaction_id: txn.transaction_id,
+      plan_name: txn.plan_name,
+      user_name: txn.user_name,
+      user_type: txn.user_type,
+      plan_type: txn.plan_type,
+      purchase_date: txn.purchase_date,
+      invoice_url: txn.invoice_url,
+    }));
+
+    // ✅ THEN filter on normalized data
+    return normalizedList.filter((txn) => {
+      // Category filter
       const matchesCategory =
-        categoryFilter === "All" || txn.category === categoryFilter;
+        categoryFilter === "All" ||
+        (categoryFilter === "Company Plans" && txn.user_type === "company") ||
+        (categoryFilter === "Student Plans" && txn.user_type === "student") ||
+        (categoryFilter === "On Demand" && txn.plan_type === "ai_mentor_pack");
 
       if (!matchesCategory) return false;
 
+      // Search filter
       if (!searchTerm) return true;
 
       const haystack = [
-        txn.id,
-        txn.planName,
-        txn.purchasedBy,
-        txn.category,
-        txn.purchaserType,
-        txn.invoiceId
+        txn.transaction_id,
+        txn.plan_name,
+        txn.user_name,
+        txn.user_type,
+        txn.plan_type,
       ]
-        .map(normalize)
-        .join(" ");
+        .join(" ")
+        .toLowerCase();
 
       return haystack.includes(searchTerm);
     });
-  }, [categoryFilter, searchTerm]);
+  }, [transactionList, categoryFilter, searchTerm]);
 
-  const handleExportCsv = () => {
+    const handleExportCsv = () => {
     const csv = toCsv(filteredTransactions);
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
@@ -156,6 +195,8 @@ export const Transactions = () => {
     return txn;
   };
 
+  console.log("Redux transactionList:", transactionList);
+
   return (
     <div className="card">
       <div className="p-3">
@@ -167,11 +208,7 @@ export const Transactions = () => {
             </div>
           </div>
           <div className="d-flex flex-column flex-md-row gap-2">
-            <button
-              type="button"
-              className="btn btn-dark d-flex align-items-center gap-2"
-              onClick={handleExportCsv}
-            >
+            <button type="button" className="btn btn-dark d-flex align-items-center gap-2" onClick={handleExportCsv}>
               <Icon icon="bx:download" height={18} />
               Export CSV
             </button>
@@ -195,17 +232,9 @@ export const Transactions = () => {
               onChange={(event) => setCategoryFilter(event.target.value)}
             >
               {filters.map((filter) => (
-                <option key={filter} value={filter}>
-                  {filter}
-                </option>
+                <option key={filter} value={filter}>{filter}</option>
               ))}
             </Form.Select>
-          </div>
-          <div className="col-12 col-lg-3 d-flex align-items-end">
-            <div className="text-muted small">
-              Showing {filteredTransactions.length} transaction
-              {filteredTransactions.length === 1 ? "" : "s"}
-            </div>
           </div>
         </div>
       </div>
@@ -224,28 +253,44 @@ export const Transactions = () => {
             </thead>
             <tbody className="table-border-bottom-0">
               {filteredTransactions.map((txn) => (
-                <tr key={txn.id}>
-                  <td className="fw-semibold">{txn.id}</td>
-                  <td>{txn.planName}</td>
+                <tr key={txn.transaction_id}>
+                  {/* Transaction ID */}
+                  <td className="fw-semibold">{txn.transaction_id}</td>
+
+                  {/* Plan Name */}
+                  <td>{txn.plan_name}</td>
+
+                  {/* Purchased By & User Type */}
                   <td>
                     <div className="d-flex flex-column">
-                      <span>{txn.purchasedBy}</span>
-                      <span className="text-muted small">{txn.purchaserType}</span>
+                      <span>{txn.user_name}</span>
+                      <span className="text-muted small text-capitalize">
+                        {txn.user_type}
+                      </span>
                     </div>
                   </td>
-                  <td>{formatDate(txn.purchaseDate)}</td>
+
+                  {/* Purchase Date (Formatted) */}
+                  <td>{formatDate(txn.purchase_date)}</td>
+
+                  {/* Download Invoice Action */}
                   <td>
-                    <button
-                      type="button"
-                      className="btn btn-sm btn-outline-dark d-flex align-items-center gap-1"
-                      onClick={() => handleDownloadInvoice(txn)}
-                    >
-                      <Icon icon="bx:file" height={16} />
-                      Invoice
-                    </button>
+                    {txn.invoice_url ? (
+                      <a
+                        href={txn.invoice_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn btn-sm btn-outline-dark d-inline-flex align-items-center gap-1"
+                      >
+                        <Icon icon="bx:file" height={16} /> Invoice
+                      </a>
+                    ) : (
+                      <span className="text-muted small">Not Available</span>
+                    )}
                   </td>
                 </tr>
               ))}
+
               {filteredTransactions.length === 0 && (
                 <tr>
                   <td colSpan={5} className="text-center py-4 text-muted">

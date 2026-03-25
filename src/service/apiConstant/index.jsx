@@ -72,7 +72,8 @@ export const DEFT_RANK_API = {
     companyConnectUpdate: "/company-connect-plan/update-by-id",
     studentTestCreditsUpdate: "/student-test-credits/update-by-id",
     aiMentorPacksUpdate: "/ai-mentor-packs/update-by-id",
-    onDemandTestsUpdate: "/on-demand-tests/update-by-id"
+    onDemandTestsUpdate: "/on-demand-tests/update-by-id",
+    transactionList: "/plan/transaction-list",
   },
   marketingContent:{
     getMarketingList:"/admin/getListBanner",
