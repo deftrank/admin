@@ -1,0 +1,45 @@
+name: Deploy (No Docker) - Static Frontend admin
+ 
+on:
+  push:
+    branches: [ "dev-deploy" ]
+  workflow_dispatch:
+ 
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+ 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+ 
+      - name: Install deps
+        run: npm ci --legacy-peer-deps
+ 
+      # ✅ Rename environment file before build
+      - name: Switch to dev environment
+        run: |
+          rm -f .env
+          mv .env.dev .env
+ 
+      - name: Build
+        run: npm run build
+ 
+      - name: Prepare artifact folder
+        run: |
+          if [ -d "dist" ]; then echo "Using dist"; elif [ -d "build" ]; then echo "Using build"; else echo "No dist/build folder found" && exit 1; fi
+ 
+      - name: Upload build to droplet
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: ${{ secrets.DO_USER }}
+          key: ${{ secrets.DO_SSH_KEY }}
+          source: "dist/*,build/*"
+          target: "${{ secrets.DO_APP_DIR }}"
+          strip_components: 1
