@@ -147,7 +147,7 @@ export default function ViewDetails() {
               : "Internship Description "}
           </h6>
           <div
-            className="mt-5 flex-wrap d-flex"
+            className="mt-5 flex-wrap d-flex description-content"
             dangerouslySetInnerHTML={{ __html: data?.description }}
           ></div>
         </div>
