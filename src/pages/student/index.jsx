@@ -110,6 +110,24 @@ export default function index() {
     dispatch(suspendUser(data, setChangePasswordModal));
   };
 
+  const getPageNumbers = () => {
+    const pages = [];
+
+    let start = Math.max(currentPage - 2, 1);
+    let end = Math.min(start + 4, totalPages);
+
+    // Adjust when near the end
+    if (end - start < 4) {
+      start = Math.max(end - 4, 1);
+    }
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+
+    return pages;
+  };
+
   return (
     <>
       <div className="card">
@@ -197,7 +215,7 @@ export default function index() {
                 <th>Name</th>
                 <th>Email</th>
                 <th>Phone Number</th>
-              
+
                 <th>Joined On</th>
                 <th>Status</th>
                 <th>Action</th>
@@ -245,8 +263,8 @@ export default function index() {
                       ? item?.auth_id?.country_code + item?.auth_id?.phone
                       : "-"}
                   </td>
-                 
-               
+
+
                   <td>
                     <p className="mb-0">
                       {item?.createdAt ? changeDate(item?.createdAt) : "-"}
@@ -254,11 +272,10 @@ export default function index() {
                   </td>
                   <td>
                     <span
-                      className={`badge ${
-                        item?.auth_id?.suspend_status == "active"
+                      className={`badge ${item?.auth_id?.suspend_status == "active"
                           ? "bg-label-success"
                           : "bg-label-danger"
-                      } me-1 text-capitalize`}
+                        } me-1 text-capitalize`}
                     >
                       {item?.auth_id?.suspend_status}
                     </span>
@@ -311,17 +328,15 @@ export default function index() {
                               ...changePasswordModal,
                               show: true,
                               id: item.auth_id._id,
-                              title: `${
-                                item?.auth_id?.suspend_status == "active"
+                              title: `${item?.auth_id?.suspend_status == "active"
                                   ? "Suspend"
                                   : "Enable"
-                              } User`,
+                                } User`,
                               data: item,
-                              message: `Are you sure you want to ${
-                                item?.auth_id?.suspend_status == "active"
+                              message: `Are you sure you want to ${item?.auth_id?.suspend_status == "active"
                                   ? "suspend"
                                   : "enable"
-                              } this user?`,
+                                } this user?`,
                             }));
                           }}
                         >
@@ -425,7 +440,7 @@ export default function index() {
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
                   />
-                  {[...Array(totalPages).keys()].map((page) => (
+                  {/* {[...Array(totalPages).keys()].map((page) => (
                     <Pagination.Item
                       key={page + 1}
                       active={page + 1 === currentPage}
@@ -433,7 +448,33 @@ export default function index() {
                     >
                       {page + 1}
                     </Pagination.Item>
-                  ))}
+                  ))} */}
+
+                  <div className="col">
+                    <div className="d-flex justify-content-end">
+                      <Pagination>
+                        <Pagination.Prev
+                          onClick={() => handlePageChange(currentPage - 1)}
+                          disabled={currentPage === 1}
+                        />
+
+                        {getPageNumbers().map((page) => (
+                          <Pagination.Item
+                            key={page}
+                            active={page === currentPage}
+                            onClick={() => handlePageChange(page)}
+                          >
+                            {page}
+                          </Pagination.Item>
+                        ))}
+
+                        <Pagination.Next
+                          onClick={() => handlePageChange(currentPage + 1)}
+                          disabled={currentPage === totalPages}
+                        />
+                      </Pagination>
+                    </div>
+                  </div>
                   <Pagination.Next
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
