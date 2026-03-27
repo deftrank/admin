@@ -1,39 +1,64 @@
 name: Deploy (No Docker) - Static Frontend admin
- 
+
 on:
   push:
-    branches: [ "dev-deploy" ]
+    branches: [ "dev-deploy", "deploy" ]
   workflow_dispatch:
- 
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
- 
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
- 
+
       - name: Install deps
-        run: npm ci --legacy-peer-deps
- 
-      # ✅ Rename environment file before build
-      - name: Switch to dev environment
+        run: npm ci
+
+      - name: Select environment + target path
+        id: vars
+        shell: bash
+        run: |
+          BRANCH="${GITHUB_REF_NAME}"
+
+          if [ "$BRANCH" = "dev-deploy" ]; then
+            echo "env_file=.env.dev" >> $GITHUB_OUTPUT
+            echo "deploy_dir=${{ secrets.DO_APP_DIR_DEV }}" >> $GITHUB_OUTPUT
+          elif [ "$BRANCH" = "deploy" ]; then
+            echo "env_file=.env.prod" >> $GITHUB_OUTPUT
+            echo "deploy_dir=${{ secrets.DO_APP_DIR_PROD }}" >> $GITHUB_OUTPUT
+          else
+            echo "Unsupported branch: $BRANCH"
+            exit 1
+          fi
+
+      - name: Switch env file
+        shell: bash
         run: |
           rm -f .env
-          mv .env.dev .env
- 
+          if [ ! -f "${{ steps.vars.outputs.env_file }}" ]; then
+            echo "Missing env file: ${{ steps.vars.outputs.env_file }}"
+            exit 1
+          fi
+          mv "${{ steps.vars.outputs.env_file }}" .env
+
       - name: Build
         run: npm run build
- 
-      - name: Prepare artifact folder
+
+      - name: Ensure build output exists
         run: |
-          if [ -d "dist" ]; then echo "Using dist"; elif [ -d "build" ]; then echo "Using build"; else echo "No dist/build folder found" && exit 1; fi
- 
+          if [ -d "dist" ]; then echo "Using dist";
+          elif [ -d "build" ]; then echo "Using build";
+          else echo "No dist/build folder found" && exit 1; fi
+
+      # Upload dist if exists, otherwise build
       - name: Upload build to droplet
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -41,5 +66,5 @@ jobs:
           username: ${{ secrets.DO_USER }}
           key: ${{ secrets.DO_SSH_KEY }}
           source: "dist/*,build/*"
-          target: "${{ secrets.DO_APP_DIR }}"
+          target: "${{ steps.vars.outputs.deploy_dir }}"
           strip_components: 1
