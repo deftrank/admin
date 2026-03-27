@@ -213,6 +213,7 @@ export const Transactions = () => {
 
         <div className="row g-3 mt-2">
           <div className="col-12 col-lg-6">
+            <Form.Label className="form-label">Search</Form.Label>
             <DeftInput
               placeholder="Search by transaction, plan, or purchaser"
               type="text"
@@ -252,7 +253,7 @@ export const Transactions = () => {
             <tbody className="table-border-bottom-0">
               {filteredTransactions.map((txn) => (
                 <tr key={txn.transaction_id}>
-                  <td className="fw-semibold">{txn.transaction_id}</td>
+                  <td className="">{txn.transaction_id}</td>
                   <td>{txn.user_name}</td>
                   {/* Plan Name */}
                   <td>{txn.plan_name}</td>
@@ -260,8 +261,8 @@ export const Transactions = () => {
                   <td> {txn.user_type}</td>
                   {/* Purchase Date (Formatted) */}
                   <td>{formatDate(txn.purchase_date)}</td>
-                  <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-indian-rupee-icon lucide-indian-rupee"><path d="M6 3h12"/><path d="M6 8h12"/><path d="m6 13 8.5 8"/><path d="M6 13h3"/><path d="M9 13c6.667 0 6.667-10 0-10"/></svg>
-                  {txn.amount}</td>
+                  <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-indian-rupee-icon lucide-indian-rupee"><path d="M6 3h12" /><path d="M6 8h12" /><path d="m6 13 8.5 8" /><path d="M6 13h3" /><path d="M9 13c6.667 0 6.667-10 0-10" /></svg>
+                    {txn.amount}</td>
                   {/* Download Invoice Action */}
                   <td>
                     {txn.invoice_url ? (
