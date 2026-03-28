@@ -12,9 +12,7 @@ import { toast } from "react-toastify";
 const slice = createSlice({
   name: "onBoarding",
   initialState: {
-     transactionList: [], // ✅ HERE
-    currentStep: 0,
-    sucessMessage: "",
+    transactionList: [], // ✅ HERE
     currentStep: 0,
     sucessMessage: "",
     // completedStep: Array(stepsArray.length).fill(false),
