@@ -317,7 +317,7 @@ export default function UpdatePlan() {
         payload
       );
       const result = response?.data;
-      if (result?.status === false) {
+      if (result?.success === false || result?.status === false) {
         toast.error(result?.message || "Failed to update plan.");
         return;
       }

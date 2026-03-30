@@ -42,6 +42,7 @@ export default function index() {
   const [searchData, setSearchData] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [changePasswordModal, setChangePasswordModal] = useState({});
+  const [actionLoading, setActionLoading] = useState(false);
   const [dateRange, setDateRange] = useState({});
   const [filter, setFilter] = useState({});
   const handlePageChange = (pageNumber) => {
@@ -137,7 +138,7 @@ export default function index() {
       type: JobType?.internship,
       language: "en",
     };
-    dispatch(verifyJob(data, setChangePasswordModal, "internship"));
+    dispatch(verifyJob(data, setChangePasswordModal, "internship", setActionLoading));
   };
 
   const suspentAccount = () => {
@@ -150,7 +151,7 @@ export default function index() {
           : status?.active,
       language: "en",
     };
-    dispatch(updateJob(data, setChangePasswordModal, "internship"));
+    dispatch(updateJob(data, setChangePasswordModal, "internship", setActionLoading));
   };
   const clearFilters = () => {
     const data = {
@@ -804,6 +805,7 @@ export default function index() {
           dialogData={changePasswordModal}
           open={changePasswordModal?.show}
           handleClose={() => setChangePasswordModal(false)}
+          isLoading={actionLoading}
           handleSubmit={() =>
             changePasswordModal?.type == "disable"
               ? suspentAccount()

@@ -12,9 +12,7 @@ import { toast } from "react-toastify";
 const slice = createSlice({
   name: "onBoarding",
   initialState: {
-     transactionList: [], // ✅ HERE
-    currentStep: 0,
-    sucessMessage: "",
+    transactionList: [], // ✅ HERE
     currentStep: 0,
     sucessMessage: "",
     // completedStep: Array(stepsArray.length).fill(false),
@@ -797,8 +795,8 @@ export const getListOfJobByAdmin =
   };
 
 export const verifyJob =
-  (data, setChangePasswordModal, suspendType) => async (dispatch) => {
-    // dispatch(apiFetching());
+  (data, setChangePasswordModal, suspendType, setLoading) => async (dispatch) => {
+    if (setLoading) setLoading(true);
     try {
       await api.post(DEFT_RANK_API.jobs.verifyJob, data).then((response) => {
         let result = response.data;
@@ -823,11 +821,13 @@ export const verifyJob =
       });
     } catch (e) {
       // return toast.error(e.message);
+    } finally {
+      if (setLoading) setLoading(false);
     }
   };
 export const updateJob =
-  (data, setChangePasswordModal, suspendType) => async (dispatch) => {
-    // dispatch(apiFetching());
+  (data, setChangePasswordModal, suspendType, setLoading) => async (dispatch) => {
+    if (setLoading) setLoading(true);
     try {
       await api
         .post(DEFT_RANK_API.jobs.updateJObStatus, data)
@@ -847,6 +847,8 @@ export const updateJob =
         });
     } catch (e) {
       // return toast.error(e.message);
+    } finally {
+      if (setLoading) setLoading(false);
     }
   };
 export const getListOfInternshipByAdmin = (data) => async (dispatch) => {
