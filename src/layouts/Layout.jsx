@@ -5,7 +5,7 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { Outlet } from "react-router-dom";
 
-const Layout = ({ children }) => {
+const Layout = () => {
   useEffect(() => {
     let retries = 0;
     const initMenu = () => {
@@ -20,11 +20,12 @@ const Layout = ({ children }) => {
     };
     initMenu();
   }, []);
+
   return (
     <div className="layout-wrapper layout-content-navbar">
       <div className="layout-container">
         <Sidebar />
-        <div className="layout-page ">
+        <div className="layout-page">
           <Navbar />
           <div className="content-wrapper">
             <div className="container-fluid flex-grow-1 container-p-y">
