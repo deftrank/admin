@@ -2,19 +2,19 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { Pagination } from "react-bootstrap";
+import { Icon } from "@iconify/react";
+import moment from "moment-timezone";
+import LoadingBar from "react-top-loading-bar";
 import {
   deleteUser,
   getListOfUserByAdmin,
   suspendUser,
 } from "../../store/slice/onBoardingSlice";
-import { Pagination } from "react-bootstrap";
 import DeftInput from "../../components/deftInput/deftInput";
-import { Icon } from "@iconify/react";
-import Confirmation from "../../components/confirmationModel/confirmation";
 import DeftDaterange from "../../components/deftDaterange/index";
-import moment from "moment-timezone"; // Import moment-timezone
+import Confirmation from "../../components/confirmationModel/confirmation";
 import { changeDate } from "../../utils/appConstant";
-import LoadingBar from "react-top-loading-bar";
 
 export default function index() {
   const dispatch = useDispatch();
@@ -22,19 +22,24 @@ export default function index() {
   const { listOfUserByAdmin, userTotalCount, userCount } = useSelector(
     (state) => state.onBoarding
   );
+
   const [currentPage, setCurrentPage] = useState(1);
   const [searchData, setSearchData] = useState("");
-  const [sort, setSort] = useState({});
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const totalPages = Math.ceil(userTotalCount / itemsPerPage);
   const [changePasswordModal, setChangePasswordModal] = useState([]);
-  const [dateRange, setDateRange] = useState({});
+  const [dateRange, setDateRange] = useState([
+    {
+      startDate: null,
+      endDate: null,
+      key: "selection",
+    },
+  ]);
   const [status, setStatus] = useState("");
   const loadingBarRef = useRef(null);
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+  const totalPages = Math.ceil(userTotalCount / itemsPerPage);
+  const startEntry = userTotalCount === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+  const endEntry = Math.min(currentPage * itemsPerPage, userTotalCount || 0);
 
   useEffect(() => {
     getStudentList();
@@ -42,23 +47,7 @@ export default function index() {
 
   useEffect(() => {
     getStudentList();
-  }, [currentPage]);
-
-  useEffect(() => {
-    getStudentList();
-  }, [searchData]);
-
-  useEffect(() => {
-    getStudentList();
-  }, [itemsPerPage]);
-
-  useEffect(() => {
-    getStudentList();
-  }, [dateRange]);
-
-  useEffect(() => {
-    getStudentList();
-  }, [status]);
+  }, [currentPage, searchData, itemsPerPage, dateRange, status]);
 
   const getStudentList = () => {
     const utcDateForStart = dateRange[0]?.startDate;
@@ -79,11 +68,12 @@ export default function index() {
       page: currentPage,
       limit: itemsPerPage,
     };
+
     dispatch(getListOfUserByAdmin(data, loadingBarRef));
   };
 
   const handleClose = (id, flag) => {
-    if (flag == "edit") {
+    if (flag === "edit") {
       navigate(`/student-edit/${id}`);
     } else {
       navigate(`/student-details/${id}`);
@@ -102,7 +92,7 @@ export default function index() {
     const data = {
       auth_id: changePasswordModal?.id,
       status:
-        changePasswordModal?.data?.auth_id?.suspend_status == "active"
+        changePasswordModal?.data?.auth_id?.suspend_status === "active"
           ? "suspended"
           : "active",
       language: "en",
@@ -112,11 +102,9 @@ export default function index() {
 
   const getPageNumbers = () => {
     const pages = [];
-
     let start = Math.max(currentPage - 2, 1);
     let end = Math.min(start + 4, totalPages);
 
-    // Adjust when near the end
     if (end - start < 4) {
       start = Math.max(end - 4, 1);
     }
@@ -128,272 +116,282 @@ export default function index() {
     return pages;
   };
 
+  const tableHeaderStyle = {
+    fontSize: 12.5,
+    fontWeight: 800,
+    letterSpacing: "0.08em",
+    color: "#f8fafc",
+    border: "none",
+    whiteSpace: "nowrap",
+    padding: "13px 14px",
+    background: "#24364c",
+  };
+
+  const tableCellStyle = {
+    padding: "12px 14px",
+    verticalAlign: "middle",
+    borderColor: "#e2e8f0",
+    color: "#64748b",
+    fontSize: 14,
+    background: "#fff",
+  };
+
+  const contentInset = 18;
+
   return (
     <>
-      <div className="card">
-        <div class="p-3">
-          <h4>Students</h4>
-          <div class="d-flex justify-content-between">
-            <div class="row">
-              <div class="col-5 input-group-merge">
-                <DeftInput
-                  placeholder="Search by name"
-                  type="text"
-                  value={searchData}
-                  onchange={(value) => {
+      <div
+        className="card border-0"
+        style={{
+          borderRadius: 20,
+          boxShadow: "0 20px 40px rgba(15, 23, 42, 0.07)",
+          overflow: "hidden",
+        }}
+      >
+        <div style={{ padding: `16px ${contentInset}px 10px` }}>
+          <div className="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+            <div>
+              <h2
+                className="mb-1"
+                style={{ fontSize: 22, fontWeight: 800, color: "#334a68", lineHeight: 1.2 }}
+              >
+                Students
+              </h2>
+              
+            </div>
+            <div
+              className="d-inline-flex align-items-center gap-2 rounded-pill ms-xl-auto"
+              style={{
+                padding: "8px 12px",
+                background: "#f8fbff",
+                border: "1px solid #dbe7f3",
+                color: "#47627f",
+                fontSize: 12.5,
+                fontWeight: 700,
+              }}
+            >
+              <Icon icon="solar:users-group-rounded-outline" width="18" height="18" />
+              {userTotalCount || 0} total students
+            </div>
+          </div>
+
+          <div className="row g-2 align-items-center" style={{ marginTop: 0 }}>
+            <div className="col-12 col-xl-4">
+              <DeftInput
+                placeholder="Search by name"
+                type="text"
+                value={searchData}
+                onchange={(value) => {
+                  setCurrentPage(1);
+                  setSearchData(value);
+                }}
+                leftIcon={<i className="bx bx-search"></i>}
+              />
+            </div>
+            <div className="col-12 col-xl-4">
+              <DeftDaterange
+                placeholder="Filter by Date"
+                value={dateRange}
+                onchange={(value) => {
+                  setCurrentPage(1);
+                  setDateRange(value);
+                }}
+                leftIcon={<i className="bx bx-calendar"></i>}
+                allowSingleDate={true}
+              />
+            </div>
+            <div className="col-12 col-xl-4 d-flex justify-content-xl-end">
+              <div className="w-100" style={{ maxWidth: 156 }}>
+                <select
+                  aria-label="Filter by user status"
+                  className="form-select text-capitalize"
+                  style={{
+                    minHeight: 38,
+                    borderRadius: 12,
+                    borderColor: "#c7d4e5",
+                    fontSize: 13.5,
+                    fontWeight: 600,
+                    color: "#243b63",
+                    boxShadow: "none",
+                    paddingLeft: 12,
+                    paddingRight: 34,
+                  }}
+                  value={status}
+                  onChange={(e) => {
                     setCurrentPage(1);
-                    setSearchData(value);
+                    setStatus(e.target.value);
                   }}
-                  leftIcon={<i className="bx bx-search"></i>}
-                />
-              </div>
-              <div class="col-4 p-0 input-group-merge">
-                <DeftDaterange
-                  placeholder="Filter by Date"
-                  type="text"
-                  value={searchData}
-                  onchange={(value) => {
-                    setDateRange(value);
-                  }}
-                  leftIcon={<i className="bx bx-search"></i>}
-                />
-              </div>
-              <div class="col-3">
-                <div className="btn-group">
-                  <button
-                    style={{ minWidth: 120 }}
-                    aria-label="Click me"
-                    type="button"
-                    className="btn btn-outline-primary dropdown-toggle text-capitalize"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    {status ? `${status}` : "All Users"}
-                  </button>
-                  <ul className="dropdown-menu">
-                    <li>
-                      <a
-                        style={{ cursor: "pointer" }}
-                        aria-label="dropdown action link"
-                        className="dropdown-item"
-                        onClick={() => setStatus("active")}
-                      >
-                        Active
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        style={{ cursor: "pointer" }}
-                        aria-label="dropdown action link"
-                        className="dropdown-item"
-                        onClick={() => setStatus("suspended")}
-                      >
-                        Suspended
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        style={{ cursor: "pointer" }}
-                        aria-label="dropdown action link"
-                        className="dropdown-item"
-                        onClick={() => setStatus("")}
-                      >
-                        All Users
-                      </a>
-                    </li>
-                  </ul>
-                </div>
+                >
+                  <option value="">All Users</option>
+                  <option value="active">Active</option>
+                  <option value="suspended">Suspended</option>
+                </select>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="table-responsive text-nowrap">
-          <table className="table table-hover">
-            <thead className="table-dark">
+        <div className="table-responsive">
+          <table className="table align-middle mb-0" style={{ minWidth: 980 }}>
+            <thead>
               <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone Number</th>
-
-                <th>Joined On</th>
-                <th>Status</th>
-                <th>Action</th>
+                <th style={{ ...tableHeaderStyle, width: "20%" }}>NAME</th>
+                <th style={{ ...tableHeaderStyle, width: "26%" }}>EMAIL</th>
+                <th style={{ ...tableHeaderStyle, width: "15%" }}>PHONE NUMBER</th>
+                <th style={{ ...tableHeaderStyle, width: "12%" }}>JOINED ON</th>
+                <th style={{ ...tableHeaderStyle, width: "9%" }}>STATUS</th>
+                <th style={{ ...tableHeaderStyle, width: "8%", textAlign: "center" }}>ACTION</th>
               </tr>
             </thead>
-            <tbody className="table-border-bottom-0">
-              {listOfUserByAdmin?.map((item) => (
-                <tr key={item?.id}>
-                  <td>
-                    <div
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
-                      title={
-                        item?.first_name
-                          ? item?.first_name + " " + item?.last_name
-                          : ""
-                      }
-                      style={{
-                        width: "8vw",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {item?.first_name
-                        ? item?.first_name + " " + item?.last_name
-                        : "-"}
-                    </div>
-                  </td>
-                  <td>
-                    <div
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
-                      title={item?.auth_id?.email ? item?.auth_id?.email : ""}
-                      style={{
-                        width: "8vw",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {item?.auth_id?.email ? item?.auth_id?.email : "-"}
-                    </div>
-                  </td>
-                  <td>
-                    {item?.auth_id?.phone
-                      ? item?.auth_id?.country_code + item?.auth_id?.phone
-                      : "-"}
-                  </td>
+            <tbody>
+              {listOfUserByAdmin?.map((item) => {
+                const fullName = item?.first_name
+                  ? `${item?.first_name || ""} ${item?.last_name || ""}`.trim()
+                  : "-";
+                const email = item?.auth_id?.email || "-";
 
-
-                  <td>
-                    <p className="mb-0">
-                      {item?.createdAt ? changeDate(item?.createdAt) : "-"}
-                    </p>
-                  </td>
-                  <td>
-                    <span
-                      className={`badge ${item?.auth_id?.suspend_status == "active"
-                          ? "bg-label-success"
-                          : "bg-label-danger"
-                        } me-1 text-capitalize`}
-                    >
-                      {item?.auth_id?.suspend_status}
-                    </span>
-                  </td>
-                  <td>
-                    <div className="dropdown">
-                      <button
-                        aria-label="Click me"
-                        type="button"
-                        className="btn p-0 dropdown-toggle hide-arrow"
-                        data-bs-toggle="dropdown"
+                return (
+                  <tr key={item?.id} style={{ borderBottom: "1px solid #e2e8f0" }}>
+                    <td style={tableCellStyle}>
+                      <div
+                        title={fullName}
+                        style={{
+                          color: "#516b8d",
+                          fontWeight: 600,
+                          whiteSpace: "normal",
+                          wordBreak: "break-word",
+                          lineHeight: 1.35,
+                        }}
                       >
-                        <i className="bx bx-dots-vertical-rounded"></i>
-                      </button>
-                      <div className="dropdown-menu">
-                        <a
-                          aria-label="dropdown action option"
-                          className="dropdown-item"
-                          style={{ cursor: "pointer" }}
-                          onClick={() => handleClose(item?.auth_id?._id, "edit")}
-                        >
-                          <Icon
-                            icon="iconamoon:edit-thin"
-                            height={20}
-                            className={"me-1"}
-                          />{" "}
-                          Edit User
-                        </a>
-                        <a
-                          aria-label="dropdown action option"
-                          className="dropdown-item"
-                          style={{ cursor: "pointer" }}
-                          onClick={() =>
-                            handleClose(item.auth_id._id, "detail")
-                          }
-                        >
-                          <Icon
-                            icon="lsicon:view-outline"
-                            height={20}
-                            className={"me-1"}
-                          />{" "}
-                          View User
-                        </a>
-                        <a
-                          aria-label="dropdown action option"
-                          className="dropdown-item"
-                          style={{ cursor: "pointer" }}
-                          onClick={() => {
-                            setChangePasswordModal((changePasswordModal) => ({
-                              ...changePasswordModal,
-                              show: true,
-                              id: item.auth_id._id,
-                              title: `${item?.auth_id?.suspend_status == "active"
-                                  ? "Suspend"
-                                  : "Enable"
-                                } User`,
-                              data: item,
-                              message: `Are you sure you want to ${item?.auth_id?.suspend_status == "active"
-                                  ? "suspend"
-                                  : "enable"
-                                } this user?`,
-                            }));
-                          }}
-                        >
-                          <Icon
-                            icon={
-                              item?.auth_id?.suspend_status == "active"
-                                ? "lsicon:disable-outline"
-                                : "fontisto:radio-btn-active"
-                            }
-                            height={20}
-                            className={"me-1"}
-                          />{" "}
-                          {item?.auth_id?.suspend_status == "active"
-                            ? "Suspend"
-                            : "Enable"}{" "}
-                          User
-                        </a>
-                        <a
-                          aria-label="dropdown action option"
-                          className="dropdown-item"
-                          style={{ cursor: "pointer" }}
-                          onClick={() => {
-                            setChangePasswordModal((changePasswordModal) => ({
-                              ...changePasswordModal,
-                              show: true,
-                              id: item.auth_id._id,
-                              title: "Delete User",
-                              data: item,
-                              message:
-                                "Are you sure you want to delete this user?",
-                              type: "Delete",
-                            }));
-                          }}
-                        >
-                          <Icon
-                            icon="mdi-light:delete"
-                            height={20}
-                            className={"me-1"}
-                          />{" "}
-                          Delete User
-                        </a>
+                        {fullName}
                       </div>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td style={tableCellStyle}>
+                      <div
+                        title={email}
+                        style={{
+                          color: "#516b8d",
+                          whiteSpace: "normal",
+                          wordBreak: "break-word",
+                          lineHeight: 1.35,
+                        }}
+                      >
+                        {email}
+                      </div>
+                    </td>
+                    <td style={tableCellStyle}>
+                      {item?.auth_id?.phone
+                        ? item?.auth_id?.country_code + item?.auth_id?.phone
+                        : "-"}
+                    </td>
+                    <td style={tableCellStyle}>{item?.createdAt ? changeDate(item?.createdAt) : "-"}</td>
+                    <td style={tableCellStyle}>
+                      <span
+                        className={`badge ${
+                          item?.auth_id?.suspend_status === "active"
+                            ? "bg-label-success"
+                            : "bg-label-danger"
+                        } text-capitalize`}
+                        style={{ padding: "6px 10px", fontSize: 13, fontWeight: 700 }}
+                      >
+                        {item?.auth_id?.suspend_status}
+                      </span>
+                    </td>
+                    <td style={{ ...tableCellStyle, textAlign: "center" }}>
+                      <div className="dropdown">
+                        <button
+                          aria-label="Click me"
+                          type="button"
+                          className="btn p-0 border-0 bg-transparent dropdown-toggle hide-arrow"
+                          data-bs-toggle="dropdown"
+                        >
+                          <i className="bx bx-dots-vertical-rounded" style={{ fontSize: 20, color: "#64748b" }}></i>
+                        </button>
+                        <div className="dropdown-menu dropdown-menu-end" style={{ minWidth: 156, fontSize: 12.5 }}>
+                          <a
+                            aria-label="dropdown action option"
+                            className="dropdown-item"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => handleClose(item?.auth_id?._id, "edit")}
+                          >
+                            <Icon icon="iconamoon:edit-thin" height={20} className="me-1" /> Edit User
+                          </a>
+                          <a
+                            aria-label="dropdown action option"
+                            className="dropdown-item"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => handleClose(item.auth_id._id, "detail")}
+                          >
+                            <Icon icon="lsicon:view-outline" height={20} className="me-1" /> View User
+                          </a>
+                          <a
+                            aria-label="dropdown action option"
+                            className="dropdown-item"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                              setChangePasswordModal((changePasswordModal) => ({
+                                ...changePasswordModal,
+                                show: true,
+                                id: item.auth_id._id,
+                                title: `${
+                                  item?.auth_id?.suspend_status === "active" ? "Suspend" : "Enable"
+                                } User`,
+                                data: item,
+                                message: `Are you sure you want to ${
+                                  item?.auth_id?.suspend_status === "active" ? "suspend" : "enable"
+                                } this user?`,
+                              }));
+                            }}
+                          >
+                            <Icon
+                              icon={
+                                item?.auth_id?.suspend_status === "active"
+                                  ? "lsicon:disable-outline"
+                                  : "fontisto:radio-btn-active"
+                              }
+                              height={20}
+                              className="me-1"
+                            />
+                            {item?.auth_id?.suspend_status === "active" ? "Suspend" : "Enable"} User
+                          </a>
+                          <a
+                            aria-label="dropdown action option"
+                            className="dropdown-item"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                              setChangePasswordModal((changePasswordModal) => ({
+                                ...changePasswordModal,
+                                show: true,
+                                id: item.auth_id._id,
+                                title: "Delete User",
+                                data: item,
+                                message: "Are you sure you want to delete this user?",
+                                type: "Delete",
+                              }));
+                            }}
+                          >
+                            <Icon icon="mdi-light:delete" height={20} className="me-1" /> Delete User
+                          </a>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
 
-              {listOfUserByAdmin?.length == 0 && (
-                <tr
-                  style={{
-                    height: "20rem",
-                    fontSize: "2rem",
-                    fontWeight: "600",
-                  }}
-                >
-                  <td colSpan="12" className="text-center">
-                    {userCount == 0
+              {listOfUserByAdmin?.length === 0 && (
+                <tr>
+                  <td
+                    colSpan="6"
+                    className="text-center"
+                    style={{
+                      height: "16rem",
+                      fontSize: "1.4rem",
+                      fontWeight: 700,
+                      color: "#64748b",
+                    }}
+                  >
+                    {userCount === 0
                       ? "No students have been listed yet!"
                       : "No students have been listed yet!"}
                   </td>
@@ -403,85 +401,58 @@ export default function index() {
           </table>
         </div>
 
-        <div class="container mt-4">
-          <div class="row justify-content-center">
-            <div class="col">
-              <span className="p-2">Show</span>
-              <div className="btn-group">
-                <select
-                  className="btn btn-outline-primary dropdown-toggle"
-                  onChange={(e) => setItemsPerPage(e.target.value)}
+        <div
+          className="border-top"
+          style={{
+            borderColor: "#e2e8f0",
+            padding: `12px ${contentInset}px 20px`,
+            background: "#fff",
+          }}
+        >
+          <div className="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div className="d-flex align-items-center gap-2 flex-wrap">
+              <span style={{ color: "#64748b", fontSize: 13, fontWeight: 600 }}>Show</span>
+              <select
+                className="form-select"
+                style={{ width: 84, minHeight: 38, borderRadius: 10, borderColor: "#cbd5e1", fontSize: 13 }}
+                value={itemsPerPage}
+                onChange={(e) => {
+                  setCurrentPage(1);
+                  setItemsPerPage(Number(e.target.value));
+                }}
+              >
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+              <span style={{ color: "#64748b", fontSize: 13, fontWeight: 600 }}>entries</span>
+            </div>
+
+            <div style={{ color: "#64748b", fontSize: 13, fontWeight: 600 }}>
+              Showing <b>{startEntry}</b> to <b>{endEntry}</b> of <b>{userTotalCount}</b> entries
+            </div>
+
+            <Pagination size="sm" className="mb-0">
+              <Pagination.Prev
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              />
+              {getPageNumbers().map((page) => (
+                <Pagination.Item
+                  key={page}
+                  active={page === currentPage}
+                  onClick={() => handlePageChange(page)}
                 >
-                  <option value="5">5</option>
-                  <option value="10" selected>
-                    10
-                  </option>
-                  <option value="25">25</option>
-                  <option value="50">50</option>
-                  <option value="100">100</option>
-                </select>
-              </div>
-              <span className="p-2">entries</span>
-            </div>
-
-            <div class="col p-1">
-              {" "}
-              Showing <b>
-                {currentPage * itemsPerPage - (itemsPerPage - 1)}
-              </b>{" "}
-              to <b>{currentPage * itemsPerPage}</b> of <b>{userTotalCount}</b>{" "}
-              entries
-            </div>
-
-            <div class="col">
-              <div className="d-flex justify-content-end">
-                <Pagination>
-                  <Pagination.Prev
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                  />
-                  {/* {[...Array(totalPages).keys()].map((page) => (
-                    <Pagination.Item
-                      key={page + 1}
-                      active={page + 1 === currentPage}
-                      onClick={() => handlePageChange(page + 1)}
-                    >
-                      {page + 1}
-                    </Pagination.Item>
-                  ))} */}
-
-                  <div className="col">
-                    <div className="d-flex justify-content-end">
-                      <Pagination>
-                        <Pagination.Prev
-                          onClick={() => handlePageChange(currentPage - 1)}
-                          disabled={currentPage === 1}
-                        />
-
-                        {getPageNumbers().map((page) => (
-                          <Pagination.Item
-                            key={page}
-                            active={page === currentPage}
-                            onClick={() => handlePageChange(page)}
-                          >
-                            {page}
-                          </Pagination.Item>
-                        ))}
-
-                        <Pagination.Next
-                          onClick={() => handlePageChange(currentPage + 1)}
-                          disabled={currentPage === totalPages}
-                        />
-                      </Pagination>
-                    </div>
-                  </div>
-                  <Pagination.Next
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                  />
-                </Pagination>
-              </div>
-            </div>
+                  {page}
+                </Pagination.Item>
+              ))}
+              <Pagination.Next
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              />
+            </Pagination>
           </div>
         </div>
       </div>
@@ -492,9 +463,7 @@ export default function index() {
           open={changePasswordModal?.show}
           handleClose={() => setChangePasswordModal(false)}
           handleSubmit={() =>
-            changePasswordModal?.type == "Delete"
-              ? deleteAccount()
-              : suspentAccount()
+            changePasswordModal?.type === "Delete" ? deleteAccount() : suspentAccount()
           }
         />
       )}
