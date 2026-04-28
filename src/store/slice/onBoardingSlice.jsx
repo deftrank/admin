@@ -49,6 +49,16 @@ const slice = createSlice({
     xobinAssessmentList: [],
     xobinAssessmentTotalCount: 0,
     xobinAssessmentCount: 0,
+    studentAssessmentList: [],
+    studentAssessmentTotalCount: 0,
+    studentAssessmentCount: 0,
+    studentAssessmentDashboard: {
+      total_assessment_count: 0,
+      xobin_test_count: 0,
+      company_test_count: 0,
+      completed_count: 0,
+      pending_count: 0,
+    },
     adminJobDetails: null,
     jobCtcList: null,
     internshipCtcList: null,
@@ -257,6 +267,29 @@ const slice = createSlice({
       state.xobinAssessmentCount =
         action.payload.flag == "empty" ? 0 : action.payload.count || 0;
     },
+    studentAssessmentListSuccess(state, action) {
+      state.studentAssessmentList = action.payload.flag == "empty" ? [] : action.payload.data;
+      state.studentAssessmentTotalCount =
+        action.payload.flag == "empty" ? 0 : action.payload.total_count || 0;
+      state.studentAssessmentCount =
+        action.payload.flag == "empty" ? 0 : action.payload.count || 0;
+      state.studentAssessmentDashboard =
+        action.payload.flag == "empty"
+          ? {
+              total_assessment_count: 0,
+              xobin_test_count: 0,
+              company_test_count: 0,
+              completed_count: 0,
+              pending_count: 0,
+            }
+          : {
+              total_assessment_count: action.payload.total_assessment_count || 0,
+              xobin_test_count: action.payload.xobin_test_count || 0,
+              company_test_count: action.payload.company_test_count || 0,
+              completed_count: action.payload.completed_count || 0,
+              pending_count: action.payload.pending_count || 0,
+            };
+    },
     jobDetailSuccess(state, action) {
       console.log(action.payload?.data);
       state.adminJobDetails = action.payload?.data;
@@ -387,6 +420,7 @@ const {
   getTicketListSuccess,
   getDashboardCountSuccess,
   xobinAssessmentListSuccess,
+  studentAssessmentListSuccess,
   getBadgeListSuccess,
   getPlanListSuccess,
   getPlanDetailsSuccess,
@@ -952,6 +986,50 @@ export const getXobinAssessmentListByAdmin = (payload = {}) => async (dispatch) 
     }
   } catch (e) {
     dispatch(xobinAssessmentListSuccess({ flag: "empty" }));
+    console.error(e.message);
+  }
+};
+export const getStudentAssessmentListByAdmin = (payload = {}) => async (dispatch) => {
+  try {
+    const requestBody = {
+      page: payload?.page ?? 1,
+      limit: payload?.limit ?? 10,
+      search: payload?.search ?? "",
+      sort_by: payload?.sort_by ?? 0,
+      invite_status: payload?.invite_status ?? "",
+      test_type: payload?.test_type ?? "",
+      skill_type: payload?.skill_type ?? "",
+      skill_level: payload?.skill_level ?? "",
+      language: payload?.language ?? "en",
+    };
+
+    const response = await api.post(
+      DEFT_RANK_API.test.studentAssessmentList,
+      requestBody
+    );
+    const result = response?.data;
+
+    if (result?.status) {
+      dispatch(
+        studentAssessmentListSuccess({
+          data: result?.data || [],
+          total_count: result?.total_count || 0,
+          count: result?.count || 0,
+          total_assessment_count: result?.total_assessment_count || 0,
+          xobin_test_count: result?.xobin_test_count || 0,
+          company_test_count: result?.company_test_count || 0,
+          completed_count: result?.completed_count || 0,
+          pending_count: result?.pending_count || 0,
+        })
+      );
+    } else {
+      dispatch(studentAssessmentListSuccess({ flag: "empty" }));
+      if (result?.message) {
+        toast.error(result.message);
+      }
+    }
+  } catch (e) {
+    dispatch(studentAssessmentListSuccess({ flag: "empty" }));
     console.error(e.message);
   }
 };

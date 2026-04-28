@@ -53,6 +53,7 @@ export const DEFT_RANK_API = {
     queriesList: "admin/comp-test-listing",
     changeStatus:"/test/update-status",
     xobinAssessmentList: "/admin/xobin-assessment-list",
+    studentAssessmentList: "/admin/student-assessment-list",
     deleteCompTestEnquiry: "/admin/delete-comp-test-enquiry"
   },
   ticket: {

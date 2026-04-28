@@ -11,6 +11,7 @@ import Compnany from "../pages/compnany";
 import EditStudent from "../pages/student/EditStudentDetail/index";
 import EducationEdit from "../pages/student/studentProfile/educationalDetails"
 import StudentProfile from "../pages/student/studentProfile/index";
+import StudentAssessmentList from "../pages/student/assessment";
 import EditCompnany from "../pages/compnany/EditCompnanyDetail/index";
 import CompnanyProfile from "../pages/compnany/CompnanyProfile/index";
 import Job from "../pages/compnany/jobs/index";
@@ -43,6 +44,7 @@ const AppRoutes = () => {
         { path: "students", element: <Student /> },
         { path: "student-edit/:id", element: <EditStudent /> },
         { path: "student-details/:id", element: <StudentProfile /> },
+        { path: "student-assessments", element: <StudentAssessmentList /> },
         { path: "student-education-edit/:id", element: < EducationEdit/> },
         { path: "company", element: <Compnany /> },
         { path: "company-add", element: <EditCompnany /> },
