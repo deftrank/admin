@@ -205,7 +205,7 @@ export default function index() {
           <div className="row">
             <div className="col-3  input-group-merge">
               <DeftInput
-                placeholder="Search by title"
+                placeholder="Search by title and company"
                 type="text"
                 value={searchData}
                 onchange={(value) => {

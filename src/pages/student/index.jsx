@@ -37,9 +37,10 @@ export default function index() {
   const [status, setStatus] = useState("");
   const loadingBarRef = useRef(null);
 
-  const totalPages = Math.ceil(userTotalCount / itemsPerPage);
-  const startEntry = userTotalCount === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
-  const endEntry = Math.min(currentPage * itemsPerPage, userTotalCount || 0);
+  const totalPages = Math.max(1, Math.ceil((userTotalCount || 0) / itemsPerPage));
+  const currentPageSize = listOfUserByAdmin?.length || 0;
+  const startEntry = currentPageSize === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+  const endEntry = currentPageSize === 0 ? 0 : startEntry + currentPageSize - 1;
 
   useEffect(() => {
     getStudentList();
@@ -48,6 +49,11 @@ export default function index() {
   useEffect(() => {
     getStudentList();
   }, [currentPage, searchData, itemsPerPage, dateRange, status]);
+
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber < 1 || pageNumber > totalPages) return;
+    setCurrentPage(pageNumber);
+  };
 
   const getStudentList = () => {
     const utcDateForStart = dateRange[0]?.startDate;
@@ -101,6 +107,7 @@ export default function index() {
   };
 
   const getPageNumbers = () => {
+    if (totalPages <= 0) return [];
     const pages = [];
     let start = Math.max(currentPage - 2, 1);
     let end = Math.min(start + 4, totalPages);
@@ -434,7 +441,7 @@ export default function index() {
               Showing <b>{startEntry}</b> to <b>{endEntry}</b> of <b>{userTotalCount}</b> entries
             </div>
 
-            <Pagination size="sm" className="mb-0">
+            <Pagination className="mb-0 flex-wrap">
               <Pagination.Prev
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}

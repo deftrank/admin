@@ -18,6 +18,12 @@
                 "icon": "bx bx-envelope",
                 "available": true,
                 "link": "/students"
+            },
+            {
+                "text": "Assestment",
+                "icon": "bx bx-task",
+                "available": true,
+                "link": "/student-assessments"
             }
         ]
     },

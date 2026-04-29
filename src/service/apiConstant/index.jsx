@@ -42,6 +42,7 @@ export const DEFT_RANK_API = {
     verifyJob: "admin/verify-job-internship",
     updateJObStatus: "admin/update-job-internship-status",
     getListOfInternshipByAdmin: "admin/admin-internship-list",
+    updateJobExpireDate: "admin/update-job-expire-date",
     getJobDetails: "/admin/get-job-detail",
     getInternshipDetails: "/admin/get-internship-detail",
     getCtcList: "constant/job-internship-ctc-list",
@@ -53,6 +54,7 @@ export const DEFT_RANK_API = {
     queriesList: "admin/comp-test-listing",
     changeStatus:"/test/update-status",
     xobinAssessmentList: "/admin/xobin-assessment-list",
+    studentAssessmentList: "/admin/student-assessment-list",
     deleteCompTestEnquiry: "/admin/delete-comp-test-enquiry"
   },
   ticket: {

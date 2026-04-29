@@ -13,6 +13,7 @@ import {
   getSkillList,
   suspendUser,
   updateJob,
+  updateJobExpireDateByAdmin,
   verifyJob,
 } from "../../../store/slice/onBoardingSlice";
 import DeftInput from "../../../components/deftInput/deftInput";
@@ -57,6 +58,11 @@ export default function index() {
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
   const [jobId, setJobId] = useState(null);
+  const [expiryModal, setExpiryModal] = useState({
+    show: false,
+    id: "",
+    date: "",
+  });
   const applicantContent=useRef(null)
   useEffect(() => {
     getJobList();
@@ -172,6 +178,42 @@ export default function index() {
     };
     dispatch(getListOfJobByAdmin(data, loadingBarRef));
   };
+  const openExpiryModal = (item) => {
+    const dt = item?.expire_date ? new Date(Number(item.expire_date)) : null;
+    const formatted =
+      dt && !Number.isNaN(dt.getTime())
+        ? new Date(dt.getTime() - dt.getTimezoneOffset() * 60000)
+            .toISOString()
+            .slice(0, 10)
+        : "";
+    setExpiryModal({
+      show: true,
+      id: item?._id,
+      date: formatted,
+    });
+  };
+  const submitExpiryUpdate = async () => {
+    if (!expiryModal?.id || !expiryModal?.date) return;
+    const selectedDate = new Date(expiryModal.date);
+    if (Number.isNaN(selectedDate.getTime())) return;
+    // Keep behavior consistent with date-only picker: store end of selected day as timestamp.
+    selectedDate.setHours(23, 59, 59, 999);
+    const expireDateTs = selectedDate.getTime();
+    await dispatch(
+      updateJobExpireDateByAdmin(
+        {
+          id: expiryModal.id,
+          expire_date: expireDateTs,
+          language: "en",
+        },
+        () => {
+          setExpiryModal({ show: false, id: "", date: "" });
+          getJobList();
+        },
+        setActionLoading
+      )
+    );
+  };
   const handleApplicantList = (id) => {
     setJobId(id)
     fetchApplicantList();
@@ -221,7 +263,7 @@ export default function index() {
           <div className="row">
             <div className="col-3  input-group-merge">
               <DeftInput
-                placeholder="Search by title"
+                placeholder="Search by title and company"
                 type="text"
                 value={searchData}
                 onchange={(value) => {
@@ -575,6 +617,24 @@ export default function index() {
                             : "Deactive"}{" "}
                           Job
                         </a>
+                        {item?.expire_date &&
+                        Number(item?.expire_date) > Date.now() ? (
+                          <a
+                            aria-label="dropdown action option"
+                            className="dropdown-item"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => openExpiryModal(item)}
+                          >
+                            <Icon
+                              icon={"mdi:calendar-edit"}
+                              height={20}
+                              className={"me-1"}
+                            />{" "}
+                            Update Expiry Date
+                          </a>
+                        ) : (
+                          ""
+                        )}
                         <a
                           aria-label="dropdown action option"
                           className="dropdown-item"
@@ -712,6 +772,57 @@ export default function index() {
           }
         />
       )}
+      {expiryModal?.show ? (
+        <div className="modal fade show d-block" tabIndex="-1" aria-modal="true" role="dialog">
+          <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: "560px" }}>
+            <div className="modal-content border-0 rounded-3" style={{ boxShadow: "0 18px 40px rgba(13, 30, 58, 0.18)" }}>
+              <div className="modal-header border-0 pb-1 pt-3 px-4">
+                <h5 className="modal-title fw-semibold text-dark mb-0">Update Job Expiry Date</h5>
+                <button
+                  type="button"
+                  className="btn-close shadow-none"
+                  aria-label="Close"
+                  onClick={() => setExpiryModal({ show: false, id: "", date: "" })}
+                ></button>
+              </div>
+              <div className="modal-body pt-2 px-4 pb-3">
+                <label className="form-label fw-semibold text-secondary mb-2">New Expiry Date</label>
+                <input
+                  type="date"
+                  className="form-control"
+                  value={expiryModal?.date || ""}
+                  min={new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+                    .toISOString()
+                    .slice(0, 10)}
+                  onChange={(e) =>
+                    setExpiryModal((prev) => ({ ...prev, date: e.target.value }))
+                  }
+                  style={{ borderColor: "#C9D3E1", borderRadius: "10px", height: "48px" }}
+                />
+              </div>
+              <div className="modal-footer border-0 pt-0 px-4 pb-4">
+                <button
+                  type="button"
+                  className="btn btn-light border px-4"
+                  onClick={() => setExpiryModal({ show: false, id: "", date: "" })}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary px-4"
+                  style={{ backgroundColor: "#1E2A78", borderColor: "#1E2A78" }}
+                  onClick={submitExpiryUpdate}
+                  disabled={!expiryModal?.date || actionLoading}
+                >
+                  {actionLoading ? "Updating..." : "Update"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+      {expiryModal?.show ? <div className="modal-backdrop fade show"></div> : null}
       <LoadingBar color={"#0b0b7c"} height="0.5rem" ref={loadingBarRef} />
     </>
   );

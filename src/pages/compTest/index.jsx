@@ -269,7 +269,7 @@ export default function CompTest() {
             <input
               type="text"
               className="form-control"
-              placeholder="Search by Job Title"
+              placeholder="Search by Job Title and Company"
               value={searchText}
               onChange={(e) => {
                 setCurrentPage(1);
