@@ -239,10 +239,10 @@ export default function index() {
         <div class="p-3">
           <h4>Companies</h4>
           <div class="d-flex justify-content-between">
-            <div class="row">
-              <div class="col-5  input-group-merge">
+            <div class="row w-100 g-2 g-md-3">
+              <div class="col-12 col-md-6 col-lg-5 input-group-merge">
                 <DeftInput
-                  placeholder="Search by name"
+                placeholder="Search by name, company, or email"
                   type="text"
                   value={searchData}
                   onchange={(value) => {
@@ -252,7 +252,7 @@ export default function index() {
                   leftIcon={<i className="bx bx-search"></i>}
                 />
               </div>
-              <div class="col-4 p-0 input-group-merge">
+              <div class="col-12 col-md-6 col-lg-4 p-0 input-group-merge">
                 <DeftDaterange
                   placeholder="Filter by Date"
                   type="text"
@@ -263,7 +263,7 @@ export default function index() {
                   leftIcon={<i className="bx bx-search"></i>}
                 />
               </div>
-              <div class="col-3">
+              <div class="col-12 col-md-6 col-lg-3">
                 <div className="btn-group">
                   <button
                     aria-label="Click me"
@@ -332,7 +332,8 @@ export default function index() {
               <button
                 aria-label="Click me"
                 type="submit"
-                className="btn btn-primary me-2"
+                className="btn btn-primary btn-sm px-3 py-2 me-2"
+                style={{ minWidth: "122px" }}
                 onClick={() => {
                   handleClose("", "add");
 

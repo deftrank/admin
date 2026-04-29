@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Pagination } from "react-bootstrap";
+import { Icon } from "@iconify/react";
 import { getStudentAssessmentListByAdmin } from "../../../store/slice/onBoardingSlice";
 
 export default function StudentAssessmentList() {
@@ -92,7 +93,28 @@ export default function StudentAssessmentList() {
   return (
     <div className="card border-0 shadow-sm">
       <div className="p-3 p-md-4">
-        <h4 className="mb-3">Assessments</h4>
+        <div className="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+          <h2
+            className="mb-1"
+            style={{ fontSize: 22, fontWeight: 800, color: "#334a68", lineHeight: 1.2 }}
+          >
+            Assessments
+          </h2>
+          <div
+            className="d-inline-flex align-items-center gap-2 rounded-pill ms-xl-auto"
+            style={{
+              padding: "8px 12px",
+              background: "#f8fbff",
+              border: "1px solid #dbe7f3",
+              color: "#47627f",
+              fontSize: 12.5,
+              fontWeight: 700,
+            }}
+          >
+            <Icon icon="solar:clipboard-list-outline" width="18" height="18" />
+            {studentAssessmentDashboard?.total_assessment_count || 0} total assessments
+          </div>
+        </div>
 
         <div className="row g-2 g-md-3 mb-3">
           <div className="col-6 col-md-4 col-xl">
@@ -129,16 +151,21 @@ export default function StudentAssessmentList() {
 
         <div className="row g-2 g-md-3 mb-3">
           <div className="col-12 col-lg-4">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Search by student, email, assessment"
-              value={searchText}
-              onChange={(e) => {
-                setCurrentPage(1);
-                setSearchText(e.target.value);
-              }}
-            />
+            <div className="input-group">
+              <span className="input-group-text bg-white border-end-0">
+                <i className="bx bx-search"></i>
+              </span>
+              <input
+                type="text"
+                className="form-control border-start-0"
+                placeholder="Search by student, email, assessment"
+                value={searchText}
+                onChange={(e) => {
+                  setCurrentPage(1);
+                  setSearchText(e.target.value);
+                }}
+              />
+            </div>
           </div>
           <div className="col-12 col-sm-6 col-lg-3">
             <select

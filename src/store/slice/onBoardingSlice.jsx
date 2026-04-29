@@ -885,6 +885,24 @@ export const updateJob =
       if (setLoading) setLoading(false);
     }
   };
+export const updateJobExpireDateByAdmin =
+  (data, onSuccess, setLoading) => async () => {
+    if (setLoading) setLoading(true);
+    try {
+      const response = await api.post(DEFT_RANK_API.jobs.updateJobExpireDate, data);
+      const result = response?.data;
+      if (result?.status) {
+        if (onSuccess) onSuccess(result);
+        toast.success(result?.message || "Job expiry date updated");
+      } else {
+        toast.error(result?.message || "Unable to update job expiry date");
+      }
+    } catch (e) {
+      toast.error(e?.message || "Unable to update job expiry date");
+    } finally {
+      if (setLoading) setLoading(false);
+    }
+  };
 export const getListOfInternshipByAdmin = (data) => async (dispatch) => {
   try {
     await api
