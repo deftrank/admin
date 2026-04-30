@@ -20,7 +20,7 @@
                 "link": "/students"
             },
             {
-                "text": "Assestment",
+                "text": "Assesstment",
                 "icon": "bx bx-task",
                 "available": true,
                 "link": "/student-assessments"
@@ -54,7 +54,7 @@
         "header": "Test",
         "items": [
             {
-                "text": "Xobin Test/Assestments",
+                "text": "Xobin Test/Assesstments",
                 "icon": "bx bx-task",
                 "available": true,
                 "link": "/xobin-tests"
