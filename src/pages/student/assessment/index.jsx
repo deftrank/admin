@@ -98,7 +98,7 @@ export default function StudentAssessmentList() {
             className="mb-1"
             style={{ fontSize: 22, fontWeight: 800, color: "#334a68", lineHeight: 1.2 }}
           >
-            Assessments
+            Student Assessments
           </h2>
           <div
             className="d-inline-flex align-items-center gap-2 rounded-pill ms-xl-auto"
@@ -112,7 +112,7 @@ export default function StudentAssessmentList() {
             }}
           >
             <Icon icon="solar:clipboard-list-outline" width="18" height="18" />
-            {studentAssessmentDashboard?.total_assessment_count || 0} total assessments
+            {studentAssessmentDashboard?.total_assessment_count || 0} total given assessments
           </div>
         </div>
 
