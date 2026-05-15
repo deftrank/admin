@@ -314,7 +314,7 @@ export default function index() {
                 <th>Office Locations</th>
                 <th>Skills</th>
                 <th>Positions</th>
-                <th>Expected Join Date</th>
+                <th>Expiry Date</th>
                 <th>Post On</th>
                 <th>Verified</th>
                 <th>Status</th>
@@ -428,8 +428,8 @@ export default function index() {
                   </td>
                   <td>
                     <p className="mb-0">
-                      {item?.expected_joining_date
-                        ? changeDate(item?.expected_joining_date)
+                      {item?.expire_date
+                        ? changeDate(Number(item?.expire_date))
                         : "-"}
                     </p>
                   </td>
@@ -617,8 +617,7 @@ export default function index() {
                             : "Deactive"}{" "}
                           Job
                         </a>
-                        {item?.expire_date &&
-                        Number(item?.expire_date) > Date.now() ? (
+                        {item?.status == status?.active ? (
                           <a
                             aria-label="dropdown action option"
                             className="dropdown-item"
