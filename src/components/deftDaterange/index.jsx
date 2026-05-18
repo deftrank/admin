@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
@@ -21,6 +21,11 @@ const formatDisplayValue = (selection, placeholder) => {
   }
 
   return `${start} - ${end}`;
+};
+
+const isSameDay = (firstDate, secondDate) => {
+  if (!firstDate || !secondDate) return false;
+  return firstDate.toDateString() === secondDate.toDateString();
 };
 
 export default function DeftDateRange(props) {
@@ -50,6 +55,33 @@ export default function DeftDateRange(props) {
   const [displayedValue, setDisplayedValue] = useState(
     formatDisplayValue(initialSelection, placeholder)
   );
+  const [popupPosition, setPopupPosition] = useState({});
+  const wrapperRef = useRef(null);
+
+  const updatePopupPosition = useCallback(() => {
+    if (!wrapperRef.current) return;
+
+    const rect = wrapperRef.current.getBoundingClientRect();
+    const viewportPadding = 12;
+    const popupWidth = Math.min(664, window.innerWidth - viewportPadding * 2);
+    const left = Math.min(
+      Math.max(rect.left, viewportPadding),
+      window.innerWidth - popupWidth - viewportPadding
+    );
+    const bottomSpace = window.innerHeight - rect.bottom - viewportPadding;
+    const topSpace = rect.top - viewportPadding;
+    const openUp = bottomSpace < 520 && topSpace > bottomSpace;
+    const availableHeight = Math.max(320, openUp ? topSpace : bottomSpace);
+
+    setPopupPosition({
+      left,
+      width: popupWidth,
+      maxHeight: availableHeight,
+      ...(openUp
+        ? { bottom: window.innerHeight - rect.top + 4 }
+        : { top: rect.bottom + 4 }),
+    });
+  }, []);
 
   useEffect(() => {
     setState([initialSelection]);
@@ -65,6 +97,19 @@ export default function DeftDateRange(props) {
     }
   }, [initialSelection, placeholder]);
 
+  useEffect(() => {
+    if (!open) return;
+
+    updatePopupPosition();
+    window.addEventListener("resize", updatePopupPosition);
+    window.addEventListener("scroll", updatePopupPosition, true);
+
+    return () => {
+      window.removeEventListener("resize", updatePopupPosition);
+      window.removeEventListener("scroll", updatePopupPosition, true);
+    };
+  }, [open, updatePopupPosition]);
+
   const updateSelection = (selection) => {
     setState([selection]);
     setDisplayedValue(formatDisplayValue(selection, placeholder));
@@ -74,9 +119,16 @@ export default function DeftDateRange(props) {
     const nextSelection = ranges.selection;
 
     if (selectionMode === "single") {
+      const currentDate = state[0]?.startDate;
+      const hasEndChanged =
+        nextSelection.endDate && !isSameDay(nextSelection.endDate, currentDate);
+      const selectedDate = hasEndChanged
+        ? nextSelection.endDate
+        : nextSelection.startDate;
+
       const singleSelection = {
-        startDate: nextSelection.startDate,
-        endDate: nextSelection.startDate,
+        startDate: selectedDate,
+        endDate: selectedDate,
         key: "selection",
       };
       updateSelection(singleSelection);
@@ -102,7 +154,7 @@ export default function DeftDateRange(props) {
   };
 
   return (
-    <div style={{ position: "relative" }}>
+    <div ref={wrapperRef} style={{ position: "relative" }}>
       <DeftInput
         placeholder={placeholder}
         type="text"
@@ -114,12 +166,14 @@ export default function DeftDateRange(props) {
       {open && (
         <div
           style={{
-            position: "absolute",
+            position: "fixed",
             zIndex: 1000,
             boxShadow: "0 12px 28px rgba(15, 23, 42, 0.16)",
             background: "#fff",
             borderRadius: 12,
-            overflow: "hidden",
+            ...popupPosition,
+            overflowY: "auto",
+            overflowX: "hidden",
           }}
         >
           {allowSingleDate && (
@@ -166,7 +220,15 @@ export default function DeftDateRange(props) {
           />
           <div
             className="row"
-            style={{ background: "#fff", width: "100%", marginLeft: "0rem" }}
+            style={{
+              background: "#fff",
+              width: "100%",
+              marginLeft: "0rem",
+              position: "sticky",
+              bottom: 0,
+              zIndex: 1,
+              borderTop: "1px solid #edf2f7",
+            }}
           >
             <div
               className="p-2 text-end col-6"

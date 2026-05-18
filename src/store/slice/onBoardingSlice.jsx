@@ -634,7 +634,7 @@ export const updateProfile = (data, navigate) => async () => {
 
 export const getListOfUserByAdmin =
   (data, loadingBarRef) => async (dispatch) => {
-    loadingBarRef.current.continuousStart();
+    loadingBarRef?.current?.continuousStart();
     try {
       await api
         .post(DEFT_RANK_API.auth.getListOfUserByAdmin, data)
@@ -647,10 +647,10 @@ export const getListOfUserByAdmin =
             dispatch(listOfUserByAdminSuccess({ flag: "empty" }));
           }
         });
-      loadingBarRef.current.complete();
+      loadingBarRef?.current?.complete();
     } catch (e) {
       // return toast.error(e.message);
-      loadingBarRef.current.complete();
+      loadingBarRef?.current?.complete();
     }
   };
 

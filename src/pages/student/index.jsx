@@ -44,10 +44,6 @@ export default function index() {
 
   useEffect(() => {
     getStudentList();
-  }, []);
-
-  useEffect(() => {
-    getStudentList();
   }, [currentPage, searchData, itemsPerPage, dateRange, status]);
 
   const handlePageChange = (pageNumber) => {
@@ -62,8 +58,16 @@ export default function index() {
     const forStartDate = utcDateForStart
       ? moment(utcDateForStart).tz("Asia/Kolkata").format("YYYY-MM-DD")
       : "";
+    const isSingleDay =
+      utcDateForStart &&
+      utcDateForEnd &&
+      moment(utcDateForStart).isSame(utcDateForEnd, "day");
+
     const forEndDate = utcDateForEnd
-      ? moment(utcDateForEnd).tz("Asia/Kolkata").format("YYYY-MM-DD")
+      ? moment(utcDateForEnd)
+          .tz("Asia/Kolkata")
+          .add(isSingleDay ? 1 : 0, "day")
+          .format("YYYY-MM-DD")
       : "";
 
     const data = {
