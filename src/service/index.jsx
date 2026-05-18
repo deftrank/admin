@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { useEffect } from 'react';
 import secureLocalStorage from 'react-secure-storage';
 
 const getToken = () => secureLocalStorage.getItem(import.meta.env.VITE_TOKEN_STORAGE_KEY) || '';
@@ -40,68 +39,56 @@ const attemptRefresh = async () => {
   throw new Error('Refresh failed');
 };
 
-const AxiosInterceptor = ({ children }) => {
-  useEffect(() => {
-    const reqInterceptor = (request) => {
-      const token = getToken();
-      if (token) request.headers.Authorization = `Bearer ${token}`;
-      return request;
-    };
-
-    const errInterceptor = async (error) => {
-      if (!error.response) return Promise.reject(error);
-
-      const originalRequest = error.config;
-      const isAuthEndpoint = AUTH_ENDPOINTS.some((ep) => originalRequest?.url?.includes(ep));
-
-      if (error.response.status !== 401 || isAuthEndpoint) return Promise.reject(error);
-
-      if (originalRequest._retry) {
-        signOut();
-        return new Promise(() => {});
-      }
-
-      if (!getToken()) { signOut(); return new Promise(() => {}); }
-
-      originalRequest._retry = true;
-
-      if (isRefreshing) {
-        return new Promise((resolve, reject) => {
-          refreshQueue.push((newToken) => {
-            if (!newToken) return reject(error);
-            originalRequest.headers.Authorization = `Bearer ${newToken}`;
-            resolve(instance(originalRequest));
-          });
-        });
-      }
-
-      isRefreshing = true;
-      try {
-        const newToken = await attemptRefresh();
-        saveToken(newToken);
-        drainQueue(newToken);
-        originalRequest.headers.Authorization = `Bearer ${newToken}`;
-        return instance(originalRequest);
-      } catch {
-        drainQueue(null);
-        signOut();
-        return new Promise(() => {});
-      } finally {
-        isRefreshing = false;
-      }
-    };
-
-    const requestInterceptor = instance.interceptors.request.use(reqInterceptor, (e) => Promise.reject(e));
-    const responseInterceptor = instance.interceptors.response.use((r) => r, errInterceptor);
-
-    return () => {
-      instance.interceptors.response.eject(responseInterceptor);
-      instance.interceptors.request.eject(requestInterceptor);
-    };
-  }, []);
-
-  return children;
+const reqInterceptor = (request) => {
+  const token = getToken();
+  if (token) request.headers.Authorization = `Bearer ${token}`;
+  return request;
 };
 
+const errInterceptor = async (error) => {
+  if (!error.response) return Promise.reject(error);
+
+  const originalRequest = error.config;
+  const isAuthEndpoint = AUTH_ENDPOINTS.some((ep) => originalRequest?.url?.includes(ep));
+
+  if (error.response.status !== 401 || isAuthEndpoint) return Promise.reject(error);
+
+  if (originalRequest._retry) {
+    signOut();
+    return new Promise(() => {});
+  }
+
+  if (!getToken()) { signOut(); return new Promise(() => {}); }
+
+  originalRequest._retry = true;
+
+  if (isRefreshing) {
+    return new Promise((resolve, reject) => {
+      refreshQueue.push((newToken) => {
+        if (!newToken) return reject(error);
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        resolve(instance(originalRequest));
+      });
+    });
+  }
+
+  isRefreshing = true;
+  try {
+    const newToken = await attemptRefresh();
+    saveToken(newToken);
+    drainQueue(newToken);
+    originalRequest.headers.Authorization = `Bearer ${newToken}`;
+    return instance(originalRequest);
+  } catch {
+    drainQueue(null);
+    signOut();
+    return new Promise(() => {});
+  } finally {
+    isRefreshing = false;
+  }
+};
+
+instance.interceptors.request.use(reqInterceptor, (e) => Promise.reject(e));
+instance.interceptors.response.use((r) => r, errInterceptor);
+
 export default instance;
-export { AxiosInterceptor };
