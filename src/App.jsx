@@ -6,7 +6,6 @@ import AppRoutes from "./router/AppRoutes";
 import store from "./store";
 import 'react-toastify/dist/ReactToastify.css';
 import { Provider } from "react-redux";
-import { AxiosInterceptor } from "./service";
 import "./index.css"
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -16,9 +15,7 @@ function App() {
   return (
     <>
       <Provider store={store}>
-        <AxiosInterceptor>
-          <AppRoutes />
-        </AxiosInterceptor>
+        <AppRoutes />
       </Provider>
       <ToastContainer />
     </>
